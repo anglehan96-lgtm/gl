@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>✨ 我們的泰百追劇宇宙</title>
+<title>✨泰百追劇宇宙</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -30,14 +30,8 @@ tailwind.config = {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 <style>
-* {
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
     margin: 0;
     background:
@@ -45,94 +39,40 @@ body {
         radial-gradient(circle at 90% 20%, rgba(235,225,245,.45), transparent 25%),
         #FDFBF7;
     color: #4A403A;
-    font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        "Noto Sans TC",
-        sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
 }
-
-button, input, select {
-    font: inherit;
-}
-
+button, input, select, textarea { font: inherit; }
 .glass-card {
     background: rgba(255,255,255,.80);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(232,165,165,.25);
 }
+.soft-shadow { box-shadow: 0 8px 30px rgba(92,64,51,.06); }
+.poster { background: linear-gradient(135deg,#f3eeee,#e9e3e0); }
 
-.soft-shadow {
-    box-shadow: 0 8px 30px rgba(92,64,51,.06);
-}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #dfb2b2; border-radius: 999px; }
+::-webkit-scrollbar-track { background: transparent; }
 
-.poster {
-    background: linear-gradient(135deg,#f3eeee,#e9e3e0);
-}
-
-/* =========================
-   Scrollbar
-========================= */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #dfb2b2;
-    border-radius: 999px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-/* =========================
-   Modal
-========================= */
 .modal-backdrop {
     background: rgba(55,42,36,.55);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
 }
-
-.modal-panel {
-    animation: modalIn .22s ease-out;
-}
-
+.modal-panel { animation: modalIn .22s ease-out; }
 @keyframes modalIn {
-    from {
-        opacity: 0;
-        transform: translateY(18px) scale(.98);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+    from { opacity: 0; transform: translateY(18px) scale(.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* =========================
-   Mobile Bottom Nav Display Control
-========================= */
 @media (max-width: 767px) {
-    body {
-        padding-bottom: 85px;
-    }
-    .mobile-bottom-nav {
-        display: flex;
-    }
-    .desktop-nav {
-        display: none;
-    }
+    body { padding-bottom: 85px; }
+    .mobile-bottom-nav { display: flex; }
+    .desktop-nav { display: none; }
 }
-
 @media (min-width: 768px) {
-    .mobile-bottom-nav {
-        display: none;
-    }
+    .mobile-bottom-nav { display: none; }
 }
 </style>
 </head>
@@ -252,9 +192,22 @@ function App() {
     const [selectedStatus, setSelectedStatus] = useState('全部');
     const [selectedDrama, setSelectedDrama] = useState(null);
 
-    // Wishlist 互動專用 State
+    // 互動功能 State (支援 LocalStorage 持久化)
     const [randomPick, setRandomPick] = useState(null);
-    const [wishlistLikes, setWishlistLikes] = useState({});
+    const [wishlistLikes, setWishlistLikes] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem('thai_wishlist_likes')) || {};
+        } catch { return {}; }
+    });
+
+    // 使用者自訂新增許願表單
+    const [newWishTitle, setNewWishTitle] = useState('');
+    const [newWishDesc, setNewWishDesc] = useState('');
+    const [customWishes, setCustomWishes] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem('thai_custom_wishes')) || [];
+        } catch { return []; }
+    });
 
     useEffect(() => {
         let completed = 0;
@@ -289,6 +242,16 @@ function App() {
         });
     }, []);
 
+    // 儲存集氣數到 LocalStorage
+    useEffect(() => {
+        localStorage.setItem('thai_wishlist_likes', JSON.stringify(wishlistLikes));
+    }, [wishlistLikes]);
+
+    // 儲存自訂許願到 LocalStorage
+    useEffect(() => {
+        localStorage.setItem('thai_custom_wishes', JSON.stringify(customWishes));
+    }, [customWishes]);
+
     const filteredDramas = useMemo(() => {
         return dramas.filter(d => {
             const title = safeText(d.title || d.drama_title || d.name);
@@ -299,19 +262,39 @@ function App() {
         });
     }, [dramas, searchTerm, selectedStatus]);
 
+    // 合併遠端許願池與自訂許願池
+    const combinedWishlist = useMemo(() => {
+        return [...customWishes, ...wishlist];
+    }, [customWishes, wishlist]);
+
     // 隨機抽籤功能
     const handleRandomPick = () => {
-        if (!wishlist || wishlist.length === 0) return;
-        const randomIndex = Math.floor(Math.random() * wishlist.length);
-        setRandomPick(wishlist[randomIndex]);
+        if (!combinedWishlist || combinedWishlist.length === 0) return;
+        const randomIndex = Math.floor(Math.random() * combinedWishlist.length);
+        setRandomPick(combinedWishlist[randomIndex]);
     };
 
     // 集氣點燈按鈕
-    const handleBoost = (idx) => {
+    const handleBoost = (idKey) => {
         setWishlistLikes(prev => ({
             ...prev,
-            [idx]: (prev[idx] || 0) + 1
+            [idKey]: (prev[idKey] || 0) + 1
         }));
+    };
+
+    // 提交新許願
+    const handleAddWishSubmit = (e) => {
+        e.preventDefault();
+        if (!newWishTitle.trim()) return;
+        const newItem = {
+            title: newWishTitle.trim(),
+            description: newWishDesc.trim() || '來自粉絲的熱情許願！',
+            isCustom: true
+        };
+        const updated = [newItem, ...customWishes];
+        setCustomWishes(updated);
+        setNewWishTitle('');
+        setNewWishDesc('');
     };
 
     if (loading) {
@@ -329,7 +312,7 @@ function App() {
             <header className="glass-card sticky top-0 z-30 border-b px-6 py-4 shadow-sm">
                 <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
                     <h1 className="text-2xl font-bold tracking-wide text-accentPink flex items-center gap-2">
-                        <span>✨</span> 我們的泰百追劇宇宙
+                        <span>✨</span> 泰百追劇宇宙
                     </h1>
                     <nav className="desktop-nav hidden md:flex gap-2 bg-accentSoft/50 p-1 rounded-full">
                         <button onClick={() => setActiveTab('dramas')} className={`px-5 py-2 rounded-full text-sm font-semibold transition ${activeTab === 'dramas' ? 'bg-accentPink text-white shadow' : 'hover:text-accentPink'}`}>劇集列表</button>
@@ -402,7 +385,7 @@ function App() {
                 )}
 
                 {activeTab === 'wishlist' && (
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         {/* 趣味專區：隨機抽籤機 */}
                         <div className="glass-card p-6 rounded-2xl soft-shadow text-center bg-gradient-to-r from-rose-50 to-amber-50 border border-rose-200">
                             <h3 className="text-lg font-bold text-accentPink mb-1">🎲 選擇困難？讓命運決定今天看哪部！</h3>
@@ -427,19 +410,56 @@ function App() {
                             )}
                         </div>
 
+                        {/* 新增許願表單 */}
+                        <div className="glass-card p-6 rounded-2xl soft-shadow">
+                            <h3 className="font-bold text-base text-accentPink mb-3 flex items-center gap-2">
+                                <span>✍️</span> 我要許願新劇
+                            </h3>
+                            <form onSubmit={handleAddWishSubmit} className="space-y-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <input
+                                        type="text"
+                                        placeholder="劇名（例如：Blank Series Season 2）"
+                                        value={newWishTitle}
+                                        onChange={e => setNewWishTitle(e.target.value)}
+                                        className="px-4 py-2 rounded-xl border border-rose-200 bg-white/90 focus:outline-none focus:ring-2 focus:ring-accentPink text-sm"
+                                        required
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="備註 / 許願原因（選填）"
+                                        value={newWishDesc}
+                                        onChange={e => setNewWishDesc(e.target.value)}
+                                        className="px-4 py-2 rounded-xl border border-rose-200 bg-white/90 focus:outline-none focus:ring-2 focus:ring-accentPink text-sm"
+                                    />
+                                </div>
+                                <div className="flex justify-end">
+                                    <button
+                                        type="submit"
+                                        className="bg-accentPink hover:bg-rose-500 text-white px-5 py-2 rounded-xl text-sm font-bold shadow transition transform active:scale-95"
+                                    >
+                                        加入許願池 🚀
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
                         {/* 許願清單列表與集氣按鈕 */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {wishlist.length === 0 ? (
+                            {combinedWishlist.length === 0 ? (
                                 <div className="col-span-full text-center py-16 text-stone-400">目前許願池沒有資料。</div>
                             ) : (
-                                wishlist.map((item, idx) => {
+                                combinedWishlist.map((item, idx) => {
                                     const title = safeText(item.title || item.wish_title || `許願項目 ${idx+1}`);
                                     const desc = safeText(item.description || item.content || '暫無詳細內容');
                                     const likes = wishlistLikes[idx] || 0;
                                     return (
                                         <div key={idx} className="glass-card p-5 rounded-2xl soft-shadow flex justify-between items-center gap-4">
                                             <div className="flex-1">
-                                                <h3 className="font-bold text-base text-accentPink mb-1">{title}</h3>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <h3 className="font-bold text-base text-accentPink">{title}</h3>
+                                                    {item.isCustom && <span className="text-[10px] bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full font-medium">自訂</span>}
+                                                </div>
                                                 <p className="text-sm text-stone-600 line-clamp-2">{desc}</p>
                                             </div>
                                             <button
@@ -483,7 +503,7 @@ function App() {
                 )}
             </main>
 
-            {/* 手機版固定底部導覽列 (Mobile Bottom Navigation) */}
+            {/* 手機版固定底部導覽列 */}
             <nav className="mobile-bottom-nav fixed bottom-0 left-0 right-0 glass-card border-t border-rose-200/60 py-3 px-6 flex justify-around items-center z-40 shadow-xl">
                 <button
                     onClick={() => setActiveTab('dramas')}
@@ -533,25 +553,41 @@ function App() {
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
-                                <div className="flex-1 space-y-3 text-sm">
-                                    <div>
-                                        <span className="font-semibold text-accentPink">狀態：</span>
-                                        {normalizeStatus(selectedDrama.status || selectedDrama.ststus_type)}
+                                <div className="flex-1 space-y-3 text-sm flex flex-col justify-between">
+                                    <div className="space-y-3">
+                                        <div>
+                                            <span className="font-semibold text-accentPink">狀態：</span>
+                                            {normalizeStatus(selectedDrama.status || selectedDrama.ststus_type)}
+                                        </div>
+                                        <div>
+                                            <span className="font-semibold text-accentPink">集數：</span>
+                                            {safeText(selectedDrama.total_episodes || '-')} 集
+                                        </div>
+                                        <div>
+                                            <span className="font-semibold text-accentPink">首播日期：</span>
+                                            {safeText(selectedDrama.premiere_date || '-')}
+                                        </div>
+                                        <div>
+                                            <span className="font-semibold text-accentPink">劇情簡介：</span>
+                                            <p className="mt-1 text-stone-600 leading-relaxed">
+                                                {safeText(selectedDrama.synopsis || selectedDrama.description || '暫無簡介')}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <span className="font-semibold text-accentPink">集數：</span>
-                                        {safeText(selectedDrama.total_episodes || '-')} 集
-                                    </div>
-                                    <div>
-                                        <span className="font-semibold text-accentPink">首播日期：</span>
-                                        {safeText(selectedDrama.premiere_date || '-')}
-                                    </div>
-                                    <div>
-                                        <span className="font-semibold text-accentPink">劇情簡介：</span>
-                                        <p className="mt-1 text-stone-600 leading-relaxed">
-                                            {safeText(selectedDrama.synopsis || selectedDrama.description || '暫無簡介')}
-                                        </p>
-                                    </div>
+
+                                    {/* 線上看連結按鈕（若試算表中有提供 watch_url 或 link） */}
+                                    {(selectedDrama.watch_url || selectedDrama.link) && (
+                                        <div className="pt-2">
+                                            <a
+                                                href={safeText(selectedDrama.watch_url || selectedDrama.link)}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-block w-full text-center bg-accentPink hover:bg-rose-500 text-white font-bold py-2.5 px-4 rounded-xl shadow transition"
+                                            >
+                                                📺 前往觀看 / 播出平台
+                                            </a>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
