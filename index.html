@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>✨ 我們的泰百追劇宇宙</title>
+<title>✨ 泰百追劇宇宙</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -700,9 +700,69 @@ function getOSTs(drama) {
 }
 
 
+function normalizeDramaImageFields(row) {
+    const poster = firstFilledField(row, [
+        'poster_url', 'poster', 'poster_link', 'poster_image',
+        'cover_url', 'cover_image', 'image_url', 'image', '封面', '海報', '海报'
+    ]);
+    return { ...row, poster_url: safeText(poster) };
+}
+
+function normalizeActorImageFields(row) {
+    const photo = firstFilledField(row, [
+        'photo_url', 'actor_photo_url', 'cp_photo_url', 'profile_image',
+        'avatar_url', 'image_url', 'photo', 'image', '照片', '頭像', '头像'
+    ]);
+    return { ...row, photo_url: safeText(photo) };
+}
+
+
 /* =========================================================
    圖片
 ========================================================= */
+
+/* 保留 Google Sheet 原始圖片網址；只有原網址載入失敗時才嘗試 Drive 替代網址。 */
+function getImageCandidates(value) {
+    const original = safeText(value);
+    if (!original) return [];
+
+    const candidates = [original];
+    let fileId = '';
+
+    try {
+        const parsed = new URL(original, window.location.href);
+        const host = parsed.hostname.toLowerCase();
+
+        if (host === 'drive.google.com') {
+            const pathMatch =
+                parsed.pathname.match(/\\/file\\/d\\/([^/]+)/i) ||
+                parsed.pathname.match(/\\/d\\/([^/]+)/i);
+
+            fileId = (
+                parsed.searchParams.get('id') ||
+                (pathMatch && pathMatch[1]) ||
+                ''
+            ).trim();
+        }
+    } catch (error) {
+        // 保留原網址。
+    }
+
+    if (fileId) {
+        candidates.push(
+            'https://drive.google.com/thumbnail?id=' +
+            encodeURIComponent(fileId) +
+            '&sz=w1200'
+        );
+        candidates.push(
+            'https://lh3.googleusercontent.com/d/' +
+            encodeURIComponent(fileId) +
+            '=w1200'
+        );
+    }
+
+    return [...new Set(candidates)];
+}
 
 function ImageWithFallback({
     src,
@@ -710,17 +770,32 @@ function ImageWithFallback({
     alt,
     className
 }) {
-
-    const [currentSrc,setCurrentSrc] =
-        useState(src || fallback);
+    const [candidates,setCandidates] =
+        useState(() => getImageCandidates(src));
+    const [index,setIndex] = useState(0);
+    const [currentSrc,setCurrentSrc] = useState(() => {
+        const list = getImageCandidates(src);
+        return list[0] || fallback;
+    });
 
     useEffect(() => {
-
-        setCurrentSrc(
-            src || fallback
-        );
-
+        const list = getImageCandidates(src);
+        setCandidates(list);
+        setIndex(0);
+        setCurrentSrc(list[0] || fallback);
     },[src,fallback]);
+
+    function handleError() {
+        if (index + 1 < candidates.length) {
+            const nextIndex = index + 1;
+            setIndex(nextIndex);
+            setCurrentSrc(candidates[nextIndex]);
+            return;
+        }
+        if (currentSrc !== fallback) {
+            setCurrentSrc(fallback);
+        }
+    }
 
     return (
         <img
@@ -728,15 +803,7 @@ function ImageWithFallback({
             alt={alt || ''}
             className={className}
             loading="lazy"
-            onError={() => {
-
-                if (
-                    currentSrc !== fallback
-                ) {
-                    setCurrentSrc(fallback);
-                }
-
-            }}
+            onError={handleError}
         />
     );
 }
@@ -822,6 +889,7 @@ function App() {
             {
                 download: true,
                 header: true,
+                transformHeader: normalizeSheetHeader,
                 skipEmptyLines: true,
 
                 complete: result => {
@@ -837,7 +905,7 @@ function App() {
                     }
 
                     results.dramas =
-                        result.data || [];
+                        (result.data || []).map(normalizeDramaImageFields);
 
                     done();
                 },
@@ -864,6 +932,7 @@ function App() {
             {
                 download: true,
                 header: true,
+                transformHeader: normalizeSheetHeader,
                 skipEmptyLines: true,
 
                 complete: result => {
@@ -896,12 +965,13 @@ function App() {
             {
                 download: true,
                 header: true,
+                transformHeader: normalizeSheetHeader,
                 skipEmptyLines: true,
 
                 complete: result => {
 
                     results.actors =
-                        result.data || [];
+                        (result.data || []).map(normalizeActorImageFields);
 
                     done();
                 },
@@ -1197,7 +1267,7 @@ function App() {
                                     text-[#5C4033]
                                 "
                             >
-                                我們的泰百追劇宇宙
+                                泰百追劇宇宙
                             </h1>
 
                             <p
@@ -1731,7 +1801,7 @@ function WeeklySchedule({
                             font-bold
                         "
                     >
-                        📅 本週跟播鬧鐘
+                        📅 本週跟播
                     </span>
 
                     <p
@@ -4141,64 +4211,3 @@ ReactDOM.createRoot(
 
 </body>
 </html>
-```
-
-### Google 試算表欄位也要配合這版
-
-你目前的 `dramas` 工作表，建議至少有：
-
-```text
-id
-title_zh
-title_th
-cp_name
-poster_url
-premiere_date
-ststus_type
-total_episodes
-air_day_of_week
-air_time
-synopsis
-ott_link
-ott_platform
-
-my_progress
-my_status
-my_rating
-my_review
-
-friend_progress
-friend_status
-friend_rating
-friend_review
-```
-
-其中：
-
-- `premiere_date` → `2026-09-15`
-- `ststus_type` → `已完結` / `正在跟播` / `待播中`
-- `total_episodes` → `12`
-- `air_day_of_week` → `週二`
-- `air_time` → `20:30`
-- `my_progress` → 遙目前看到第幾集
-- `friend_progress` → 錢目前看到第幾集
-
-### OST 不限數量
-
-這版會自動找：
-
-```text
-song_1_name
-song_1_link
-
-song_2_name
-song_2_link
-
-song_3_name
-song_3_link
-
-song_4_name
-song_4_link
-
-song_5_name
-song_5_link
