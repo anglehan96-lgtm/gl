@@ -3,603 +3,129 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<title>✨泰百追劇宇宙</title>
-
+<title>✨ 泰百追劇宇宙</title>
 <script src="https://cdn.tailwindcss.com"></script>
-
 <script>
-tailwind.config = {
-    theme: {
-        extend: {
-            colors: {
-                cream: '#FDFBF7',
-                cardBg: 'rgba(255,255,255,.82)',
-                accentPink: '#D88A8A',
-                accentSoft: '#F9E4E4',
-                textDark: '#4A403A'
-            }
-        }
-    }
-}
+tailwind.config={theme:{extend:{colors:{cream:'#FDFBF7',cardBg:'rgba(255,255,255,.82)',accentPink:'#D88A8A',accentSoft:'#F9E4E4',textDark:'#4A403A'}}}}
 </script>
-
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
 <style>
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-    margin: 0;
-    background:
-        radial-gradient(circle at 10% 10%, rgba(249,228,228,.65), transparent 25%),
-        radial-gradient(circle at 90% 20%, rgba(235,225,245,.45), transparent 25%),
-        #FDFBF7;
-    color: #4A403A;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
-}
-button, input, select, textarea { font: inherit; }
-.glass-card {
-    background: rgba(255,255,255,.80);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(232,165,165,.25);
-}
-.soft-shadow { box-shadow: 0 8px 30px rgba(92,64,51,.06); }
-.poster { background: linear-gradient(135deg,#f3eeee,#e9e3e0); }
-
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-thumb { background: #dfb2b2; border-radius: 999px; }
-::-webkit-scrollbar-track { background: transparent; }
-
-.modal-backdrop {
-    background: rgba(55,42,36,.55);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-}
-.modal-panel { animation: modalIn .22s ease-out; }
-@keyframes modalIn {
-    from { opacity: 0; transform: translateY(18px) scale(.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@media (max-width: 767px) {
-    body { padding-bottom: 85px; }
-    .mobile-bottom-nav { display: flex; }
-    .desktop-nav { display: none; }
-}
-@media (min-width: 768px) {
-    .mobile-bottom-nav { display: none; }
-}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 10% 10%,rgba(249,228,228,.65),transparent 25%),radial-gradient(circle at 90% 20%,rgba(235,225,245,.45),transparent 25%),#FDFBF7;color:#4A403A;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif}button,input,select{font:inherit}.glass-card{background:rgba(255,255,255,.8);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(232,165,165,.25)}.soft-shadow{box-shadow:0 8px 30px rgba(92,64,51,.06)}.no-scroll{overflow:hidden}::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#dfb2b2;border-radius:999px}::-webkit-scrollbar-track{background:transparent}.modal-backdrop{background:rgba(55,42,36,.55);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}.modal-panel{animation:modalIn .22s ease-out}@keyframes modalIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}.timeline-line{position:absolute;left:22px;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,#e8a5a5,#e9c9c9,#ddd1dc);border-radius:999px}.timeline-dot{position:absolute;left:14px;top:20px;width:19px;height:19px;border-radius:50%;background:#D88A8A;border:4px solid #FDFBF7;box-shadow:0 0 0 2px #e9c2c2;z-index:2}.timeline-item{position:relative;padding-left:55px}@media(min-width:768px){.timeline-line{left:50%;transform:translateX(-50%)}.timeline-dot{left:50%;transform:translateX(-50%)}.timeline-item{width:50%;padding-left:0;padding-right:55px}.timeline-item.right{margin-left:50%;padding-left:55px;padding-right:0}}@media(max-width:767px){body{padding-bottom:75px}.mobile-bottom-nav{display:flex}.desktop-nav{display:none}.mobile-title{font-size:19px}.modal-mobile{height:100%;max-height:100%;border-radius:0}}@media(min-width:768px){.mobile-bottom-nav{display:none}}.toast{animation:toastIn .25s ease-out}@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
-
 <body>
-
 <div id="root"></div>
-
 <script type="text/babel">
+const{useState,useEffect,useMemo}=React;
 
-const { useState, useEffect, useMemo } = React;
-
-const SHEET_URLS = {
-    dramas: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMZ47PrJewiLmvkOtVLSWaupYPuClWLjnJWTaMTaFtwKUreh4xOaRPVBnGs3t2lqcx32AEESztOn1e/pub?gid=0&single=true&output=csv',
-    wishlist: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMZ47PrJewiLmvkOtVLSWaupYPuClWLjnJWTaMTaFtwKUreh4xOaRPVBnGs3t2lqcx32AEESztOn1e/pub?gid=216341491&single=true&output=csv',
-    actors: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMZ47PrJewiLmvkOtVLSWaupYPuClWLjnJWTaMTaFtwKUreh4xOaRPVBnGs3t2lqcx32AEESztOn1e/pub?gid=832417858&single=true&output=csv'
+const SHEET_URLS={
+ dramas:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMZ47PrJewiLmvkOtVLSWaupYPuClWLjnJWTaMTaFtwKUreh4xOaRPVBnGs3t2lqcx32AEESztOn1e/pub?gid=0&single=true&output=csv',
+ wishlist:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMZ47PrJewiLmvkOtVLSWaupYPuClWLjnJWTaMTaFtwKUreh4xOaRPVBnGs3t2lqcx32AEESztOn1e/pub?gid=216341491&single=true&output=csv',
+ actors:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMZ47PrJewiLmvkOtVLSWaupYPuClWLjnJWTaMTaFtwKUreh4xOaRPVBnGs3t2lqcx32AEESztOn1e/pub?gid=832417858&single=true&output=csv'
 };
 
-const DEFAULT_POSTER = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800';
-const DEFAULT_ACTOR = 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500';
+const DEFAULT_POSTER='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800';
+const DEFAULT_ACTOR='https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500';
 
-function safeText(value) {
-    if (value === undefined || value === null || value === '') return '';
-    return String(value).trim();
+function safeText(value){if(value===undefined||value===null||value==='')return'';return String(value).trim()}
+function normalizeStatus(status){const s=safeText(status);if(s.includes('跟播')||s.includes('播放中')||s.toLowerCase().includes('airing'))return'正在跟播';if(s.includes('待播')||s.includes('未播')||s.toLowerCase().includes('upcoming'))return'待播中';if(s.includes('完結')||s.includes('已完')||s.toLowerCase().includes('completed'))return'已完結';return s||'未分類'}
+function statusClass(status){if(status==='正在跟播')return'bg-emerald-100 text-emerald-700';if(status==='待播中')return'bg-blue-100 text-blue-700';if(status==='已完結')return'bg-stone-100 text-stone-600';return'bg-rose-100 text-rose-600'}
+function parseNumber(value){if(value===undefined||value===null||value==='')return 0;const n=parseInt(String(value).replace(/[^\d]/g,''),10);return Number.isNaN(n)?0:n}
+function parseDate(value){if(!value)return null;const text=String(value).trim();const match=text.match(/(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);if(!match)return null;const date=new Date(Number(match[1]),Number(match[2])-1,Number(match[3]));return Number.isNaN(date.getTime())?null:date}
+function formatDate(date){if(!date)return'-';return`${date.getFullYear()}/${String(date.getMonth()+1).padStart(2,'0')}/${String(date.getDate()).padStart(2,'0')}`}
+function formatMonthDay(date){if(!date)return'-';return`${String(date.getMonth()+1).padStart(2,'0')}/${String(date.getDate()).padStart(2,'0')}`}
+function getWeekDayNumber(text){if(!text)return null;const s=String(text);const map={'週一':1,'周一':1,'星期一':1,'週二':2,'周二':2,'星期二':2,'週三':3,'周三':3,'星期三':3,'週四':4,'周四':4,'星期四':4,'週五':5,'周五':5,'星期五':5,'週六':6,'周六':6,'星期六':6,'週日':0,'周日':0,'星期日':0};for(const k in map)if(s.includes(k))return map[k];return null}
+function calculateEpisodeDate(premiereDate,episode,airDay){if(!premiereDate)return null;const date=new Date(premiereDate);const target=getWeekDayNumber(airDay);if(target!==null&&episode===1){let diff=target-date.getDay();if(diff<0)diff+=7;date.setDate(date.getDate()+diff)}if(episode>1)date.setDate(date.getDate()+(episode-1)*7);return date}
+function calculateNextAirDate(drama){if(normalizeStatus(drama.ststus_type)!=='正在跟播')return null;const premiere=parseDate(drama.premiere_date);if(!premiere)return null;const total=parseNumber(drama.total_episodes);const my=parseNumber(drama.my_progress||drama.my_propress);const friend=parseNumber(drama.friend_progress);const progress=Math.max(my,friend);if(total&&progress>=total)return null;return calculateEpisodeDate(premiere,progress+1,drama.air_day_of_week)}
+function generateEpisodeSchedule(drama){const premiere=parseDate(drama.premiere_date);const total=parseNumber(drama.total_episodes);if(!premiere||!total)return[];return Array.from({length:total},(_,i)=>({episode:i+1,date:calculateEpisodeDate(premiere,i+1,drama.air_day_of_week)}))}
+
+/* OST：只讀 song_N_name / song_N_link，不讀 song_N_type */
+function getOSTs(drama){const songs=[];Object.keys(drama||{}).forEach(key=>{const m=key.match(/^song_(\d+)_(name|title|link|url)$/i);if(!m)return;const num=Number(m[1]);const field=m[2].toLowerCase();if(!songs[num])songs[num]={};if(field==='name'||field==='title')songs[num].name=safeText(drama[key]);if(field==='link'||field==='url')songs[num].link=safeText(drama[key])});return songs.filter(Boolean).filter(s=>s.name||s.link)}
+
+function ImageWithFallback({src,fallback,alt,className}){const[currentSrc,setCurrentSrc]=useState(src||fallback);useEffect(()=>setCurrentSrc(src||fallback),[src,fallback]);return <img src={currentSrc} alt={alt||''} className={className} loading="lazy" onError={()=>{if(currentSrc!==fallback)setCurrentSrc(fallback)}}/>}
+
+/* =========================================================
+   Wishlist 本機覆寫：Google Sheet 是主資料，本機保存互動狀態
+========================================================= */
+const WISHLIST_STORAGE_KEY='thai_gl_wishlist_local_v3';
+function wishlistItemKey(item,index){return String(item.id||`${item.drama_id||''}|${item.owner||''}|${index}`)}
+function loadWishlistOverrides(){try{const raw=localStorage.getItem(WISHLIST_STORAGE_KEY);return raw?JSON.parse(raw):{}}catch(e){return{}}}
+function saveWishlistOverrides(data){try{localStorage.setItem(WISHLIST_STORAGE_KEY,JSON.stringify(data))}catch(e){}}
+function isWishlistYes(value){return['true','1','yes','y','是','有','想看','喜歡'].includes(safeText(value).toLowerCase())}
+function normalizeWishlistPriority(value){const s=safeText(value);if(s.includes('超')||s.includes('高')||s.includes('🔥'))return'超想看';if(s.includes('低')||s.includes('有空'))return'有空再看';return'想看'}
+function normalizeWishlistStatus(value){const s=safeText(value);if(s.includes('完')||s.includes('看完')||s.toLowerCase().includes('completed'))return'已看完';if(s.includes('放棄')||s.includes('棄坑'))return'暫時放棄';if(s.includes('一半')||s.includes('途中'))return'看到一半';if(s.includes('開始')||s.includes('追劇中'))return'已開始';return'待看'}
+function wishlistPriorityClass(p){return p==='超想看'?'bg-rose-100 text-rose-600':p==='有空再看'?'bg-stone-100 text-stone-500':'bg-amber-100 text-amber-600'}
+function wishlistStatusClass(s){if(s==='已看完')return'bg-emerald-100 text-emerald-700';if(s==='已開始')return'bg-blue-100 text-blue-700';if(s==='看到一半')return'bg-violet-100 text-violet-700';if(s==='暫時放棄')return'bg-stone-200 text-stone-500';return'bg-rose-100 text-rose-600'}
+function toDateInputValue(value){if(!value)return'';const d=parseDate(value);if(!d)return/^\d{4}-\d{2}-\d{2}$/.test(safeText(value))?safeText(value):'';return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function formatWishlistDate(value){const d=parseDate(value);return d?formatDate(d):safeText(value)}
+
+function App(){
+ const[activeTab,setActiveTab]=useState('dramas');const[dramas,setDramas]=useState([]);const[wishlist,setWishlist]=useState([]);const[actors,setActors]=useState([]);const[loading,setLoading]=useState(true);const[errors,setErrors]=useState([]);const[searchTerm,setSearchTerm]=useState('');const[selectedYear,setSelectedYear]=useState('全部');const[selectedStatus,setSelectedStatus]=useState('全部');const[viewMode,setViewMode]=useState('cards');const[selectedDrama,setSelectedDrama]=useState(null);const[toast,setToast]=useState('');
+ useEffect(()=>{let completed=0;const results={dramas:[],wishlist:[],actors:[]};const newErrors=[];const done=()=>{completed++;if(completed>=3){setDramas(results.dramas);setWishlist(results.wishlist);setActors(results.actors);setErrors(newErrors);setLoading(false)}};
+  Papa.parse(SHEET_URLS.dramas,{download:true,header:true,skipEmptyLines:true,complete:r=>{results.dramas=r.data||[];done()},error:()=>{newErrors.push('劇集資料讀取失敗');done()}});
+  Papa.parse(SHEET_URLS.wishlist,{download:true,header:true,skipEmptyLines:true,complete:r=>{results.wishlist=r.data||[];done()},error:()=>{newErrors.push('Wishlist 讀取失敗');done()}});
+  Papa.parse(SHEET_URLS.actors,{download:true,header:true,skipEmptyLines:true,complete:r=>{results.actors=r.data||[];done()},error:()=>{newErrors.push('CP 資料讀取失敗');done()}});
+ },[]);
+ const years=useMemo(()=>{const set=new Set();dramas.forEach(d=>{const date=parseDate(d.premiere_date);if(date)set.add(date.getFullYear())});return['全部',...Array.from(set).sort((a,b)=>b-a).map(String)]},[dramas]);
+ const filteredDramas=useMemo(()=>{const s=searchTerm.trim().toLowerCase();return dramas.filter(d=>{const zh=safeText(d.title_zh).toLowerCase(),th=safeText(d.title_th).toLowerCase(),cp=safeText(d.cp_name).toLowerCase();const matchSearch=!s||zh.includes(s)||th.includes(s)||cp.includes(s);const date=parseDate(d.premiere_date);const year=date?String(date.getFullYear()):'未知年份';const matchYear=selectedYear==='全部'||year===selectedYear;const status=normalizeStatus(d.ststus_type);const matchStatus=selectedStatus==='全部'||status===selectedStatus;return matchSearch&&matchYear&&matchStatus})},[dramas,searchTerm,selectedYear,selectedStatus]);
+ const groupedByYear=useMemo(()=>{const groups={};filteredDramas.forEach(d=>{const date=parseDate(d.premiere_date);const y=date?date.getFullYear():'未知年份';(groups[y]||(groups[y]=[])).push(d)});return Object.entries(groups).sort((a,b)=>a[0]==='未知年份'?1:b[0]==='未知年份'?-1:Number(b[0])-Number(a[0]))},[filteredDramas]);
+ function openDrama(d){setSelectedDrama(d);document.body.classList.add('no-scroll')}function closeDrama(){setSelectedDrama(null);document.body.classList.remove('no-scroll')}
+ useEffect(()=>{if(errors.length){setToast(errors.join('、'));const t=setTimeout(()=>setToast(''),5000);return()=>clearTimeout(t)}},[errors]);
+ return <div className="min-h-screen pb-20">
+  <header className="glass-card sticky top-0 z-40 border-b border-rose-100 shadow-sm px-4 md:px-8 py-3 md:py-4"><div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3"><div className="flex items-center gap-3"><div className="w-11 h-11 rounded-2xl bg-rose-100 flex items-center justify-center text-2xl">✨</div><div><h1 className="mobile-title text-xl md:text-2xl font-bold tracking-wide text-[#5C4033]">泰百追劇宇宙</h1><p className="text-xs text-rose-400">雙人進度同步・追劇時間軸・OST</p></div></div><div className="desktop-nav flex bg-rose-50/80 p-1 rounded-full border border-rose-200"><TabButton active={activeTab==='dramas'} onClick={()=>setActiveTab('dramas')}>📺 劇集 <span className="ml-1 opacity-70">({dramas.length})</span></TabButton><TabButton active={activeTab==='wishlist'} onClick={()=>setActiveTab('wishlist')}>🎁 Wishlist <span className="ml-1 opacity-70">({wishlist.length})</span></TabButton><TabButton active={activeTab==='actors'} onClick={()=>setActiveTab('actors')}>👩‍❤️‍👩 CP <span className="ml-1 opacity-70">({actors.length})</span></TabButton></div></div></header>
+  <main className="max-w-7xl mx-auto px-4 md:px-6 mt-5 md:mt-8">{loading?<Loading/>:<>{activeTab==='dramas'&&<><div className="flex gap-2 mb-5 overflow-x-auto"><button onClick={()=>setViewMode('cards')} className={`px-4 py-2 rounded-full text-sm whitespace-nowrap border transition ${viewMode==='cards'?'bg-[#D88A8A] text-white border-[#D88A8A]':'bg-white/70 text-stone-600 border-rose-100'}`}>📺 劇集卡片</button><button onClick={()=>setViewMode('timeline')} className={`px-4 py-2 rounded-full text-sm whitespace-nowrap border transition ${viewMode==='timeline'?'bg-[#D88A8A] text-white border-[#D88A8A]':'bg-white/70 text-stone-600 border-rose-100'}`}>🕰️ 時間軸</button></div><WeeklySchedule dramas={dramas} onOpen={openDrama}/><FilterBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} selectedYear={selectedYear} setSelectedYear={setSelectedYear} selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} years={years}/>{viewMode==='cards'?<DramaCards groups={groupedByYear} onOpen={openDrama}/>:<Timeline groups={groupedByYear} onOpen={openDrama}/>}</>}{activeTab==='wishlist'&&<Wishlist wishlist={wishlist} dramas={dramas} onOpenDrama={openDrama}/>} {activeTab==='actors'&&<Actors actors={actors}/>}</>}</main>
+  <nav className="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-rose-100 px-2 py-2 justify-around"><MobileNav icon="📺" label="劇集" active={activeTab==='dramas'} onClick={()=>setActiveTab('dramas')}/><MobileNav icon="🎁" label="待看" active={activeTab==='wishlist'} onClick={()=>setActiveTab('wishlist')}/><MobileNav icon="👩‍❤️‍👩" label="CP" active={activeTab==='actors'} onClick={()=>setActiveTab('actors')}/></nav>
+  {selectedDrama&&<DramaModal drama={selectedDrama} onClose={closeDrama}/>} {toast&&<div className="toast fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-[100] bg-stone-800 text-white px-5 py-3 rounded-2xl text-sm shadow-xl max-w-[90vw] text-center">⚠️ {toast}</div>}
+ </div>
 }
 
-function normalizeSheetHeader(header) {
-    return safeText(header).toLowerCase().replace(/\s+/g, '_');
+function TabButton({active,onClick,children}){return <button onClick={onClick} className={`px-4 md:px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition ${active?'bg-[#D88A8A] text-white shadow-sm':'text-[#7C6359] hover:text-[#5C4033]'}`}>{children}</button>}
+function Loading(){return <div className="flex flex-col items-center justify-center py-32"><div className="w-12 h-12 rounded-full border-4 border-rose-100 border-t-rose-400 animate-spin"/><p className="mt-5 text-stone-500 font-medium">🌸 正在從 Google 試算表同步資料...</p></div>}
+
+function WeeklySchedule({dramas,onOpen}){const today=new Date();today.setHours(0,0,0,0);const start=new Date(today),day=start.getDay(),diff=day===0?-6:1-day;start.setDate(start.getDate()+diff);const days=Array.from({length:7},(_,i)=>{const d=new Date(start);d.setDate(d.getDate()+i);return d});const names=['週一','週二','週三','週四','週五','週六','週日'];return <section className="glass-card rounded-3xl p-4 md:p-5 mb-6 soft-shadow"><div className="mb-4"><span className="inline-flex bg-rose-100 text-rose-700 px-3 py-1 rounded-xl text-sm font-bold">📅 本週跟播</span><p className="text-xs text-stone-400 mt-1">{formatDate(days[0])} ～ {formatDate(days[6])}</p></div><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2">{days.map((date,i)=>{const dateString=date.toDateString();const shows=dramas.filter(d=>normalizeStatus(d.ststus_type)==='正在跟播'&&generateEpisodeSchedule(d).some(x=>x.date&&x.date.toDateString()===dateString));const todayFlag=dateString===today.toDateString();return <div key={i} className={`rounded-2xl p-3 border ${todayFlag?'bg-rose-100/80 border-rose-300':'bg-white/70 border-rose-50'}`}><div className="flex justify-between items-center"><span className="text-xs font-bold text-rose-400">{names[i]}</span><span className="text-xs text-stone-400">{formatMonthDay(date)}</span></div><div className="mt-2 space-y-1.5">{shows.length===0?<span className="text-xs text-stone-300">-</span>:shows.map((d,j)=>{const ep=generateEpisodeSchedule(d).find(x=>x.date&&x.date.toDateString()===dateString);return <button key={j} onClick={()=>onOpen(d)} className="w-full text-left bg-rose-50 hover:bg-rose-100 p-2 rounded-xl transition"><div className="text-xs font-bold truncate">{d.title_zh}</div><div className="text-[10px] text-rose-500 mt-0.5">{ep?`EP${ep.episode}`:''}{d.air_time?` · ${d.air_time}`:''}</div></button>})}</div></div>})}</div></section>}
+
+function FilterBar({searchTerm,setSearchTerm,selectedYear,setSelectedYear,selectedStatus,setSelectedStatus,years}){return <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-2"><input type="text" placeholder="🔍 搜尋劇名、泰文名或 CP..." value={searchTerm} onChange={e=>setSearchTerm(e.target.value)} className="md:col-span-2 w-full px-4 py-3 rounded-2xl glass-card border border-rose-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"/><select value={selectedYear} onChange={e=>setSelectedYear(e.target.value)} className="px-4 py-3 rounded-2xl glass-card border border-rose-200 text-sm bg-white/80 outline-none">{years.map(y=><option key={y} value={y}>{y==='全部'?'📅 全部年份':`📅 ${y}`}</option>)}</select><select value={selectedStatus} onChange={e=>setSelectedStatus(e.target.value)} className="px-4 py-3 rounded-2xl glass-card border border-rose-200 text-sm bg-white/80 outline-none"><option value="全部">🎬 全部狀態</option><option value="正在跟播">🟢 正在跟播</option><option value="待播中">🔵 待播中</option><option value="已完結">⚪ 已完結</option></select></div>}
+
+function DramaCards({groups,onOpen}){if(!groups.length)return<EmptyState text="找不到符合條件的劇集"/>;return <div className="space-y-10">{groups.map(([year,ds])=><section key={year}><div className="flex items-center gap-3 mb-4"><h2 className="text-2xl font-bold text-[#5C4033]">{year}</h2><div className="h-px flex-1 bg-rose-100"/><span className="text-xs text-stone-400">{ds.length} 部</span></div><div className="grid grid-cols-1 md:grid-cols-2 gap-5">{ds.map((d,i)=><DramaCard key={d.id||i} drama={d} onOpen={onOpen}/>)}</div></section>)}</div>}
+function DramaCard({drama,onOpen}){const status=normalizeStatus(drama.ststus_type),premiere=parseDate(drama.premiere_date),next=calculateNextAirDate(drama),total=parseNumber(drama.total_episodes),my=parseNumber(drama.my_progress||drama.my_propress),friend=parseNumber(drama.friend_progress);return <button onClick={()=>onOpen(drama)} className="glass-card rounded-3xl p-4 md:p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition text-left w-full"><div className="flex gap-4"><ImageWithFallback src={safeText(drama.poster_url)} fallback={DEFAULT_POSTER} alt={drama.title_zh} className="w-24 sm:w-32 h-36 sm:h-44 object-cover rounded-2xl flex-shrink-0 shadow"/><div className="flex-1 min-w-0"><div className="flex justify-between gap-2"><span className="text-[11px] bg-rose-100 text-rose-600 px-2 py-1 rounded-full font-medium truncate">{drama.cp_name||'未設定 CP'}</span><span className={`text-[10px] px-2 py-1 rounded-full whitespace-nowrap ${statusClass(status)}`}>{status}</span></div><h3 className="text-lg font-bold text-[#4A403A] mt-2 line-clamp-2">{drama.title_zh||'未命名劇集'}</h3><p className="text-xs text-stone-400 mt-1">{drama.title_th||'-'}</p><div className="text-xs text-stone-500 mt-3 space-y-1"><div>📅 首播：{formatDate(premiere)}</div><div>🎬 共 {total||'-'} 集</div>{status==='正在跟播'&&next&&<div className="text-rose-500 font-semibold">⏰ 下一集：{formatDate(next)}</div>}</div><div className="mt-3 grid grid-cols-2 gap-2"><div className="bg-rose-50 rounded-xl p-2"><div className="text-[10px] text-rose-500 font-bold">遙</div><div className="text-xs font-semibold">{my}/{total||'?'}</div></div><div className="bg-indigo-50 rounded-xl p-2"><div className="text-[10px] text-indigo-500 font-bold">錢</div><div className="text-xs font-semibold">{friend}/{total||'?'}</div></div></div></div></div></button>}
+
+function Timeline({groups,onOpen}){if(!groups.length)return<EmptyState text="找不到符合條件的劇集"/>;return <div className="relative max-w-5xl mx-auto pb-10"><div className="timeline-line"/>{groups.map(([year,ds])=><React.Fragment key={year}><div className="relative z-10 flex justify-center mb-6 mt-8"><span className="bg-[#D88A8A] text-white font-bold px-5 py-2 rounded-full shadow">{year}</span></div>{ds.map((d,i)=><TimelineItem key={d.id||i} drama={d} index={i} onOpen={onOpen}/>)}</React.Fragment>)}</div>}
+function TimelineItem({drama,index,onOpen}){const premiere=parseDate(drama.premiere_date),status=normalizeStatus(drama.ststus_type),total=parseNumber(drama.total_episodes),next=calculateNextAirDate(drama);return <div className={`timeline-item ${index%2===1?'right':''} mb-8`}><div className="timeline-dot"/><button onClick={()=>onOpen(drama)} className="w-full text-left glass-card rounded-3xl p-4 hover:shadow-lg transition"><div className="flex gap-3"><ImageWithFallback src={safeText(drama.poster_url)} fallback={DEFAULT_POSTER} alt={drama.title_zh} className="w-20 h-28 object-cover rounded-2xl flex-shrink-0"/><div className="min-w-0 flex-1"><div className="text-xs text-rose-500 font-bold">{formatDate(premiere)}</div><h3 className="font-bold text-[#4A403A] mt-1 line-clamp-2">{drama.title_zh}</h3><p className="text-xs text-stone-500 mt-1">{drama.cp_name}</p><div className="flex flex-wrap gap-1.5 mt-3"><span className={`text-[10px] px-2 py-1 rounded-full ${statusClass(status)}`}>{status}</span><span className="text-[10px] px-2 py-1 rounded-full bg-stone-100 text-stone-500">{total||'-'} 集</span></div>{next&&<p className="text-[11px] text-rose-500 mt-2 font-semibold">⏰ 下一集 {formatDate(next)}</p>}</div></div></button></div>}
+
+function DramaModal({drama,onClose}){const status=normalizeStatus(drama.ststus_type),premiere=parseDate(drama.premiere_date),total=parseNumber(drama.total_episodes),my=parseNumber(drama.my_progress||drama.my_propress),friend=parseNumber(drama.friend_progress),next=calculateNextAirDate(drama),schedule=generateEpisodeSchedule(drama),osts=getOSTs(drama);return <div className="fixed inset-0 z-[80] modal-backdrop flex items-end md:items-center justify-center" onMouseDown={e=>{if(e.target===e.currentTarget)onClose()}}><div className="modal-panel modal-mobile bg-[#FDFBF7] w-full md:max-w-4xl md:max-h-[92vh] md:rounded-3xl overflow-hidden shadow-2xl flex flex-col"><div className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b border-rose-100 px-4 md:px-6 py-3 flex justify-between items-center"><div className="flex items-center gap-2"><span className={`text-xs px-2.5 py-1 rounded-full ${statusClass(status)}`}>{status}</span><span className="text-xs text-stone-400">{formatDate(premiere)}</span></div><button onClick={onClose} className="w-9 h-9 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-lg">×</button></div><div className="overflow-y-auto p-4 md:p-7"><div className="flex flex-col sm:flex-row gap-5"><ImageWithFallback src={safeText(drama.poster_url)} fallback={DEFAULT_POSTER} alt={drama.title_zh} className="w-full sm:w-40 md:w-48 h-64 sm:h-56 md:h-64 object-cover rounded-3xl shadow-lg flex-shrink-0"/><div className="flex-1"><span className="inline-block bg-rose-100 text-rose-600 px-3 py-1 rounded-full text-xs font-medium">{drama.cp_name||'未設定 CP'}</span><h1 className="text-2xl md:text-3xl font-bold text-[#4A403A] mt-2">{drama.title_zh}</h1><p className="text-sm text-stone-400 mt-1">{drama.title_th}</p><div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-5"><InfoBox label="首播" value={formatDate(premiere)}/><InfoBox label="集數" value={`${total||'-'} 集`}/><InfoBox label="播出時間" value={drama.air_time||'-'}/></div>{next&&<div className="mt-3 bg-rose-50 border border-rose-100 rounded-2xl p-3 text-sm text-rose-600 font-semibold">⏰ 下一集預計：{formatDate(next)}</div>}</div></div><section className="mt-7"><SectionTitle>📖 劇情簡介</SectionTitle><div className="bg-white rounded-2xl p-4 border border-rose-50 text-sm leading-7 text-stone-600">{drama.synopsis||drama.description||'目前尚未填寫劇情簡介。'}</div></section><section className="mt-7"><SectionTitle>👭 雙人追劇進度</SectionTitle><div className="grid grid-cols-1 sm:grid-cols-2 gap-3"><ProgressBox name="遙" progress={my} total={total} rating={drama.my_rating} review={drama.my_review} color="rose"/><ProgressBox name="錢" progress={friend} total={total} rating={drama.friend_rating} review={drama.friend_review} color="indigo"/></div></section>{schedule.length>0&&<section className="mt-7"><SectionTitle>📅 播出日期</SectionTitle><div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">{schedule.map(x=><div key={x.episode} className="bg-white border border-rose-50 rounded-2xl p-3"><div className="text-xs font-bold text-rose-500">EP{x.episode}</div><div className="text-sm font-semibold mt-1">{formatDate(x.date)}</div></div>)}</div></section>}<section className="mt-7"><SectionTitle>🎵 OST</SectionTitle>{osts.length===0?<div className="bg-white rounded-2xl p-4 border border-rose-50 text-sm text-stone-400">尚未新增 OST。</div>:<div className="space-y-2">{osts.map((song,i)=><div key={i} className="bg-white border border-rose-50 rounded-2xl p-3 flex items-center justify-between gap-3"><div className="flex items-center gap-3 min-w-0"><div className="w-9 h-9 rounded-xl bg-rose-50 flex items-center justify-center flex-shrink-0">🎵</div><div className="min-w-0"><div className="text-sm font-semibold truncate">{song.name||`第 ${i+1} 首`}</div></div></div>{song.link&&<a href={song.link} target="_blank" rel="noopener noreferrer" className="bg-stone-800 text-white px-3 py-2 rounded-xl text-xs whitespace-nowrap hover:bg-stone-700" onClick={e=>e.stopPropagation()}>▶ 聽歌</a>}</div>)}</div>}</section><section className="mt-7"><SectionTitle>🔗 相關連結</SectionTitle><div className="flex flex-wrap gap-2">{drama.ott_link&&<ExternalLink href={drama.ott_link}>▶ {drama.ott_platform||drama.ott_plaform||'觀看平台'}</ExternalLink>}{drama.source_link&&<ExternalLink href={drama.source_link}>🔗 資料來源</ExternalLink>}</div></section><div className="h-5"/></div></div></div>}
+function InfoBox({label,value}){return <div className="bg-white border border-rose-50 rounded-2xl p-3"><div className="text-[10px] text-stone-400">{label}</div><div className="text-sm font-semibold mt-1">{value}</div></div>}
+function ProgressBox({name,progress,total,rating,review,color}){const p=total?Math.min(100,Math.round(progress/total*100)):0;return <div className={`rounded-2xl p-4 ${color==='rose'?'bg-rose-50':'bg-indigo-50'}`}><div className="flex justify-between items-center"><span className="font-bold">{name}</span><span className="text-xs text-amber-500 font-bold">⭐ {rating||'-'}</span></div><div className="flex justify-between text-xs mt-2"><span>已看 {progress}{total?` / ${total}`:''}</span><span>{p}%</span></div><div className="h-2 bg-white/70 rounded-full overflow-hidden mt-2"><div className={`h-full rounded-full ${color==='rose'?'bg-rose-400':'bg-indigo-400'}`} style={{width:`${p}%`}}/></div>{review&&<p className="text-xs text-stone-600 italic mt-3 leading-5">「{review}」</p>}</div>}
+function SectionTitle({children}){return <h2 className="text-base font-bold text-[#5C4033] mb-3">{children}</h2>}
+function ExternalLink({href,children}){const clean=String(href||'').trim();if(!clean)return null;return <a href={clean} target="_blank" rel="noopener noreferrer" className="bg-stone-800 text-white px-4 py-2.5 rounded-xl text-xs hover:bg-stone-700 transition">{children}</a>}
+
+/* =========================================================
+   Wishlist
+   Google Sheet：只管理 drama_id + Wishlist 自己的欄位
+   Dramas：提供劇名、海報、CP、首播日、集數、連結等
+========================================================= */
+function Wishlist({wishlist,dramas,onOpenDrama}){
+ const[overrides,setOverrides]=useState(()=>loadWishlistOverrides());const[searchTerm,setSearchTerm]=useState('');const[statusFilter,setStatusFilter]=useState('全部');const[ownerFilter,setOwnerFilter]=useState('全部');const[priorityFilter,setPriorityFilter]=useState('全部');const[randomPick,setRandomPick]=useState(null);const[randomAnimating,setRandomAnimating]=useState(false);
+ const dramaMap=useMemo(()=>{const map={};dramas.forEach((d,i)=>{const id=safeText(d.id||d.drama_id);if(id)map[id]=d;map[`__row_${i+1}`]=d});return map},[dramas]);
+ const mergedWishlist=useMemo(()=>wishlist.map((item,index)=>{const key=wishlistItemKey(item,index);const local=overrides[key]||{};const drama=dramaMap[safeText(item.drama_id)]||null;return{...item,...local,_wishlistKey:key,_drama:drama}}).filter(x=>x._drama),[wishlist,overrides,dramaMap]);
+ const filteredWishlist=useMemo(()=>{const s=searchTerm.trim().toLowerCase();return mergedWishlist.filter(item=>{const d=item._drama;const searchMatch=!s||safeText(d.title_zh).toLowerCase().includes(s)||safeText(d.title_th).toLowerCase().includes(s)||safeText(d.cp_name).toLowerCase().includes(s)||safeText(item.note).toLowerCase().includes(s);const status=normalizeWishlistStatus(item.wishlist_status),owner=safeText(item.owner),priority=normalizeWishlistPriority(item.priority);return searchMatch&&(statusFilter==='全部'||status===statusFilter)&&(ownerFilter==='全部'||owner===ownerFilter)&&(priorityFilter==='全部'||priority===priorityFilter)})},[mergedWishlist,searchTerm,statusFilter,ownerFilter,priorityFilter]);
+ function updateWishlistItem(item,patch){const key=item._wishlistKey;setOverrides(prev=>{const next={...prev,[key]:{...(prev[key]||{}),...patch}};saveWishlistOverrides(next);return next})}
+ function pickRandomDrama(){const candidates=filteredWishlist.filter(x=>{const s=normalizeWishlistStatus(x.wishlist_status);return s!=='已看完'&&s!=='暫時放棄'});if(!candidates.length){setRandomPick(null);return}setRandomAnimating(true);setTimeout(()=>{setRandomPick(candidates[Math.floor(Math.random()*candidates.length)]);setRandomAnimating(false)},450)}
+ return <section className="glass-card rounded-3xl p-5 md:p-7 soft-shadow">
+  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6"><div><h2 className="text-xl md:text-2xl font-bold text-[#5C4033]">🎁 雙人待看與許願清單</h2><p className="text-xs text-stone-400 mt-1">Wishlist 只管理想看狀態；劇集資料統一來自 Dramas</p></div><div className="flex flex-wrap items-center gap-2"><span className="text-xs text-stone-400">共 {mergedWishlist.length} 項</span><button onClick={pickRandomDrama} disabled={randomAnimating||!filteredWishlist.length} className="bg-[#D88A8A] hover:bg-[#c97878] disabled:opacity-50 text-white px-4 py-2.5 rounded-xl text-xs font-medium transition shadow-sm">🎲 今天看哪部？</button></div></div>
+  <div className="grid grid-cols-1 md:grid-cols-5 gap-2 mb-5"><input type="text" placeholder="🔍 搜尋劇名、CP、備註..." value={searchTerm} onChange={e=>setSearchTerm(e.target.value)} className="md:col-span-2 w-full px-4 py-3 rounded-2xl bg-white/80 border border-rose-100 text-sm focus:outline-none focus:ring-2 focus:ring-rose-200"/><select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)} className="px-4 py-3 rounded-2xl bg-white/80 border border-rose-100 text-sm outline-none"><option value="全部">📌 全部狀態</option><option value="待看">📌 待看</option><option value="已開始">👀 已開始</option><option value="看到一半">⏸️ 看到一半</option><option value="已看完">✅ 已看完</option><option value="暫時放棄">❌ 暫時放棄</option></select><select value={ownerFilter} onChange={e=>setOwnerFilter(e.target.value)} className="px-4 py-3 rounded-2xl bg-white/80 border border-rose-100 text-sm outline-none"><option value="全部">👤 全部提議者</option><option value="遙">💗 遙</option><option value="錢">💙 錢</option><option value="我">💗 我</option></select><select value={priorityFilter} onChange={e=>setPriorityFilter(e.target.value)} className="px-4 py-3 rounded-2xl bg-white/80 border border-rose-100 text-sm outline-none"><option value="全部">🔥 全部優先級</option><option value="超想看">🔥 超想看</option><option value="想看">💗 想看</option><option value="有空再看">🌱 有空再看</option></select></div>
+  {randomPick&&<div className="mb-6 rounded-3xl p-4 md:p-5 bg-gradient-to-r from-rose-50 to-purple-50 border border-rose-100 relative overflow-hidden"><div className="text-xs text-rose-500 font-bold mb-3">🎲 今日隨機抽中</div><div className="flex gap-4 items-center"><ImageWithFallback src={safeText(randomPick._drama.poster_url)} fallback={DEFAULT_POSTER} alt={randomPick._drama.title_zh} className="w-20 h-28 object-cover rounded-2xl shadow flex-shrink-0"/><div className="flex-1 min-w-0"><h3 className="text-lg font-bold text-[#5C4033]">{randomPick._drama.title_zh}</h3><p className="text-xs text-stone-500 mt-1">👩‍❤️‍👩 {randomPick._drama.cp_name||'未設定 CP'}</p><div className="flex flex-wrap gap-2 mt-3"><span className={`text-[10px] px-2.5 py-1 rounded-full font-medium ${wishlistPriorityClass(normalizeWishlistPriority(randomPick.priority))}`}>{normalizeWishlistPriority(randomPick.priority)}</span><span className="text-[10px] px-2.5 py-1 rounded-full bg-white text-stone-500">{normalizeWishlistStatus(randomPick.wishlist_status)}</span></div><button onClick={()=>onOpenDrama(randomPick._drama)} className="mt-3 bg-stone-800 hover:bg-stone-700 text-white px-4 py-2 rounded-xl text-xs transition">🔎 查看劇集</button></div></div></div>}
+  {!mergedWishlist.length?<EmptyState text="目前沒有可對應到 Dramas 的 Wishlist"/>:!filteredWishlist.length?<EmptyState text="找不到符合條件的 Wishlist"/>:<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">{filteredWishlist.map(item=>{const d=item._drama;const owner=safeText(item.owner),status=normalizeWishlistStatus(item.wishlist_status),priority=normalizeWishlistPriority(item.priority),myWant=isWishlistYes(item.my_want||item.my_wishlist||item.my_interest),friendWant=isWishlistYes(item.friend_want||item.friend_wishlist||item.friend_interest),both=myWant&&friendWant,planned=item.planned_watch_date||item.watch_date||'';return <div key={item._wishlistKey} className="bg-white/90 rounded-3xl border border-rose-100 shadow-sm overflow-hidden transition hover:shadow-lg hover:-translate-y-0.5"><button onClick={()=>onOpenDrama(d)} className="relative h-64 bg-stone-100 overflow-hidden w-full block text-left"><ImageWithFallback src={safeText(d.poster_url)} fallback={DEFAULT_POSTER} alt={d.title_zh} className="w-full h-full object-cover"/><div className="absolute top-3 left-3 right-3 flex justify-between gap-2"><span className={`text-[10px] px-2.5 py-1.5 rounded-full font-medium backdrop-blur ${wishlistPriorityClass(priority)}`}>{priority==='超想看'?'🔥 ':priority==='想看'?'💗 ':'🌱 '}{priority}</span><span className={`text-[10px] px-2.5 py-1.5 rounded-full font-medium backdrop-blur ${wishlistStatusClass(status)}`}>{status==='待看'?'📌 ':status==='已開始'?'👀 ':status==='看到一半'?'⏸️ ':status==='已看完'?'✅ ':'❌ '}{status}</span></div></button><div className="p-4">{d.cp_name&&<div className="inline-flex bg-rose-50 text-rose-600 px-2.5 py-1 rounded-full text-[10px] font-medium">👩‍❤️‍👩 {d.cp_name}</div>}<button onClick={()=>onOpenDrama(d)} className="block text-left w-full"><h3 className="text-lg font-bold text-[#5C4033] mt-3 line-clamp-2">{d.title_zh||'未命名'}</h3><p className="text-xs text-stone-400 mt-1">{d.title_th||'-'}</p></button><div className="text-xs text-stone-500 mt-3 space-y-1"><div>📅 首播：{formatDate(parseDate(d.premiere_date))}</div><div>🎬 共 {parseNumber(d.total_episodes)||'-'} 集</div></div><p className="text-xs text-stone-500 mt-3">👤 提議：{owner||'未設定'}</p><div className="grid grid-cols-2 gap-2 mt-4"><button onClick={()=>updateWishlistItem(item,{my_want:!myWant})} className={`px-2 py-2 rounded-xl text-[10px] font-medium transition ${myWant?'bg-rose-100 text-rose-600':'bg-stone-100 text-stone-400'}`}>{myWant?'💖 遙想看':'🤍 遙不想看'}</button><button onClick={()=>updateWishlistItem(item,{friend_want:!friendWant})} className={`px-2 py-2 rounded-xl text-[10px] font-medium transition ${friendWant?'bg-indigo-100 text-indigo-600':'bg-stone-100 text-stone-400'}`}>{friendWant?'💙 錢想看':'🤍 錢不想看'}</button></div>{both&&<div className="mt-2 bg-gradient-to-r from-rose-50 to-indigo-50 border border-rose-100 rounded-xl px-3 py-2 text-center text-[10px] font-bold text-[#6A5550]">✨ 雙人都想看</div>}<div className="mt-4"><label className="block text-[10px] text-stone-400 mb-1.5">🔥 優先級</label><select value={priority} onChange={e=>updateWishlistItem(item,{priority:e.target.value})} className="w-full bg-stone-50 border border-stone-100 rounded-xl px-3 py-2 text-xs outline-none"><option value="超想看">🔥 超想看</option><option value="想看">💗 想看</option><option value="有空再看">🌱 有空再看</option></select></div><div className="mt-3"><label className="block text-[10px] text-stone-400 mb-1.5">📌 Wishlist 狀態</label><select value={status} onChange={e=>updateWishlistItem(item,{wishlist_status:e.target.value})} className="w-full bg-stone-50 border border-stone-100 rounded-xl px-3 py-2 text-xs outline-none"><option value="待看">📌 待看</option><option value="已開始">👀 已開始</option><option value="看到一半">⏸️ 看到一半</option><option value="已看完">✅ 已看完</option><option value="暫時放棄">❌ 暫時放棄</option></select></div><div className="mt-3"><label className="block text-[10px] text-stone-400 mb-1.5">🗓️ 預計觀看日期</label><input type="date" value={toDateInputValue(planned)} onChange={e=>updateWishlistItem(item,{planned_watch_date:e.target.value})} className="w-full bg-stone-50 border border-stone-100 rounded-xl px-3 py-2 text-xs outline-none"/>{planned&&<div className="text-[10px] text-rose-500 mt-1.5">🗓️ 預計：{formatWishlistDate(planned)}</div>}</div>{item.added_date&&<div className="text-[10px] text-stone-400 mt-3">📅 加入：{formatWishlistDate(item.added_date)}</div>}{item.note&&<div className="mt-3 bg-rose-50/60 rounded-xl p-3 text-xs leading-5 text-stone-600">💭 {item.note}</div>}{d.ott_link&&<a href={d.ott_link} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex w-full justify-center bg-stone-800 hover:bg-stone-700 text-white px-4 py-2.5 rounded-xl text-xs transition">▶ {d.ott_platform||d.ott_plaform||'觀看平台'}</a>}<button onClick={()=>onOpenDrama(d)} className="mt-2 w-full bg-rose-50 hover:bg-rose-100 text-rose-600 px-4 py-2.5 rounded-xl text-xs font-medium transition">📺 查看劇集完整資料</button></div></div>})}</div>}
+  <div className="mt-5 text-center text-[10px] text-stone-400">✨ 劇名、海報、CP、首播日、集數與連結全部由 Dramas 自動帶入；Wishlist 互動狀態記錄於目前裝置</div>
+ </section>
 }
 
-function firstFilledField(row, keys) {
-    for (const key of keys) {
-        if (row[key] !== undefined && row[key] !== null && String(row[key]).trim() !== '') {
-            return String(row[key]).trim();
-        }
-    }
-    return '';
-}
-
-function normalizeStatus(status) {
-    const s = safeText(status);
-    if (s.includes('跟播') || s.includes('播放中') || s.toLowerCase().includes('airing')) return '正在跟播';
-    if (s.includes('待播') || s.includes('未播') || s.toLowerCase().includes('upcoming')) return '待播中';
-    if (s.includes('完結') || s.includes('已完') || s.toLowerCase().includes('completed')) return '已完結';
-    return s || '未分類';
-}
-
-function statusClass(status) {
-    if (status === '正在跟播') return 'bg-emerald-100 text-emerald-700';
-    if (status === '待播中') return 'bg-blue-100 text-blue-700';
-    if (status === '已完結') return 'bg-stone-100 text-stone-600';
-    return 'bg-rose-100 text-rose-600';
-}
-
-function normalizeDramaImageFields(row) {
-    const poster = firstFilledField(row, ['poster_url', 'poster', 'poster_link', 'poster_image', 'cover_url', 'cover_image', 'image_url', 'image', '封面', '海報', '海报']);
-    return { ...row, poster_url: safeText(poster) };
-}
-
-function normalizeActorImageFields(row) {
-    const photo = firstFilledField(row, ['photo_url', 'actor_photo_url', 'cp_photo_url', 'profile_image', 'avatar_url', 'image_url', 'photo', 'image', '照片', '頭像', '头像']);
-    return { ...row, photo_url: safeText(photo) };
-}
-
-function getImageCandidates(value) {
-    const original = safeText(value);
-    if (!original) return [];
-    const candidates = [original];
-    let fileId = '';
-    try {
-        const parsed = new URL(original, window.location.href);
-        const host = parsed.hostname.toLowerCase();
-        if (host === 'drive.google.com') {
-            const pathMatch = parsed.pathname.match(/\/file\/d\/([^/]+)/i) || parsed.pathname.match(/\/d\/([^/]+)/i);
-            fileId = (parsed.searchParams.get('id') || (pathMatch && pathMatch[1]) || '').trim();
-        }
-    } catch (e) {}
-    if (fileId) {
-        candidates.push(`https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1200`);
-        candidates.push(`https://lh3.googleusercontent.com/d/${encodeURIComponent(fileId)}=w1200`);
-    }
-    return [...new Set(candidates)];
-}
-
-function ImageWithFallback({ src, fallback, alt, className }) {
-    const [candidates, setCandidates] = useState(() => getImageCandidates(src));
-    const [index, setIndex] = useState(0);
-    const [currentSrc, setCurrentSrc] = useState(() => getImageCandidates(src)[0] || fallback);
-
-    useEffect(() => {
-        const list = getImageCandidates(src);
-        setCandidates(list);
-        setIndex(0);
-        setCurrentSrc(list[0] || fallback);
-    }, [src, fallback]);
-
-    function handleError() {
-        if (index + 1 < candidates.length) {
-            const next = index + 1;
-            setIndex(next);
-            setCurrentSrc(candidates[next]);
-            return;
-        }
-        if (currentSrc !== fallback) setCurrentSrc(fallback);
-    }
-
-    return <img src={currentSrc} alt={alt || ''} className={className} loading="lazy" onError={handleError} />;
-}
-
-function App() {
-    const [activeTab, setActiveTab] = useState('dramas');
-    const [dramas, setDramas] = useState([]);
-    const [wishlist, setWishlist] = useState([]);
-    const [actors, setActors] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedStatus, setSelectedStatus] = useState('全部');
-    const [selectedDrama, setSelectedDrama] = useState(null);
-
-    // 互動功能 State (支援 LocalStorage 持久化)
-    const [randomPick, setRandomPick] = useState(null);
-    const [wishlistLikes, setWishlistLikes] = useState(() => {
-        try {
-            return JSON.parse(localStorage.getItem('thai_wishlist_likes')) || {};
-        } catch { return {}; }
-    });
-
-    // 使用者自訂新增許願表單
-    const [newWishTitle, setNewWishTitle] = useState('');
-    const [newWishDesc, setNewWishDesc] = useState('');
-    const [customWishes, setCustomWishes] = useState(() => {
-        try {
-            return JSON.parse(localStorage.getItem('thai_custom_wishes')) || [];
-        } catch { return []; }
-    });
-
-    useEffect(() => {
-        let completed = 0;
-        const results = { dramas: [], wishlist: [], actors: [] };
-
-        function checkDone() {
-            completed++;
-            if (completed >= 3) {
-                setDramas(Array.isArray(results.dramas) ? results.dramas : []);
-                setWishlist(Array.isArray(results.wishlist) ? results.wishlist : []);
-                setActors(Array.isArray(results.actors) ? results.actors : []);
-                setLoading(false);
-            }
-        }
-
-        Papa.parse(SHEET_URLS.dramas, {
-            download: true, header: true, transformHeader: normalizeSheetHeader, skipEmptyLines: true,
-            complete: res => { results.dramas = (res.data || []).map(normalizeDramaImageFields); checkDone(); },
-            error: () => checkDone()
-        });
-
-        Papa.parse(SHEET_URLS.wishlist, {
-            download: true, header: true, transformHeader: normalizeSheetHeader, skipEmptyLines: true,
-            complete: res => { results.wishlist = res.data || []; checkDone(); },
-            error: () => checkDone()
-        });
-
-        Papa.parse(SHEET_URLS.actors, {
-            download: true, header: true, transformHeader: normalizeSheetHeader, skipEmptyLines: true,
-            complete: res => { results.actors = (res.data || []).map(normalizeActorImageFields); checkDone(); },
-            error: () => checkDone()
-        });
-    }, []);
-
-    // 儲存集氣數到 LocalStorage
-    useEffect(() => {
-        localStorage.setItem('thai_wishlist_likes', JSON.stringify(wishlistLikes));
-    }, [wishlistLikes]);
-
-    // 儲存自訂許願到 LocalStorage
-    useEffect(() => {
-        localStorage.setItem('thai_custom_wishes', JSON.stringify(customWishes));
-    }, [customWishes]);
-
-    const filteredDramas = useMemo(() => {
-        return dramas.filter(d => {
-            const title = safeText(d.title || d.drama_title || d.name);
-            const matchSearch = title.toLowerCase().includes(searchTerm.toLowerCase());
-            const status = normalizeStatus(d.status || d.ststus_type);
-            const matchStatus = selectedStatus === '全部' || status === selectedStatus;
-            return matchSearch && matchStatus;
-        });
-    }, [dramas, searchTerm, selectedStatus]);
-
-    // 合併遠端許願池與自訂許願池
-    const combinedWishlist = useMemo(() => {
-        return [...customWishes, ...wishlist];
-    }, [customWishes, wishlist]);
-
-    // 隨機抽籤功能
-    const handleRandomPick = () => {
-        if (!combinedWishlist || combinedWishlist.length === 0) return;
-        const randomIndex = Math.floor(Math.random() * combinedWishlist.length);
-        setRandomPick(combinedWishlist[randomIndex]);
-    };
-
-    // 集氣點燈按鈕
-    const handleBoost = (idKey) => {
-        setWishlistLikes(prev => ({
-            ...prev,
-            [idKey]: (prev[idKey] || 0) + 1
-        }));
-    };
-
-    // 提交新許願
-    const handleAddWishSubmit = (e) => {
-        e.preventDefault();
-        if (!newWishTitle.trim()) return;
-        const newItem = {
-            title: newWishTitle.trim(),
-            description: newWishDesc.trim() || '來自粉絲的熱情許願！',
-            isCustom: true
-        };
-        const updated = [newItem, ...customWishes];
-        setCustomWishes(updated);
-        setNewWishTitle('');
-        setNewWishDesc('');
-    };
-
-    if (loading) {
-        return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-cream text-textDark">
-                <div className="w-12 h-12 border-4 border-accentPink border-t-transparent rounded-full animate-spin mb-4"></div>
-                <p className="text-lg font-medium tracking-wide">正在載入泰百追劇宇宙...</p>
-            </div>
-        );
-    }
-
-    return (
-        <div className="min-h-screen pb-12 text-textDark">
-            {/* Header (Desktop) */}
-            <header className="glass-card sticky top-0 z-30 border-b px-6 py-4 shadow-sm">
-                <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <h1 className="text-2xl font-bold tracking-wide text-accentPink flex items-center gap-2">
-                        <span>✨</span> 泰百追劇宇宙
-                    </h1>
-                    <nav className="desktop-nav hidden md:flex gap-2 bg-accentSoft/50 p-1 rounded-full">
-                        <button onClick={() => setActiveTab('dramas')} className={`px-5 py-2 rounded-full text-sm font-semibold transition ${activeTab === 'dramas' ? 'bg-accentPink text-white shadow' : 'hover:text-accentPink'}`}>劇集列表</button>
-                        <button onClick={() => setActiveTab('wishlist')} className={`px-5 py-2 rounded-full text-sm font-semibold transition ${activeTab === 'wishlist' ? 'bg-accentPink text-white shadow' : 'hover:text-accentPink'}`}>許願池</button>
-                        <button onClick={() => setActiveTab('actors')} className={`px-5 py-2 rounded-full text-sm font-semibold transition ${activeTab === 'actors' ? 'bg-accentPink text-white shadow' : 'hover:text-accentPink'}`}>CP 演員</button>
-                    </nav>
-                </div>
-            </header>
-
-            {/* Main Content */}
-            <main className="max-w-6xl mx-auto px-4 py-8">
-                {activeTab === 'dramas' && (
-                    <div>
-                        {/* 搜尋與篩選列 */}
-                        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                            <input
-                                type="text"
-                                placeholder="搜尋劇名..."
-                                value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)}
-                                className="flex-1 px-4 py-2.5 rounded-xl border border-rose-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-accentPink"
-                            />
-                            <select
-                                value={selectedStatus}
-                                onChange={e => setSelectedStatus(e.target.value)}
-                                className="px-4 py-2.5 rounded-xl border border-rose-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-accentPink"
-                            >
-                                <option value="全部">所有狀態</option>
-                                <option value="正在跟播">正在跟播</option>
-                                <option value="待播中">待播中</option>
-                                <option value="已完結">已完結</option>
-                            </select>
-                        </div>
-
-                        {/* 劇集清單格線 */}
-                        {filteredDramas.length === 0 ? (
-                            <div className="text-center py-16 text-stone-400">找不到符合條件的劇集。</div>
-                        ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                                {filteredDramas.map((drama, idx) => {
-                                    const title = safeText(drama.title || drama.drama_title || drama.name || `未命名劇集 ${idx+1}`);
-                                    const status = normalizeStatus(drama.status || drama.ststus_type);
-                                    return (
-                                        <div
-                                            key={idx}
-                                            onClick={() => setSelectedDrama(drama)}
-                                            className="glass-card rounded-2xl overflow-hidden soft-shadow cursor-pointer hover:scale-[1.02] transition transform duration-200 flex flex-col"
-                                        >
-                                            <div className="aspect-[3/4] w-full relative poster overflow-hidden">
-                                                <ImageWithFallback
-                                                    src={drama.poster_url}
-                                                    fallback={DEFAULT_POSTER}
-                                                    alt={title}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                                <span className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold shadow ${statusClass(status)}`}>
-                                                    {status}
-                                                </span>
-                                            </div>
-                                            <div className="p-4 flex-1 flex flex-col justify-between">
-                                                <h3 className="font-bold text-lg mb-1 line-clamp-1">{title}</h3>
-                                                <p className="text-sm text-stone-500 line-clamp-2">{safeText(drama.synopsis || drama.description || '暫無劇情簡介...')}</p>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                {activeTab === 'wishlist' && (
-                    <div className="space-y-8">
-                        {/* 趣味專區：隨機抽籤機 */}
-                        <div className="glass-card p-6 rounded-2xl soft-shadow text-center bg-gradient-to-r from-rose-50 to-amber-50 border border-rose-200">
-                            <h3 className="text-lg font-bold text-accentPink mb-1">🎲 選擇困難？讓命運決定今天看哪部！</h3>
-                            <p className="text-sm text-stone-600 mb-4">隨機從許願池中抽取一部作品</p>
-                            <button
-                                onClick={handleRandomPick}
-                                className="bg-accentPink hover:bg-rose-500 text-white px-6 py-2.5 rounded-full font-medium shadow-md transition transform active:scale-95"
-                            >
-                                抽盲盒，今天看這部 ✨
-                            </button>
-
-                            {randomPick && (
-                                <div className="mt-4 p-4 bg-white/90 rounded-xl inline-block shadow-sm border border-rose-100 animate-fadeIn">
-                                    <span className="text-xs text-accentPink font-bold">🎉 命運抽選結果：</span>
-                                    <div className="font-bold text-textDark text-base mt-1">
-                                        {safeText(randomPick.title || randomPick.wish_title || randomPick.name)}
-                                    </div>
-                                    <div className="text-xs text-stone-500 mt-0.5 line-clamp-1">
-                                        {safeText(randomPick.description || randomPick.content || '')}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* 新增許願表單 */}
-                        <div className="glass-card p-6 rounded-2xl soft-shadow">
-                            <h3 className="font-bold text-base text-accentPink mb-3 flex items-center gap-2">
-                                <span>✍️</span> 我要許願新劇
-                            </h3>
-                            <form onSubmit={handleAddWishSubmit} className="space-y-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <input
-                                        type="text"
-                                        placeholder="劇名（例如：Blank Series Season 2）"
-                                        value={newWishTitle}
-                                        onChange={e => setNewWishTitle(e.target.value)}
-                                        className="px-4 py-2 rounded-xl border border-rose-200 bg-white/90 focus:outline-none focus:ring-2 focus:ring-accentPink text-sm"
-                                        required
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="備註 / 許願原因（選填）"
-                                        value={newWishDesc}
-                                        onChange={e => setNewWishDesc(e.target.value)}
-                                        className="px-4 py-2 rounded-xl border border-rose-200 bg-white/90 focus:outline-none focus:ring-2 focus:ring-accentPink text-sm"
-                                    />
-                                </div>
-                                <div className="flex justify-end">
-                                    <button
-                                        type="submit"
-                                        className="bg-accentPink hover:bg-rose-500 text-white px-5 py-2 rounded-xl text-sm font-bold shadow transition transform active:scale-95"
-                                    >
-                                        加入許願池 🚀
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-
-                        {/* 許願清單列表與集氣按鈕 */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {combinedWishlist.length === 0 ? (
-                                <div className="col-span-full text-center py-16 text-stone-400">目前許願池沒有資料。</div>
-                            ) : (
-                                combinedWishlist.map((item, idx) => {
-                                    const title = safeText(item.title || item.wish_title || `許願項目 ${idx+1}`);
-                                    const desc = safeText(item.description || item.content || '暫無詳細內容');
-                                    const likes = wishlistLikes[idx] || 0;
-                                    return (
-                                        <div key={idx} className="glass-card p-5 rounded-2xl soft-shadow flex justify-between items-center gap-4">
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h3 className="font-bold text-base text-accentPink">{title}</h3>
-                                                    {item.isCustom && <span className="text-[10px] bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full font-medium">自訂</span>}
-                                                </div>
-                                                <p className="text-sm text-stone-600 line-clamp-2">{desc}</p>
-                                            </div>
-                                            <button
-                                                onClick={() => handleBoost(idx)}
-                                                className="flex-shrink-0 flex items-center gap-1 bg-accentSoft/60 hover:bg-accentSoft text-accentPink px-3.5 py-2 rounded-xl text-xs font-bold transition transform active:scale-95 shadow-sm"
-                                            >
-                                                🔥 集氣 +1 <span className="text-stone-700">({likes})</span>
-                                            </button>
-                                        </div>
-                                    );
-                                })
-                            )}
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'actors' && (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-                        {actors.length === 0 ? (
-                            <div className="col-span-full text-center py-16 text-stone-400">目前沒有 CP 演員資料。</div>
-                        ) : (
-                            actors.map((actor, idx) => {
-                                const name = safeText(actor.name || actor.actor_name || actor.cp_name || `CP / 演員 ${idx+1}`);
-                                return (
-                                    <div key={idx} className="glass-card rounded-2xl overflow-hidden soft-shadow p-4 text-center flex flex-col items-center">
-                                        <div className="w-28 h-28 rounded-full overflow-hidden mb-3 poster border-2 border-accentPink/30">
-                                            <ImageWithFallback
-                                                src={actor.photo_url}
-                                                fallback={DEFAULT_ACTOR}
-                                                alt={name}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                        <h3 className="font-bold text-base mb-1">{name}</h3>
-                                        <p className="text-xs text-stone-500 line-clamp-2">{safeText(actor.description || actor.bio || '')}</p>
-                                    </div>
-                                );
-                            })
-                        )}
-                    </div>
-                )}
-            </main>
-
-            {/* 手機版固定底部導覽列 */}
-            <nav className="mobile-bottom-nav fixed bottom-0 left-0 right-0 glass-card border-t border-rose-200/60 py-3 px-6 flex justify-around items-center z-40 shadow-xl">
-                <button
-                    onClick={() => setActiveTab('dramas')}
-                    className={`flex flex-col items-center gap-0.5 text-xs font-semibold transition ${activeTab === 'dramas' ? 'text-accentPink scale-105' : 'text-stone-400 hover:text-stone-600'}`}
-                >
-                    <span className="text-xl">🎬</span>
-                    <span>劇集列表</span>
-                </button>
-                <button
-                    onClick={() => setActiveTab('wishlist')}
-                    className={`flex flex-col items-center gap-0.5 text-xs font-semibold transition ${activeTab === 'wishlist' ? 'text-accentPink scale-105' : 'text-stone-400 hover:text-stone-600'}`}
-                >
-                    <span className="text-xl">✨</span>
-                    <span>許願池</span>
-                </button>
-                <button
-                    onClick={() => setActiveTab('actors')}
-                    className={`flex flex-col items-center gap-0.5 text-xs font-semibold transition ${activeTab === 'actors' ? 'text-accentPink scale-105' : 'text-stone-400 hover:text-stone-600'}`}
-                >
-                    <span className="text-xl">👥</span>
-                    <span>CP 演員</span>
-                </button>
-            </nav>
-
-            {/* 劇集詳細 Modal */}
-            {selectedDrama && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-                    <div className="glass-card modal-panel w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl bg-white max-h-[90vh] flex flex-col">
-                        <div className="p-6 overflow-y-auto flex-1">
-                            <div className="flex justify-between items-start mb-4">
-                                <h2 className="text-2xl font-bold text-textDark">
-                                    {safeText(selectedDrama.title || selectedDrama.drama_title || selectedDrama.name)}
-                                </h2>
-                                <button
-                                    onClick={() => setSelectedDrama(null)}
-                                    className="p-2 rounded-full hover:bg-stone-100 text-stone-500 transition"
-                                >
-                                    ✕
-                                </button>
-                            </div>
-                            <div className="flex flex-col sm:flex-row gap-6">
-                                <div className="w-full sm:w-1/3 aspect-[3/4] rounded-2xl overflow-hidden poster flex-shrink-0">
-                                    <ImageWithFallback
-                                        src={selectedDrama.poster_url}
-                                        fallback={DEFAULT_POSTER}
-                                        alt="海報"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                                <div className="flex-1 space-y-3 text-sm flex flex-col justify-between">
-                                    <div className="space-y-3">
-                                        <div>
-                                            <span className="font-semibold text-accentPink">狀態：</span>
-                                            {normalizeStatus(selectedDrama.status || selectedDrama.ststus_type)}
-                                        </div>
-                                        <div>
-                                            <span className="font-semibold text-accentPink">集數：</span>
-                                            {safeText(selectedDrama.total_episodes || '-')} 集
-                                        </div>
-                                        <div>
-                                            <span className="font-semibold text-accentPink">首播日期：</span>
-                                            {safeText(selectedDrama.premiere_date || '-')}
-                                        </div>
-                                        <div>
-                                            <span className="font-semibold text-accentPink">劇情簡介：</span>
-                                            <p className="mt-1 text-stone-600 leading-relaxed">
-                                                {safeText(selectedDrama.synopsis || selectedDrama.description || '暫無簡介')}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* 線上看連結按鈕（若試算表中有提供 watch_url 或 link） */}
-                                    {(selectedDrama.watch_url || selectedDrama.link) && (
-                                        <div className="pt-2">
-                                            <a
-                                                href={safeText(selectedDrama.watch_url || selectedDrama.link)}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-block w-full text-center bg-accentPink hover:bg-rose-500 text-white font-bold py-2.5 px-4 rounded-xl shadow transition"
-                                            >
-                                                📺 前往觀看 / 播出平台
-                                            </a>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+function Actors({actors}){return <section><div className="mb-5"><h2 className="text-xl font-bold text-[#5C4033]">👩‍❤️‍👩 CP 專區</h2><p className="text-xs text-stone-400 mt-1">泰百 CP 與雙人收藏</p></div>{!actors.length?<EmptyState text="目前沒有 CP 資料"/>:<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">{actors.map((a,i)=>{const mine=String(a.my_favorite||'').toUpperCase()==='TRUE',friend=String(a.friend_favorite||'').toUpperCase()==='TRUE';return <div key={i} className="glass-card rounded-3xl overflow-hidden shadow-sm text-center p-5"><ImageWithFallback src={safeText(a.photo_url)} fallback={DEFAULT_ACTOR} alt={a.cp_name} className="w-28 h-28 mx-auto rounded-full object-cover shadow-md border-2 border-white"/><h3 className="text-lg font-bold text-[#5C4033] mt-4">{a.cp_name}</h3><p className="text-xs text-stone-500 mt-1">{a.actor_1} & {a.actor_2}</p><div className="mt-5 grid grid-cols-2 gap-2"><span className={`px-2 py-2 rounded-xl text-[10px] font-medium ${mine?'bg-rose-100 text-rose-600':'bg-stone-100 text-stone-400'}`}>{mine?'💖 遙喜歡':'🤍 遙未加入'}</span><span className={`px-2 py-2 rounded-xl text-[10px] font-medium ${friend?'bg-indigo-100 text-indigo-600':'bg-stone-100 text-stone-400'}`}>{friend?'💙 錢喜歡':'🤍 錢未加入'}</span></div></div>})}</div>}</section>}
+function MobileNav({icon,label,active,onClick}){return <button onClick={onClick} className={`flex flex-col items-center justify-center gap-0.5 px-5 py-1.5 rounded-xl ${active?'text-rose-500':'text-stone-400'}`}><span className="text-lg">{icon}</span><span className="text-[10px]">{label}</span></button>}
+function EmptyState({text}){return <div className="glass-card rounded-3xl p-12 text-center text-stone-400">🌸 {text}</div>}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
-
 </body>
 </html>
