@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✨ 我們的泰百追劇宇宙 (GL Universe)</title>
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -21,285 +22,1192 @@
             }
         }
     </script>
+
     <!-- React & Babel CDN -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <!-- PapaParse for CSV parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
     <style>
         body {
             background-color: #FDFBF7;
             color: #4A403A;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
         }
+
         .glass-card {
             background: rgba(255, 255, 255, 0.78);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(232, 165, 165, 0.25);
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.35s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .spinner {
+            width: 34px;
+            height: 34px;
+            border: 3px solid #f3d4d4;
+            border-top-color: #D88A8A;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 14px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // 你的真實 Google 試算表 CSV 連結
+        // =========================================================
+        // Google 試算表 CSV 連結
+        // =========================================================
         const SHEET_URLS = {
-            dramas: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMZ47PrJewiLmvkOtVLSWaupYPuClWLjnJWTaMTaFtwKUreh4xOaRPVBnGs3t2lqcx32AEESztOn1e/pub?gid=0&single=true&output=csv',
-            wishlist: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMZ47PrJewiLmvkOtVLSWaupYPuClWLjnJWTaMTaFtwKUreh4xOaRPVBnGs3t2lqcx32AEESztOn1e/pub?gid=216341491&single=true&output=csv',
-            actors: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMZ47PrJewiLmvkOtVLSWaupYPuClWLjnJWTaMTaFtwKUreh4xOaRPVBnGs3t2lqcx32AEESztOn1e/pub?gid=832417858&single=true&output=csv'
+            dramas:
+                'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMZ47PrJewiLmvkOtVLSWaupYPuClWLjnJWTaMTaFtwKUreh4xOaRPVBnGs3t2lqcx32AEESztOn1e/pub?gid=0&single=true&output=csv',
+
+            wishlist:
+                'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMZ47PrJewiLmvkOtVLSWaupYPuClWLjnJWTaMTaFtwKUreh4xOaRPVBnGs3t2lqcx32AEESztOn1e/pub?gid=216341491&single=true&output=csv',
+
+            actors:
+                'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMZ47PrJewiLmvkOtVLSWaupYPuClWLjnJWTaMTaFtwKUreh4xOaRPVBnGs3t2lqcx32AEESztOn1e/pub?gid=832417858&single=true&output=csv'
         };
 
+        // =========================================================
+        // 預設圖片
+        // =========================================================
+        const DEFAULT_DRAMA_POSTER =
+            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600';
+
+        const DEFAULT_ACTOR_PHOTO =
+            'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600';
+
+        // =========================================================
+        // 通用 CSV 讀取
+        // =========================================================
+        function fetchCSV(url) {
+            return new Promise((resolve, reject) => {
+                Papa.parse(url, {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+
+                    complete: (results) => {
+                        if (results.errors && results.errors.length > 0) {
+                            console.error("CSV 解析錯誤:", results.errors);
+                            reject(results.errors);
+                            return;
+                        }
+
+                        resolve(results.data || []);
+                    },
+
+                    error: (error) => {
+                        console.error("CSV 載入失敗:", error);
+                        reject(error);
+                    }
+                });
+            });
+        }
+
+        // =========================================================
+        // App
+        // =========================================================
         function App() {
             const [activeTab, setActiveTab] = useState('dramas');
+
             const [dramas, setDramas] = useState([]);
             const [wishlist, setWishlist] = useState([]);
             const [actors, setActors] = useState([]);
+
             const [loading, setLoading] = useState(true);
+            const [loadError, setLoadError] = useState('');
+
             const [searchTerm, setSearchTerm] = useState('');
 
+            // =====================================================
+            // 載入 Google 試算表
+            // =====================================================
             useEffect(() => {
                 async function fetchData() {
+                    setLoading(true);
+                    setLoadError('');
+
                     try {
-                        setLoading(true);
+                        const [dramasData, wishlistData, actorsData] =
+                            await Promise.all([
+                                fetchCSV(SHEET_URLS.dramas),
+                                fetchCSV(SHEET_URLS.wishlist),
+                                fetchCSV(SHEET_URLS.actors)
+                            ]);
 
-                        Papa.parse(SHEET_URLS.dramas, {
-                            download: true,
-                            header: true,
-                            skipEmptyLines: true,
-                            complete: (results) => {
-                                setDramas(results.data);
-                            }
-                        });
-
-                        Papa.parse(SHEET_URLS.wishlist, {
-                            download: true,
-                            header: true,
-                            skipEmptyLines: true,
-                            complete: (results) => {
-                                setWishlist(results.data);
-                            }
-                        });
-
-                        Papa.parse(SHEET_URLS.actors, {
-                            download: true,
-                            header: true,
-                            skipEmptyLines: true,
-                            complete: (results) => {
-                                setActors(results.data);
-                                setLoading(false);
-                            }
-                        });
+                        setDramas(dramasData);
+                        setWishlist(wishlistData);
+                        setActors(actorsData);
 
                     } catch (error) {
-                        console.error("讀取試算表失敗:", error);
+                        console.error("讀取 Google 試算表失敗:", error);
+
+                        setLoadError(
+                            '部分資料載入失敗，請確認 Google 試算表是否已發布到網路，或稍後重新整理頁面。'
+                        );
+                    } finally {
+                        // 不管成功或失敗，都結束 Loading
                         setLoading(false);
                     }
                 }
+
                 fetchData();
             }, []);
 
-            // 搜尋過濾劇集
-            const filteredDramas = dramas.filter(d => {
-                const titleZh = d.title_zh || '';
-                const cpName = d.cp_name || '';
-                return titleZh.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                       cpName.toLowerCase().includes(searchTerm.toLowerCase());
+            // =====================================================
+            // 搜尋劇集
+            // =====================================================
+            const filteredDramas = dramas.filter((drama) => {
+                const keyword = searchTerm.toLowerCase().trim();
+
+                if (!keyword) return true;
+
+                const titleZh = String(drama.title_zh || '').toLowerCase();
+                const titleTh = String(drama.title_th || '').toLowerCase();
+                const cpName = String(drama.cp_name || '').toLowerCase();
+
+                return (
+                    titleZh.includes(keyword) ||
+                    titleTh.includes(keyword) ||
+                    cpName.includes(keyword)
+                );
             });
+
+            // =====================================================
+            // 重新載入
+            // =====================================================
+            const reloadPage = () => {
+                window.location.reload();
+            };
 
             return (
                 <div className="min-h-screen pb-16">
-                    {/* 頂部標題與導航列 */}
-                    <header className="glass-card sticky top-0 z-50 border-b border-rose-100 shadow-sm px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+
+                    {/* =================================================
+                        頂部標題與導航列
+                    ================================================= */}
+                    <header className="
+                        glass-card
+                        sticky top-0 z-50
+                        border-b border-rose-100
+                        shadow-sm
+                        px-4 md:px-6 py-4
+                        flex flex-col md:flex-row
+                        justify-between items-center
+                        gap-4
+                    ">
+
+                        {/* Logo / 標題 */}
                         <div className="flex items-center gap-3">
                             <span className="text-2xl">✨</span>
+
                             <div>
-                                <h1 className="text-xl font-bold tracking-wide text-[#5C4033]">我們的泰百追劇宇宙</h1>
-                                <p className="text-xs text-rose-400">雙人進度同步・即時讀取 Google 試算表</p>
+                                <h1 className="text-xl font-bold tracking-wide text-[#5C4033]">
+                                    我們的泰百追劇宇宙
+                                </h1>
+
+                                <p className="text-xs text-rose-400">
+                                    雙人進度同步・即時讀取 Google 試算表
+                                </p>
                             </div>
                         </div>
 
-                        {/* 分頁切換 Tabs */}
-                        <div className="flex bg-rose-50/80 p-1 rounded-full border border-rose-200">
-                            <button onClick={() => setActiveTab('dramas')} className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${activeTab === 'dramas' ? 'bg-[#D88A8A] text-white shadow-sm' : 'text-[#7C6359] hover:text-[#5C4033]'}`}>
+                        {/* Tabs */}
+                        <div className="
+                            flex
+                            bg-rose-50/80
+                            p-1
+                            rounded-full
+                            border border-rose-200
+                            overflow-x-auto
+                            max-w-full
+                        ">
+
+                            <button
+                                onClick={() => setActiveTab('dramas')}
+                                className={`
+                                    px-4 md:px-5
+                                    py-2
+                                    rounded-full
+                                    text-sm
+                                    font-medium
+                                    transition-all
+                                    whitespace-nowrap
+                                    ${activeTab === 'dramas'
+                                        ? 'bg-[#D88A8A] text-white shadow-sm'
+                                        : 'text-[#7C6359] hover:text-[#5C4033]'
+                                    }
+                                `}
+                            >
                                 📺 劇集總表 ({dramas.length})
                             </button>
-                            <button onClick={() => setActiveTab('wishlist')} className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${activeTab === 'wishlist' ? 'bg-[#D88A8A] text-white shadow-sm' : 'text-[#7C6359] hover:text-[#5C4033]'}`}>
+
+                            <button
+                                onClick={() => setActiveTab('wishlist')}
+                                className={`
+                                    px-4 md:px-5
+                                    py-2
+                                    rounded-full
+                                    text-sm
+                                    font-medium
+                                    transition-all
+                                    whitespace-nowrap
+                                    ${activeTab === 'wishlist'
+                                        ? 'bg-[#D88A8A] text-white shadow-sm'
+                                        : 'text-[#7C6359] hover:text-[#5C4033]'
+                                    }
+                                `}
+                            >
                                 🎁 雙人 Wishlist ({wishlist.length})
                             </button>
-                            <button onClick={() => setActiveTab('actors')} className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${activeTab === 'actors' ? 'bg-[#D88A8A] text-white shadow-sm' : 'text-[#7C6359] hover:text-[#5C4033]'}`}>
-                                👩‍❤‍👩 CP 專區 ({actors.length})
+
+                            <button
+                                onClick={() => setActiveTab('actors')}
+                                className={`
+                                    px-4 md:px-5
+                                    py-2
+                                    rounded-full
+                                    text-sm
+                                    font-medium
+                                    transition-all
+                                    whitespace-nowrap
+                                    ${activeTab === 'actors'
+                                        ? 'bg-[#D88A8A] text-white shadow-sm'
+                                        : 'text-[#7C6359] hover:text-[#5C4033]'
+                                    }
+                                `}
+                            >
+                                👩‍❤️‍👩 CP 專區 ({actors.length})
                             </button>
                         </div>
                     </header>
 
-                    {/* 主內容區 */}
+                    {/* =================================================
+                        主內容
+                    ================================================= */}
                     <main className="max-w-7xl mx-auto px-4 mt-8">
-                        {loading ? (
+
+                        {/* =================================================
+                            Loading
+                        ================================================= */}
+                        {loading && (
                             <div className="text-center py-28 text-[#8C7369] font-medium text-lg">
+                                <div className="spinner"></div>
                                 🌸 正在從 Google 試算表同步資料中，請稍候...
                             </div>
-                        ) : (
-                            <>
-                                {/* 1. 劇集總表分頁 */}
+                        )}
+
+                        {/* =================================================
+                            Error
+                        ================================================= */}
+                        {!loading && loadError && (
+                            <div className="text-center py-20 fade-in">
+
+                                <div className="
+                                    max-w-xl
+                                    mx-auto
+                                    bg-rose-50
+                                    border border-rose-200
+                                    rounded-3xl
+                                    p-6
+                                ">
+
+                                    <div className="text-4xl mb-3">
+                                        ⚠️
+                                    </div>
+
+                                    <h2 className="
+                                        font-bold
+                                        text-[#5C4033]
+                                        text-lg
+                                    ">
+                                        資料同步遇到問題
+                                    </h2>
+
+                                    <p className="
+                                        text-sm
+                                        text-[#8C7369]
+                                        mt-2
+                                        leading-relaxed
+                                    ">
+                                        {loadError}
+                                    </p>
+
+                                    <button
+                                        onClick={reloadPage}
+                                        className="
+                                            mt-5
+                                            px-5
+                                            py-2.5
+                                            bg-[#D88A8A]
+                                            hover:bg-[#c97878]
+                                            text-white
+                                            rounded-full
+                                            text-sm
+                                            font-medium
+                                            transition-all
+                                        "
+                                    >
+                                        🔄 重新載入
+                                    </button>
+
+                                </div>
+                            </div>
+                        )}
+
+                        {/* =================================================
+                            成功載入
+                        ================================================= */}
+                        {!loading && !loadError && (
+                            <div className="fade-in">
+
+                                {/* =================================================
+                                    1. 劇集總表
+                                ================================================= */}
                                 {activeTab === 'dramas' && (
                                     <div>
-                                        {/* 本週開播日曆 Bar */}
-                                        <div className="glass-card rounded-2xl p-4 mb-6 border border-rose-100 shadow-sm overflow-x-auto">
+
+                                        {/* 本週開播日曆 */}
+                                        <div className="
+                                            glass-card
+                                            rounded-2xl
+                                            p-4
+                                            mb-6
+                                            border border-rose-100
+                                            shadow-sm
+                                            overflow-x-auto
+                                        ">
+
                                             <div className="flex items-center gap-2 mb-3">
-                                                <span className="text-sm font-bold text-rose-700 bg-rose-100/80 px-3 py-1 rounded-xl">
+                                                <span className="
+                                                    text-sm
+                                                    font-bold
+                                                    text-rose-700
+                                                    bg-rose-100/80
+                                                    px-3
+                                                    py-1
+                                                    rounded-xl
+                                                ">
                                                     📅 本週跟播鬧鐘 (Schedule)
                                                 </span>
                                             </div>
-                                            <div className="grid grid-cols-7 gap-2 min-w-[700px]">
-                                                {['週一', '週二', '週三', '週四', '週五', '週六', '週日'].map(day => (
-                                                    <div key={day} className="bg-white/70 p-2.5 rounded-xl border border-rose-50 text-center">
-                                                        <div className="text-xs font-bold text-rose-400">{day}</div>
-                                                        <div className="text-xs text-[#6C5349] mt-1 space-y-1">
-                                                            {dramas.filter(d => d.air_day_of_week && d.air_day_of_week.includes(day)).map((d, i) => (
-                                                                <div key={i} className="bg-rose-50/60 p-1 rounded font-medium truncate" title={d.title_zh}>
-                                                                    {d.title_zh} <span className="text-[10px] text-rose-400">({d.air_time})</span>
-                                                                </div>
-                                                            )) || <span className="text-stone-300">-</span>}
+
+                                            <div className="
+                                                grid
+                                                grid-cols-7
+                                                gap-2
+                                                min-w-[700px]
+                                            ">
+
+                                                {[
+                                                    '週一',
+                                                    '週二',
+                                                    '週三',
+                                                    '週四',
+                                                    '週五',
+                                                    '週六',
+                                                    '週日'
+                                                ].map(day => {
+
+                                                    const dayDramas =
+                                                        dramas.filter(drama =>
+                                                            drama.air_day_of_week &&
+                                                            String(drama.air_day_of_week).includes(day)
+                                                        );
+
+                                                    return (
+                                                        <div
+                                                            key={day}
+                                                            className="
+                                                                bg-white/70
+                                                                p-2.5
+                                                                rounded-xl
+                                                                border border-rose-50
+                                                                text-center
+                                                                min-h-[80px]
+                                                            "
+                                                        >
+
+                                                            <div className="
+                                                                text-xs
+                                                                font-bold
+                                                                text-rose-400
+                                                            ">
+                                                                {day}
+                                                            </div>
+
+                                                            <div className="
+                                                                text-xs
+                                                                text-[#6C5349]
+                                                                mt-1
+                                                                space-y-1
+                                                            ">
+
+                                                                {dayDramas.length > 0 ? (
+                                                                    dayDramas.map((drama, i) => (
+                                                                        <div
+                                                                            key={i}
+                                                                            className="
+                                                                                bg-rose-50/60
+                                                                                p-1
+                                                                                rounded
+                                                                                font-medium
+                                                                                truncate
+                                                                            "
+                                                                            title={drama.title_zh}
+                                                                        >
+                                                                            {drama.title_zh}
+
+                                                                            {drama.air_time && (
+                                                                                <span className="
+                                                                                    text-[10px]
+                                                                                    text-rose-400
+                                                                                ">
+                                                                                    {' '}
+                                                                                    ({drama.air_time})
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                    ))
+                                                                ) : (
+                                                                    <span className="text-stone-300">
+                                                                        -
+                                                                    </span>
+                                                                )}
+
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                ))}
+                                                    );
+                                                })}
+
                                             </div>
                                         </div>
 
                                         {/* 搜尋列 */}
-                                        <div className="mb-6 flex justify-between items-center">
-                                            <input 
-                                                type="text" 
-                                                placeholder="🔍 搜尋中文劇名或 CP 名稱..." 
+                                        <div className="
+                                            mb-6
+                                            flex
+                                            flex-col
+                                            md:flex-row
+                                            md:justify-between
+                                            md:items-center
+                                            gap-3
+                                        ">
+
+                                            <input
+                                                type="text"
+                                                placeholder="🔍 搜尋中文劇名、泰文劇名或 CP 名稱..."
                                                 value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
-                                                className="w-full md:w-80 px-4 py-2.5 rounded-2xl glass-card border border-rose-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
+                                                onChange={(e) =>
+                                                    setSearchTerm(e.target.value)
+                                                }
+                                                className="
+                                                    w-full
+                                                    md:w-96
+                                                    px-4
+                                                    py-2.5
+                                                    rounded-2xl
+                                                    glass-card
+                                                    border border-rose-200
+                                                    text-sm
+                                                    focus:outline-none
+                                                    focus:ring-2
+                                                    focus:ring-rose-300
+                                                "
                                             />
+
+                                            <div className="
+                                                text-xs
+                                                text-stone-400
+                                            ">
+                                                顯示 {filteredDramas.length} / {dramas.length} 部
+                                            </div>
+
                                         </div>
 
-                                        {/* 劇集卡片清單 */}
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            {filteredDramas.map((drama, idx) => (
-                                                <div key={drama.id || idx} className="glass-card rounded-3xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row gap-5">
-                                                    <img 
-                                                        src={drama.poster_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300'} 
-                                                        alt={drama.title_zh} 
-                                                        className="w-full sm:w-32 h-44 object-cover rounded-2xl shadow-inner bg-stone-200"
-                                                        onError={(e)=>{e.target.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300'}}
-                                                    />
-                                                    <div className="flex-1 flex flex-col justify-between">
-                                                        <div>
-                                                            <div className="flex justify-between items-start">
-                                                                <div>
-                                                                    <span className="text-xs px-2.5 py-0.5 bg-rose-100 text-rose-700 rounded-full font-medium">{drama.cp_name}</span>
-                                                                    <h3 className="text-lg font-bold text-[#4A403A] mt-1">{drama.title_zh}</h3>
-                                                                    <p className="text-xs text-stone-400">{drama.title_th} | 總 {drama.total_episodes} 集</p>
+                                        {/* 劇集列表 */}
+                                        {filteredDramas.length === 0 ? (
+
+                                            <div className="
+                                                glass-card
+                                                rounded-3xl
+                                                p-12
+                                                text-center
+                                                text-stone-400
+                                            ">
+                                                🔍 找不到符合的劇集
+                                            </div>
+
+                                        ) : (
+
+                                            <div className="
+                                                grid
+                                                grid-cols-1
+                                                md:grid-cols-2
+                                                gap-6
+                                            ">
+
+                                                {filteredDramas.map((drama, idx) => (
+
+                                                    <div
+                                                        key={drama.id || idx}
+                                                        className="
+                                                            glass-card
+                                                            rounded-3xl
+                                                            p-5
+                                                            shadow-sm
+                                                            hover:shadow-md
+                                                            transition-all
+                                                            flex
+                                                            flex-col
+                                                            sm:flex-row
+                                                            gap-5
+                                                        "
+                                                    >
+
+                                                        {/* 海報 */}
+                                                        <img
+                                                            src={
+                                                                drama.poster_url ||
+                                                                DEFAULT_DRAMA_POSTER
+                                                            }
+                                                            alt={
+                                                                drama.title_zh ||
+                                                                '劇集海報'
+                                                            }
+                                                            className="
+                                                                w-full
+                                                                sm:w-32
+                                                                h-52
+                                                                sm:h-44
+                                                                object-cover
+                                                                rounded-2xl
+                                                                shadow-inner
+                                                                bg-stone-200
+                                                                flex-shrink-0
+                                                            "
+                                                            onError={(e) => {
+                                                                if (
+                                                                    e.currentTarget.src !==
+                                                                    DEFAULT_DRAMA_POSTER
+                                                                ) {
+                                                                    e.currentTarget.src =
+                                                                        DEFAULT_DRAMA_POSTER;
+                                                                }
+                                                            }}
+                                                        />
+
+                                                        {/* 劇情資訊 */}
+                                                        <div className="
+                                                            flex-1
+                                                            flex
+                                                            flex-col
+                                                            justify-between
+                                                            min-w-0
+                                                        ">
+
+                                                            <div>
+
+                                                                {/* 標題區 */}
+                                                                <div className="
+                                                                    flex
+                                                                    justify-between
+                                                                    items-start
+                                                                    gap-3
+                                                                ">
+
+                                                                    <div className="min-w-0">
+
+                                                                        {drama.cp_name && (
+                                                                            <span className="
+                                                                                inline-block
+                                                                                text-xs
+                                                                                px-2.5
+                                                                                py-0.5
+                                                                                bg-rose-100
+                                                                                text-rose-700
+                                                                                rounded-full
+                                                                                font-medium
+                                                                            ">
+                                                                                {drama.cp_name}
+                                                                            </span>
+                                                                        )}
+
+                                                                        <h3 className="
+                                                                            text-lg
+                                                                            font-bold
+                                                                            text-[#4A403A]
+                                                                            mt-1
+                                                                        ">
+                                                                            {drama.title_zh || '未命名劇集'}
+                                                                        </h3>
+
+                                                                        <p className="
+                                                                            text-xs
+                                                                            text-stone-400
+                                                                        ">
+                                                                            {drama.title_th || ''}
+
+                                                                            {drama.title_th &&
+                                                                                drama.total_episodes &&
+                                                                                ' | '}
+
+                                                                            {drama.total_episodes &&
+                                                                                `總 ${drama.total_episodes} 集`}
+                                                                        </p>
+
+                                                                    </div>
+
+                                                                    {/* OTT */}
+                                                                    {drama.ott_link && (
+                                                                        <a
+                                                                            href={drama.ott_link}
+                                                                            target="_blank"
+                                                                            rel="noreferrer"
+                                                                            className="
+                                                                                text-xs
+                                                                                bg-stone-800
+                                                                                text-white
+                                                                                px-3
+                                                                                py-1.5
+                                                                                rounded-full
+                                                                                hover:bg-stone-700
+                                                                                shadow-sm
+                                                                                whitespace-nowrap
+                                                                            "
+                                                                        >
+                                                                            ▶ {drama.ott_platform || 'OTT'}
+                                                                        </a>
+                                                                    )}
+
                                                                 </div>
-                                                                {drama.ott_link && (
-                                                                    <a href={drama.ott_link} target="_blank" rel="noreferrer" className="text-xs bg-stone-800 text-white px-3 py-1.5 rounded-full hover:bg-stone-700 shadow-sm whitespace-nowrap">
-                                                                        ▶ {drama.ott_plaform || 'OTT'}
-                                                                    </a>
+
+                                                                {/* 空氣時間 */}
+                                                                {(drama.air_day_of_week || drama.air_time) && (
+                                                                    <div className="
+                                                                        mt-2
+                                                                        text-xs
+                                                                        text-rose-400
+                                                                    ">
+                                                                        📅 {drama.air_day_of_week || ''}
+
+                                                                        {drama.air_day_of_week &&
+                                                                            drama.air_time &&
+                                                                            ' · '}
+
+                                                                        {drama.air_time || ''}
+                                                                    </div>
                                                                 )}
+
+                                                                {/* ==============================
+                                                                    雙人進度
+                                                                ============================== */}
+                                                                <div className="
+                                                                    mt-4
+                                                                    space-y-2
+                                                                    bg-white/60
+                                                                    p-3
+                                                                    rounded-2xl
+                                                                    text-xs
+                                                                    border border-rose-50
+                                                                ">
+
+                                                                    {/* 我的進度 */}
+                                                                    <div className="
+                                                                        flex
+                                                                        justify-between
+                                                                        items-center
+                                                                        gap-2
+                                                                    ">
+
+                                                                        <span className="
+                                                                            font-semibold
+                                                                            text-rose-600
+                                                                        ">
+                                                                            👤 你：
+                                                                            {drama.my_status || '未設定'}
+                                                                            {' '}
+                                                                            (
+                                                                            {drama.my_progress || 0}
+                                                                            /
+                                                                            {drama.total_episodes || '?'}
+                                                                            集)
+                                                                        </span>
+
+                                                                        {drama.my_rating && (
+                                                                            <span className="
+                                                                                text-amber-500
+                                                                                font-bold
+                                                                                whitespace-nowrap
+                                                                            ">
+                                                                                ⭐ {drama.my_rating}分
+                                                                            </span>
+                                                                        )}
+
+                                                                    </div>
+
+                                                                    {/* 我的評語 */}
+                                                                    {drama.my_review && (
+                                                                        <p className="
+                                                                            text-stone-600
+                                                                            italic
+                                                                            leading-relaxed
+                                                                        ">
+                                                                            「{drama.my_review}」
+                                                                        </p>
+                                                                    )}
+
+                                                                    <hr className="border-rose-100 my-1" />
+
+                                                                    {/* 朋友進度 */}
+                                                                    <div className="
+                                                                        flex
+                                                                        justify-between
+                                                                        items-center
+                                                                        gap-2
+                                                                    ">
+
+                                                                        <span className="
+                                                                            font-semibold
+                                                                            text-indigo-600
+                                                                        ">
+                                                                            👥 朋友：
+                                                                            {drama.friend_status || '未設定'}
+                                                                            {' '}
+                                                                            (
+                                                                            {drama.friend_progress || 0}
+                                                                            /
+                                                                            {drama.total_episodes || '?'}
+                                                                            集)
+                                                                        </span>
+
+                                                                        {drama.friend_rating && (
+                                                                            <span className="
+                                                                                text-amber-500
+                                                                                font-bold
+                                                                                whitespace-nowrap
+                                                                            ">
+                                                                                ⭐ {drama.friend_rating}分
+                                                                            </span>
+                                                                        )}
+
+                                                                    </div>
+
+                                                                    {/* 朋友評語 */}
+                                                                    {drama.friend_review && (
+                                                                        <p className="
+                                                                            text-stone-600
+                                                                            italic
+                                                                            leading-relaxed
+                                                                        ">
+                                                                            「{drama.friend_review}」
+                                                                        </p>
+                                                                    )}
+
+                                                                </div>
                                                             </div>
 
-                                                            {/* 雙人進度條對比 */}
-                                                            <div className="mt-4 space-y-2 bg-white/60 p-3 rounded-2xl text-xs border border-rose-50">
-                                                                <div className="flex justify-between items-center">
-                                                                    <span className="font-semibold text-rose-600">👤 你：{drama.my_status} ({drama.my_propress}/{drama.total_episodes}集)</span>
-                                                                    <span className="text-amber-500 font-bold">⭐ {drama.my_rating}分</span>
+                                                            {/* OST */}
+                                                            {drama.ost_link && (
+                                                                <div className="mt-3 text-right">
+
+                                                                    <a
+                                                                        href={drama.ost_link}
+                                                                        target="_blank"
+                                                                        rel="noreferrer"
+                                                                        className="
+                                                                            text-[11px]
+                                                                            text-rose-500
+                                                                            hover:underline
+                                                                        "
+                                                                    >
+                                                                        🎵 點此聽 OST
+                                                                    </a>
+
                                                                 </div>
-                                                                {drama.my_review && <p className="text-stone-600 italic">「{drama.my_review}」</p>}
-                                                                
-                                                                <hr className="border-rose-100 my-1" />
-                                                                
-                                                                <div className="flex justify-between items-center">
-                                                                    <span className="font-semibold text-indigo-600">👥 朋友：{drama.friend_status} ({drama.friend_progress}/{drama.total_episodes}集)</span>
-                                                                    <span className="text-amber-500 font-bold">⭐ {drama.friend_rating}分</span>
-                                                                </div>
-                                                                {drama.friend_review && <p className="text-stone-600 italic">「{drama.friend_review}」</p>}
-                                                            </div>
+                                                            )}
+
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* =================================================
+                                    2. Wishlist
+                                ================================================= */}
+                                {activeTab === 'wishlist' && (
+                                    <div className="
+                                        glass-card
+                                        rounded-3xl
+                                        p-6
+                                        shadow-sm
+                                    ">
+
+                                        <div className="
+                                            flex
+                                            flex-col
+                                            sm:flex-row
+                                            justify-between
+                                            sm:items-center
+                                            gap-2
+                                            mb-6
+                                        ">
+
+                                            <h2 className="
+                                                text-xl
+                                                font-bold
+                                                text-[#5C4033]
+                                            ">
+                                                🎁 雙人待看與許願清單
+                                            </h2>
+
+                                            <span className="
+                                                text-xs
+                                                text-stone-500
+                                            ">
+                                                隨手丟進去，下次開追不迷路！
+                                            </span>
+
+                                        </div>
+
+                                        {wishlist.length === 0 ? (
+
+                                            <div className="
+                                                py-16
+                                                text-center
+                                                text-stone-400
+                                            ">
+                                                🎁 目前還沒有 Wishlist
+                                            </div>
+
+                                        ) : (
+
+                                            <div className="
+                                                grid
+                                                grid-cols-1
+                                                sm:grid-cols-2
+                                                lg:grid-cols-3
+                                                gap-4
+                                            ">
+
+                                                {wishlist.map((item, idx) => (
+
+                                                    <div
+                                                        key={item.id || idx}
+                                                        className="
+                                                            bg-white/75
+                                                            p-4
+                                                            rounded-2xl
+                                                            border border-rose-100
+                                                            flex
+                                                            flex-col
+                                                            justify-between
+                                                            shadow-sm
+                                                            hover:shadow-md
+                                                            transition-all
+                                                        "
+                                                    >
+
+                                                        <div>
+
+                                                            {/* 許願人 */}
+                                                            <span
+                                                                className={`
+                                                                    text-[10px]
+                                                                    px-2.5
+                                                                    py-0.5
+                                                                    rounded-full
+                                                                    font-medium
+                                                                    ${item.owner === '我'
+                                                                        ? 'bg-rose-100 text-rose-600'
+                                                                        : 'bg-indigo-100 text-indigo-600'
+                                                                    }
+                                                                `}
+                                                            >
+                                                                許願人：{item.owner || '未設定'}
+                                                            </span>
+
+                                                            {/* 名稱 */}
+                                                            <h3 className="
+                                                                font-bold
+                                                                text-[#4A403A]
+                                                                mt-2.5
+                                                            ">
+                                                                {item.titles || '未命名'}
+                                                            </h3>
+
+                                                            {/* 備註 */}
+                                                            {item.note && (
+                                                                <p className="
+                                                                    text-xs
+                                                                    text-stone-500
+                                                                    mt-1.5
+                                                                    leading-relaxed
+                                                                ">
+                                                                    {item.note}
+                                                                </p>
+                                                            )}
+
                                                         </div>
 
-                                                        {drama.ost_link && (
-                                                            <div className="mt-3 text-right">
-                                                                <a href={drama.ost_link} target="_blank" rel="noreferrer" className="text-[11px] text-rose-500 hover:underline">
-                                                                    🎵 點此聽 OST
-                                                                </a>
-                                                            </div>
+                                                        {/* 連結 */}
+                                                        {item.source_link && (
+                                                            <a
+                                                                href={item.source_link}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="
+                                                                    mt-4
+                                                                    text-xs
+                                                                    text-rose-500
+                                                                    hover:underline
+                                                                    inline-block
+                                                                "
+                                                            >
+                                                                🔗 相關連結
+                                                            </a>
                                                         )}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
 
-                                {/* 2. Wishlist 願望清單分頁 */}
-                                {activeTab === 'wishlist' && (
-                                    <div className="glass-card rounded-3xl p-6 shadow-sm">
-                                        <div className="flex justify-between items-center mb-6">
-                                            <h2 className="text-xl font-bold text-[#5C4033]">🎁 雙人待看與許願清單</h2>
-                                            <span className="text-xs text-stone-500">隨手丟進去，下次開追不迷路！</span>
-                                        </div>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                            {wishlist.map((item, idx) => (
-                                                <div key={item.id || idx} className="bg-white/75 p-4 rounded-2xl border border-rose-100 flex flex-col justify-between shadow-sm">
-                                                    <div>
-                                                        <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-medium ${item.owner === '我' ? 'bg-rose-100 text-rose-600' : 'bg-indigo-100 text-indigo-600'}`}>
-                                                            許願人：{item.owner}
-                                                        </span>
-                                                        <h3 className="font-bold text-[#4A403A] mt-2.5">{item.titles}</h3>
-                                                        <p className="text-xs text-stone-500 mt-1.5">{item.note}</p>
                                                     </div>
-                                                    {item.ource_link && (
-                                                        <a href={item.ource_link} target="_blank" rel="noreferrer" className="mt-4 text-xs text-rose-500 hover:underline inline-block">
-                                                            🔗 相關連結
-                                                        </a>
-                                                    )}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* 3. CP 與演員專區分頁 */}
-                                {activeTab === 'actors' && (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                                        {actors.map((actor, idx) => (
-                                            <div key={idx} className="glass-card rounded-3xl overflow-hidden shadow-sm text-center p-6 flex flex-col items-center">
-                                                <img 
-                                                    src={actor.photo_url || 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300'} 
-                                                    alt={actor.cp_name} 
-                                                    className="w-28 h-28 rounded-full object-cover shadow-md mb-4 border-2 border-white bg-stone-200"
-                                                    onError={(e)=>{e.target.src='https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300'}}
-                                                />
-                                                <h3 className="text-lg font-bold text-[#5C4033]">{actor.cp_name}</h3>
-                                                <p className="text-xs text-stone-500 mt-1">{actor.actor_1} & {actor.actor_2}</p>
-                                                
-                                                <div className="mt-5 flex justify-center gap-3 text-xs w-full">
-                                                    <span className={`px-3 py-1.5 rounded-full font-medium flex-1 ${actor.my_favorite && actor.my_favorite.toUpperCase() === 'TRUE' ? 'bg-rose-100 text-rose-600' : 'bg-stone-100 text-stone-400'}`}>
-                                                        {actor.my_favorite && actor.my_favorite.toUpperCase() === 'TRUE' ? '💖 我的最愛' : '🤍 未加入'}
-                                                    </span>
-                                                    <span className={`px-3 py-1.5 rounded-full font-medium flex-1 ${actor.friend_favorite && actor.friend_favorite.toUpperCase() === 'TRUE' ? 'bg-indigo-100 text-indigo-600' : 'bg-stone-100 text-stone-400'}`}>
-                                                        {actor.friend_favorite && actor.friend_favorite.toUpperCase() === 'TRUE' ? '💙 朋友最愛' : '🤍 未加入'}
-                                                    </span>
-                                                </div>
+                                                ))}
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
                                 )}
-                            </>
+
+                                {/* =================================================
+                                    3. CP / 演員專區
+                                ================================================= */}
+                                {activeTab === 'actors' && (
+
+                                    actors.length === 0 ? (
+
+                                        <div className="
+                                            glass-card
+                                            rounded-3xl
+                                            p-12
+                                            text-center
+                                            text-stone-400
+                                        ">
+                                            👩‍❤️‍👩 目前還沒有 CP 資料
+                                        </div>
+
+                                    ) : (
+
+                                        <div className="
+                                            grid
+                                            grid-cols-1
+                                            sm:grid-cols-2
+                                            md:grid-cols-3
+                                            gap-6
+                                        ">
+
+                                            {actors.map((actor, idx) => {
+
+                                                const myFavorite =
+                                                    String(actor.my_favorite || '')
+                                                        .toUpperCase() === 'TRUE';
+
+                                                const friendFavorite =
+                                                    String(actor.friend_favorite || '')
+                                                        .toUpperCase() === 'TRUE';
+
+                                                return (
+
+                                                    <div
+                                                        key={actor.id || idx}
+                                                        className="
+                                                            glass-card
+                                                            rounded-3xl
+                                                            overflow-hidden
+                                                            shadow-sm
+                                                            text-center
+                                                            p-6
+                                                            flex
+                                                            flex-col
+                                                            items-center
+                                                            hover:shadow-md
+                                                            transition-all
+                                                        "
+                                                    >
+
+                                                        {/* 頭像 */}
+                                                        <img
+                                                            src={
+                                                                actor.photo_url ||
+                                                                DEFAULT_ACTOR_PHOTO
+                                                            }
+                                                            alt={
+                                                                actor.cp_name ||
+                                                                'CP照片'
+                                                            }
+                                                            className="
+                                                                w-28
+                                                                h-28
+                                                                rounded-full
+                                                                object-cover
+                                                                shadow-md
+                                                                mb-4
+                                                                border-2
+                                                                border-white
+                                                                bg-stone-200
+                                                            "
+                                                            onError={(e) => {
+                                                                if (
+                                                                    e.currentTarget.src !==
+                                                                    DEFAULT_ACTOR_PHOTO
+                                                                ) {
+                                                                    e.currentTarget.src =
+                                                                        DEFAULT_ACTOR_PHOTO;
+                                                                }
+                                                            }}
+                                                        />
+
+                                                        {/* CP 名稱 */}
+                                                        <h3 className="
+                                                            text-lg
+                                                            font-bold
+                                                            text-[#5C4033]
+                                                        ">
+                                                            {actor.cp_name || '未命名 CP'}
+                                                        </h3>
+
+                                                        {/* 演員 */}
+                                                        <p className="
+                                                            text-xs
+                                                            text-stone-500
+                                                            mt-1
+                                                        ">
+                                                            {actor.actor_1 || '—'}
+                                                            {' & '}
+                                                            {actor.actor_2 || '—'}
+                                                        </p>
+
+                                                        {/* 喜好狀態 */}
+                                                        <div className="
+                                                            mt-5
+                                                            flex
+                                                            flex-col
+                                                            sm:flex-row
+                                                            justify-center
+                                                            gap-3
+                                                            text-xs
+                                                            w-full
+                                                        ">
+
+                                                            <span
+                                                                className={`
+                                                                    px-3
+                                                                    py-1.5
+                                                                    rounded-full
+                                                                    font-medium
+                                                                    flex-1
+                                                                    ${myFavorite
+                                                                        ? 'bg-rose-100 text-rose-600'
+                                                                        : 'bg-stone-100 text-stone-400'
+                                                                    }
+                                                                `}
+                                                            >
+                                                                {myFavorite
+                                                                    ? '💖 我的最愛'
+                                                                    : '🤍 未加入'
+                                                                }
+                                                            </span>
+
+                                                            <span
+                                                                className={`
+                                                                    px-3
+                                                                    py-1.5
+                                                                    rounded-full
+                                                                    font-medium
+                                                                    flex-1
+                                                                    ${friendFavorite
+                                                                        ? 'bg-indigo-100 text-indigo-600'
+                                                                        : 'bg-stone-100 text-stone-400'
+                                                                    }
+                                                                `}
+                                                            >
+                                                                {friendFavorite
+                                                                    ? '💙 朋友最愛'
+                                                                    : '🤍 未加入'
+                                                                }
+                                                            </span>
+
+                                                        </div>
+
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )
+                                )}
+
+                            </div>
                         )}
+
                     </main>
                 </div>
             );
         }
 
-        ReactDOM.render(<App />, document.getElementById('root'));
+        // =========================================================
+        // React 啟動
+        // =========================================================
+        ReactDOM.render(
+            <App />,
+            document.getElementById('root')
+        );
     </script>
 </body>
 </html>
