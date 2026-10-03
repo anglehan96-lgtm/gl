@@ -1,903 +1,332 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
+<!doctype html>
+<html lang="zh-Hant-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>✨ 泰百追劇宇宙</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config={theme:{extend:{colors:{cream:'#FDFBF7',textDark:'#4A403A'}}}}
-</script>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#D88A8A">
+<title>✨ 泰百追劇宇宙｜GL Universe v15</title>
 <style>
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:radial-gradient(circle at 8% 8%,rgba(249,228,228,.75),transparent 28%),radial-gradient(circle at 92% 12%,rgba(235,225,245,.55),transparent 30%),#FDFBF7;color:#4A403A;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.glass{background:rgba(255,255,255,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(216,138,138,.18)}
-.shadow-soft{box-shadow:0 12px 36px rgba(92,64,51,.08)}
-.modal-backdrop{background:rgba(55,42,36,.58);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.modal-in{animation:modalIn .2s ease-out}@keyframes modalIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
-.toast{animation:toastIn .2s ease-out}@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.timeline-line{position:absolute;left:14px;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,#e8a5a5,#ead7d7,#ddd1dc);border-radius:99px}
-.timeline-dot{position:absolute;left:7px;top:18px;width:17px;height:17px;border-radius:50%;background:#D88A8A;border:3px solid #FDFBF7;box-shadow:0 0 0 2px #e8c6c6}
-@media(min-width:768px){.timeline-line{left:50%;transform:translateX(-50%)}.timeline-dot{left:50%;transform:translateX(-50%)}.timeline-item{width:50%;padding-right:44px}.timeline-item.right{margin-left:50%;padding-left:44px;padding-right:0}}
-@media(max-width:767px){body{padding-bottom:74px}.desktop-only{display:none!important}.mobile-bottom{display:flex}.mobile-full{border-radius:0!important;max-height:100vh!important;height:100vh}}
-@media(min-width:768px){.mobile-bottom{display:none!important}}
-::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#dfb2b2;border-radius:99px}::-webkit-scrollbar-track{background:transparent}
+:root{--bg:#FDFBF7;--card:#FFF;--text:#4A403A;--muted:#8C7B72;--pink:#D88A8A;--pink-soft:#F9E4E4;--line:#F0D4D4;--h:#F37021;--h-soft:#FFF0E2;--q:#777;--q-soft:#F0F0F0;--purple:#8B70A8;--purple-soft:#EEE7F4;--green:#4E946C;--green-soft:#E7F4EC;--blue:#5684B6;--blue-soft:#EAF1F9;--shadow:0 12px 34px rgba(92,64,51,.07);--radius:22px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--text);background:radial-gradient(circle at 8% 4%,rgba(249,228,228,.76),transparent 26%),radial-gradient(circle at 94% 11%,rgba(238,231,244,.68),transparent 23%),var(--bg);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC",sans-serif;line-height:1.55}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
+.app{min-height:100vh}.shell{max-width:1280px;margin:0 auto;padding:20px 18px 96px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#F4B5B5,#D88A8A);color:#fff;box-shadow:0 8px 18px rgba(216,138,138,.24);font-size:23px}.brand h1{font-size:21px;margin:0;font-weight:900}.brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+.nav{display:flex;gap:7px;overflow:auto;padding-bottom:2px;margin-bottom:18px;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}.nav-btn{border:1px solid var(--line);background:rgba(255,255,255,.76);color:#765F56;padding:10px 15px;border-radius:999px;white-space:nowrap;font-weight:800;font-size:13px;transition:.18s}.nav-btn:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(92,64,51,.07)}.nav-btn.active{background:var(--pink);border-color:var(--pink);color:#fff}
+.panel,.card,.cp-card,.member-card,.doll-card{background:rgba(255,255,255,.86);border:1px solid rgba(232,165,165,.24);box-shadow:var(--shadow);border-radius:var(--radius)}.panel{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}.hero{padding:22px 24px;margin-bottom:18px}.hero-row{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.hero h2{margin:0;font-size:24px}.hero p{margin:5px 0 0;color:var(--muted);font-size:13px}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:14px;padding:10px 13px;font-weight:850;font-size:13px;transition:.18s}.btn:hover{transform:translateY(-1px)}.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}.btn-primary{background:var(--pink);color:#fff}.btn-soft{background:var(--pink-soft);color:#965B62}.btn-dark{background:#51453F;color:#fff}.btn-light{background:#fff;border:1px solid var(--line);color:#6F5C53}.btn-danger{background:#F8E3E3;color:#B25F5F}.btn-small{padding:7px 10px;border-radius:12px;font-size:12px}
+.toolbar{display:grid;grid-template-columns:minmax(220px,1fr) 170px 170px auto;gap:8px;align-items:center;margin-bottom:18px}.input,.select,.textarea{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.9);color:var(--text);border-radius:15px;outline:none;padding:11px 13px}.textarea{min-height:100px;resize:vertical}.input:focus,.select:focus,.textarea:focus{border-color:#D59A9A;box-shadow:0 0 0 3px rgba(216,138,138,.13)}.input[type=color]{height:45px;padding:4px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:11px;font-weight:850;color:#7C6B63}.field small{font-size:10px;color:#A6968E}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.full{grid-column:1/-1}
+.grid{display:grid;gap:16px}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}.stats-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}.stat{padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line)}.stat b{display:block;font-size:23px;margin-top:3px}.stat span{font-size:11px;color:var(--muted)}
+.drama-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.drama-card{display:grid;grid-template-columns:112px 1fr;gap:14px;padding:14px;text-align:left;border:1px solid rgba(232,165,165,.24);background:#fff;border-radius:22px;box-shadow:0 8px 28px rgba(92,64,51,.06);transition:.18s;width:100%}.drama-card:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(92,64,51,.1)}.drama-card.no-poster{grid-template-columns:1fr}.poster{width:112px;height:164px;border-radius:18px;overflow:hidden;background:linear-gradient(135deg,#F9E4E4,#EFE9F2)}.poster img,.avatar img,.doll-photo img,.detail-photo img,.gallery img{width:100%;height:100%;object-fit:cover;display:block}.poster-wrap,.avatar,.doll-photo,.detail-photo,.gallery-item{overflow:hidden}.poster-wrap.no-image,.avatar.no-image,.doll-photo.no-image,.detail-photo.no-image,.gallery-item.no-image{display:none}.meta-line{color:#84736A;font-size:12px;margin-top:4px}.badges,.tag-row{display:flex;gap:6px;flex-wrap:wrap}.badge,.pill{display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:850}.b-airing{background:var(--green-soft);color:#3D7F5B}.b-upcoming{background:var(--blue-soft);color:#4B79A8}.b-ended{background:#F0ECE8;color:#71655E}.b-pink{background:var(--pink-soft);color:#945E63}.progress-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.progress-box{border-radius:14px;padding:9px 10px}.h-box{background:var(--h-soft);color:#9A531B}.q-box{background:var(--q-soft);color:#5F5F5F}.progress-label{font-size:10px;font-weight:900}.progress-number{font-size:13px;font-weight:900;margin-top:2px}.year-title{display:flex;align-items:center;gap:10px;margin:25px 0 11px}.year-title h3{margin:0;font-size:21px}.year-title .line{height:1px;background:var(--line);flex:1}.year-title span{color:#9A8B84;font-size:12px}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.section-title h3{margin:0;font-size:16px}.muted{color:var(--muted)}.empty,.loading{padding:42px 18px;text-align:center;color:#A4968E}.loading{padding:70px 18px}.spinner{width:40px;height:40px;border-radius:50%;border:4px solid #F1DEDE;border-top-color:var(--pink);animation:spin 1s linear infinite;margin:0 auto 15px}@keyframes spin{to{transform:rotate(360deg)}}.notice{padding:12px 14px;border-radius:15px;background:#FFF8EF;border:1px solid #F0E0C7;color:#806A52;font-size:12px}.error-panel{margin:12px 0;padding:14px 16px;border-radius:16px;background:#FFF0F0;border:1px solid #F2CACA;color:#984E55;white-space:pre-wrap;font-size:13px}
+.schedule{padding:16px}.week-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}.day{min-height:122px;border:1px solid var(--line);border-radius:15px;background:#fff;padding:10px}.day.today{background:#FFF3F3;border-color:#E6ADAD}.day-head{display:flex;justify-content:space-between;gap:6px;font-size:11px;font-weight:850;color:#A96970}.show-mini{width:100%;text-align:left;border:0;background:#FCF4F4;border-radius:12px;padding:8px;margin-top:7px}.show-mini b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.show-mini span{font-size:10px;color:#A4686E}
+.timeline{position:relative;padding:8px 0}.timeline::before{content:"";position:absolute;left:24px;top:0;bottom:0;width:3px;border-radius:99px;background:linear-gradient(#E8A5A5,#E7D4E7)}.timeline-item{position:relative;padding:0 0 18px 55px}.timeline-dot{position:absolute;left:15px;top:11px;width:21px;height:21px;border-radius:50%;background:var(--pink);border:4px solid var(--bg);box-shadow:0 0 0 2px #E7BEBE}.timeline-date{font-size:11px;color:#A96970;font-weight:900}.timeline-title{margin-top:2px;font-size:15px;font-weight:850}.timeline-card{margin-top:8px;padding:11px 13px;border-radius:16px;background:#fff;border:1px solid var(--line);width:100%;text-align:left}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calendar-week{font-size:10px;color:#9C8A82;text-align:center;padding:5px 0;font-weight:850}.cal-cell{min-height:88px;border:1px solid #F1E1E1;border-radius:12px;background:#fff;padding:7px;text-align:left}.cal-cell.muted{visibility:hidden}.cal-cell.today{outline:2px solid #E2AAAA;outline-offset:-2px;background:#FFF5F5}.cal-date{font-size:11px;font-weight:900}.cal-chip{display:block;width:100%;border:0;background:#F9ECEC;margin-top:4px;border-radius:8px;padding:4px;text-align:left;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cal-chip.upcoming{background:#EDF4FC}.cal-chip.ended{background:#F1EEEB}.calendar-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px}.calendar-side{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;height:max-content}
+.cp-grid,.doll-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.cp-card,.doll-card{overflow:hidden;text-align:left;width:100%;transition:.18s}.cp-card:hover,.doll-card:hover{transform:translateY(-2px)}.cp-top{min-height:190px;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(120deg,#F8F1ED,#F4EEF6)}.cp-avatar-wrap{width:190px;height:190px;border-radius:50%;padding:4px;background:#fff;box-shadow:0 8px 20px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center}.cp-avatar{width:100%;height:100%;border-radius:50%;overflow:hidden;background:#F3EEE9}.cp-avatar img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}.cp-detail-photo{width:300px;height:300px;max-width:80vw;margin:0 auto;border-radius:50%;overflow:hidden;background:#F3EEE9}.cp-detail-photo img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}.cp-body,.member-body,.doll-body{padding:14px}.cp-name,.member-name,.doll-name{font-weight:900;font-size:17px}.sub{font-size:12px;color:var(--muted);margin-top:3px}.two-status{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.favorite{border-radius:12px;padding:8px;font-size:10px;font-weight:900}.h-fav{background:var(--h-soft);color:#9A531B}.q-fav{background:var(--q-soft);color:#5F5F5F}.member-head,.doll-head{display:flex;align-items:center;gap:12px}.avatar{width:84px;height:84px;border-radius:50%;background:#EFE9E4;flex:0 0 auto}.member-card{padding:14px}.doll-photo{height:180px;background:#F3EEE9}.color-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:10px}.color-dot{width:12px;height:12px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
+.cp-member-card{padding:14px;text-align:center}.cp-member-photo-wrap{width:100px;height:100px;border-radius:50%;margin:0 auto;overflow:hidden;background:#F3EEE9;display:flex;align-items:center;justify-content:center}.cp-member-photo-wrap img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}.cp-member-photo-wrap:empty{display:none}
+.random-box{padding:16px;border-radius:18px;background:linear-gradient(135deg,#FFF0F0,#F2ECF6);display:flex;justify-content:space-between;align-items:center;gap:12px}.random-title{font-weight:900}.manage-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #F0E7E2}.manage-row:last-child{border-bottom:0}.manage-key{font-weight:850;font-size:12px}.manage-val{font-size:11px;color:var(--muted);max-width:58%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.switchbar{display:flex;gap:7px;overflow:auto;padding-bottom:4px}.switch{border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:#fff;color:#7B6A62;font-size:11px;font-weight:850;white-space:nowrap}.switch.active{background:var(--pink);border-color:var(--pink);color:#fff}
+.modal-root{position:fixed;inset:0;z-index:1000;background:rgba(43,34,29,.54);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:16px}.modal{width:min(760px,100%);max-height:94vh;background:var(--bg);border-radius:26px;overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.25);display:flex;flex-direction:column}.modal.wide{width:min(1100px,100%)}.modal-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:13px 16px}.modal-head h3{margin:0;font-size:16px}.close{border:0;width:38px;height:38px;border-radius:50%;background:#F0ECE8;font-size:22px;color:#5F524B}.modal-body{overflow:auto;padding:16px}.modal-footer{display:flex;justify-content:flex-end;gap:8px;padding:14px 16px;border-top:1px solid var(--line);background:#fff}.detail-hero{display:grid;grid-template-columns:180px 1fr;gap:18px}.detail-photo{width:180px;height:260px;border-radius:20px;background:#F0E6E3}.detail-no-photo{grid-template-columns:1fr}.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.info{background:#fff;border:1px solid #F0E2E2;border-radius:14px;padding:10px}.info b{display:block;font-size:10px;color:#9A8780}.info span{display:block;margin-top:2px;font-size:13px;font-weight:850;word-break:break-word}.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.gallery-item{aspect-ratio:1;border-radius:16px;background:#F0E6E3}.separator{height:1px;background:#F0E7E2;margin:16px 0}.member-mini{border:1px solid var(--line);border-left:4px solid;border-radius:18px;background:#fff;padding:12px;text-align:left;width:100%}.member-mini-head{display:flex;gap:10px;align-items:center}.member-mini-photo{width:58px;height:58px;border-radius:16px;overflow:hidden;background:#F0ECE8;flex:0 0 auto}.member-mini-photo.no-image{display:none}.legend{display:flex;gap:8px;flex-wrap:wrap;font-size:10px;color:var(--muted)}
+.bottom-nav{display:none}
+.hidden{display:none!important}
+@media(min-width:768px){.shell{padding-bottom:30px}.bottom-nav{display:none}.doll-grid,.cp-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.grid-4,.cp-grid,.doll-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar{grid-template-columns:1fr 1fr 1fr auto}.week-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:767px){body{padding-bottom:78px}.shell{padding:12px 12px 90px}.topbar{margin-bottom:12px}.brand-mark{width:42px;height:42px}.brand h1{font-size:18px}.brand p{font-size:11px}.nav{display:none}.hero{padding:16px;margin-bottom:13px}.hero-row{display:block}.hero h2{font-size:20px}.hero .actions{margin-top:11px}.toolbar{grid-template-columns:1fr 1fr}.toolbar .input{grid-column:1/-1}.drama-grid{grid-template-columns:1fr}.drama-card{grid-template-columns:92px 1fr;padding:11px;gap:11px}.drama-card.no-poster{grid-template-columns:1fr}.poster{width:92px;height:136px}.grid-2,.grid-3,.grid-4,.cp-grid,.doll-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.week-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.calendar-layout{grid-template-columns:1fr}.detail-hero{grid-template-columns:1fr}.detail-photo{width:100%;height:290px}.cp-detail-photo{width:230px;height:230px}.info-grid{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.modal-root{padding:0;align-items:flex-end}.modal,.modal.wide{width:100%;max-height:100vh;border-radius:24px 24px 0 0}.modal-body{padding:13px}.modal-footer{padding-bottom:calc(14px + env(safe-area-inset-bottom))}.random-box{display:block}.random-box .actions{margin-top:10px}.random-box .btn{width:100%}.calendar-grid{gap:3px}.cal-cell{min-height:70px;padding:5px;border-radius:10px}.cal-chip{font-size:8px;padding:3px}.topbar .actions .refresh-text{display:none}.member-mini{padding:10px}.gallery{grid-template-columns:1fr 1fr 1fr}.bottom-nav{display:flex;position:fixed;left:10px;right:10px;bottom:10px;z-index:900;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:20px;box-shadow:0 12px 32px rgba(92,64,51,.12);padding:6px;backdrop-filter:blur(14px)}.bottom-nav button{flex:1;border:0;background:transparent;color:#8C7B72;font-size:10px;padding:7px 4px;border-radius:14px;font-weight:800}.bottom-nav button.active{background:var(--pink-soft);color:#9C6168}}
 </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="app"></div>
+<div id="toastWrap" aria-live="polite" aria-atomic="true"></div>
 <script>
-const { useState, useEffect, useMemo, useCallback } = React;
-const GAS_URL = 'https://script.google.com/macros/s/AKfycby5IWKfG-X7-M-xvIri5LgWAf4IBz6ISIB9sIM8BzmsQ20CqGUAy9FBwcT6rBp3I6BY/exec';
-const SHEETS = ['dramas', 'wishlist', 'actors', 'members', 'dolls'];
-const H_COLOR = '#F37021';
-const Q_COLOR = '#777777';
-const COLOR_OPTIONS = [['橘色', '#F37021'], ['灰色', '#777777'], ['粉紅', '#E8A5A5'], ['玫瑰粉', '#D88A8A'], ['紫色', '#662D91'], ['淺紫', '#B7A0D5'], ['紅色', '#E53935'], ['藍色', '#2878B5'], ['淺藍', '#74B9E7'], ['綠色', '#2E8B57'], ['薄荷綠', '#8ACDB0'], ['黃色', '#F2C94C'], ['黑色', '#222222'], ['白色', '#FFFFFF'], ['棕色', '#8B5E3C'], ['自訂／其他', '#5C4033']];
-const STATUS = ['已完結', '正在跟播', '待播中'];
-const ACTOR_FIELDS = ['cp_name', 'actor_1', 'actor_2', 'photo_url', 'my_favorite', 'friend_favorite', 'cp_name_th', 'cp_name_en', 'cp_status', 'cp_start_date', 'cp_anniversary', 'first_work', 'representative_work', 'cp_description', 'cp_note', 'member_1_id', 'member_2_id'];
-const MEMBER_FIELDS = ['member_id', 'display_name', 'name_zh', 'name_th', 'name_en', 'nickname', 'birth_date', 'birth_place', 'nationality', 'zodiac', 'height', 'weight', 'occupation', 'debut_year', 'company', 'agency', 'brand', 'bio', 'representative_works', 'representative_roles', 'awards', 'hobby', 'skill', 'favorite_food', 'disliked_food', 'support_color', 'favorite_color', 'favorite_music', 'favorite_movie', 'pet', 'personality', 'quote', 'personal_note', 'photo_url', 'photo_url_2', 'photo_url_3', 'instagram', 'x', 'tiktok', 'facebook', 'youtube', 'website', 'my_favorite', 'favorite_date', 'my_note'];
-const DOLL_FIELDS = ['doll_id', 'doll_name', 'owner_member_id', 'doll_type', 'doll_color', 'photo_url', 'birth_date', 'description', 'note'];
-const WISHLIST_FIELDS = ['drama_id', 'owner', 'my_want', 'friend_want', 'priority', 'wishlist_status', 'added_date', 'planned_watch_date', 'note'];
-const FIELD_LABELS = {
-    id: 'ID', title_zh: '中文劇名', title_th: '泰文／英文劇名', cp_name: 'CP 名稱', ststus_type: '劇集狀態', premiere_date: '首播日期', air_day_of_week: '播出星期', air_time: '播出時間（泰國當地開播時刻，例如 22:30）', total_episodes: '總集數', synopsis: '劇情簡介', ott_platform: 'OTT 平台', ott_link: 'OTT 連結', poster_url: '海報圖片 URL', my_status: '我的狀態', my_progress: '我的進度', my_rating: '我的評分', my_review: '我的心得', friend_status: '朋友狀態', friend_progress: '朋友進度', friend_rating: '朋友評分', friend_review: '朋友心得', source_link: '來源連結', song_1_name: 'OST 1 名稱', song_1_link: 'OST 1 連結', song_2_name: 'OST 2 名稱', song_2_link: 'OST 2 連結', song_3_name: 'OST 3 名稱', song_3_link: 'OST 3 連結', song_4_name: 'OST 4 名稱', song_4_link: 'OST 4 連結', song_5_name: 'OST 5 名稱', song_5_link: 'OST 5 連結',
-    actor_1: 'H／我', actor_2: 'Q／朋友', photo_url: '照片 URL', my_favorite: '我的收藏', friend_favorite: '朋友收藏', cp_name_th: 'CP 泰文名稱', cp_name_en: 'CP 英文名稱', cp_status: 'CP 現況', cp_start_date: 'CP 開始日期', cp_anniversary: 'CP 紀念日', first_work: '首次合作作品', representative_work: '代表作品', cp_description: 'CP 簡介', cp_note: 'CP 備註', member_1_id: 'H（我）成員 ID', member_2_id: 'Q（朋友）成員 ID',
-    member_id: '成員 ID', display_name: '顯示名稱', name_zh: '中文名', name_th: '泰文名', name_en: '英文名', nickname: '暱稱', birth_date: '出生日期', birth_place: '出生地', nationality: '國籍', zodiac: '星座', height: '身高', weight: '體重', occupation: '職業', debut_year: '出道年份', company: '公司', agency: '經紀公司', brand: '品牌', bio: '個人介紹', representative_works: '代表作品', representative_roles: '代表角色', awards: '得獎', hobby: '興趣', skill: '專長', favorite_food: '喜歡的食物', disliked_food: '不喜歡的食物', support_color: '應援色', favorite_color: '喜歡的顏色', favorite_music: '喜歡的音樂', favorite_movie: '喜歡的電影', pet: '寵物', personality: '個性', quote: '名言', personal_note: '個人備註', photo_url_2: '照片 2 URL', photo_url_3: '照片 3 URL', instagram: 'Instagram', x: 'X', tiktok: 'TikTok', facebook: 'Facebook', youtube: 'YouTube', website: 'Website', favorite_date: '收藏日期', my_note: '我的備註',
-    doll_id: '娃娃 ID', doll_name: '娃娃名稱', owner_member_id: '所屬成員 ID', doll_type: '類型', doll_color: '顏色', doll_photo: '娃娃照片', description: '描述', note: '備註', owner: '擁有者', my_want: '我想看', friend_want: '朋友想看', priority: '優先度', wishlist_status: '清單狀態', added_date: '加入日期', planned_watch_date: '計畫觀看日期'
+(function(){
+'use strict';
+
+const GAS_URL='https://script.google.com/macros/s/AKfycby5IWKfG-X7-M-xvIri5LgWAf4IBz6ISIB9sIM8BzmsQ20CqGUAy9FBwcT6rBp3I6BY/exec';
+const H_COLOR='#F37021',Q_COLOR='#777777';
+const STATUS=['已完結','正在跟播','待播中'];
+const CP_STATUS=['活躍','暫停','已結束','其他'];
+const WATCH_STATUS=['未開始','追劇中','已看完','暫停','棄坑'];
+const PRIORITY=['高','中','低','想看'];
+const WISHLIST_STATUS=['待看','已看','取消','規劃中'];
+const WEEK=['週日','週一','週二','週三','週四','週五','週六'];
+const H_WEEK=['週一','週二','週三','週四','週五','週六','週日'];
+const SHEETS=['dramas','wishlist','actors','members','dolls'];
+const LABELS={home:'總覽',dramas:'劇集',wishlist:'Wishlist',actors:'CP',dolls:'娃娃',timeline:'時間軸',manage:'管理',members:'成員'};
+const SCHEMA={
+ dramas:['id','title_zh','title_th','cp_name','ststus_type','premiere_date','air_day_of_week','air_time','total_episodes','synopsis','ott_platform','ott_link','poster_url','my_status','my_progress','my_rating','my_review','friend_status','friend_progress','friend_rating','friend_review','song_1_name','song_1_link','song_2_name','song_2_link','song_3_name','song_3_link','song_4_name','song_4_link','song_5_name','song_5_link','source_link'],
+ wishlist:['drama_id','owner','my_want','friend_want','priority','wishlist_status','added_date','planned_watch_date','note'],
+ actors:['cp_name','actor_1','actor_2','photo_url','my_favorite','friend_favorite','cp_name_th','cp_name_en','cp_status','cp_start_date','cp_anniversary','first_work','representative_work','cp_description','cp_color','cp_note','member_1_id','member_2_id','id','actor_1_th','actor_2_th','status','start_date','anniversary','description','note'],
+ members:['member_id','display_name','name_zh','name_th','name_en','nickname','birth_date','birth_place','nationality','zodiac','height','weight','occupation','debut_year','company','agency','brand','bio','representative_works','representative_roles','awards','hobby','skill','favorite_food','disliked_food','favorite_color','favorite_music','favorite_movie','pet','personality','quote','personal_note','photo_url','photo_url_2','photo_url_3','instagram','x','tiktok','facebook','youtube','website','my_favorite','favorite_date','my_rating','my_note','support_color','id','works_roles','hobbies_skills','pets','photo_1','photo_2','photo_3'],
+ dolls:['doll_id','doll_name','owner_member_id','doll_type','doll_color','photo_url','birth_date','description','favorite','note']
 };
-function safeText(v) { return v === undefined || v === null ? '' : String(v).trim(); }
-function bool(v) { const s = safeText(v).toLowerCase(); return v === true || ['true', '1', 'yes', 'y', '是', '有', '想看', '喜歡'].includes(s); }
-function num(v) { const n = parseInt(String(v ?? '').replace(/[^\d-]/g, ''), 10); return Number.isFinite(n) ? n : 0; }
-function parseDate(v) { if (!v)
-    return null; const s = safeText(v); const m = s.match(/(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/); if (!m)
-    return null; const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])); return Number.isNaN(d.getTime()) ? null : d; }
-function isoDate(d) { if (!d)
-    return ''; return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
-function fmtDate(v) { const d = v instanceof Date ? v : parseDate(v); return d ? `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}` : '—'; }
-function fmtTime(v) { const s = safeText(v); return s || '未設定'; }
-function monthKey(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; }
-function weekdayNum(v) { const s = safeText(v); const map = { '日': 0, '星期日': 0, '週日': 0, '周日': 0, '一': 1, '星期一': 1, '週一': 1, '周一': 1, '二': 2, '星期二': 2, '週二': 2, '周二': 2, '三': 3, '星期三': 3, '週三': 3, '周三': 3, '四': 4, '星期四': 4, '週四': 4, '周四': 4, '五': 5, '星期五': 5, '週五': 5, '周五': 5, '六': 6, '星期六': 6, '週六': 6, '周六': 6 }; for (const k in map) {
-    if (s.includes(k))
-        return map[k];
-} return null; }
-function episodeDate(drama, ep) { const p = parseDate(drama.premiere_date); if (!p)
-    return null; const d = new Date(p); d.setDate(d.getDate() + (Math.max(1, ep) - 1) * 7); return d; }
-function scheduleFor(drama) { const total = num(drama.total_episodes); if (!parseDate(drama.premiere_date) || !total)
-    return []; return Array.from({ length: total }, (_, i) => ({ episode: i + 1, date: episodeDate(drama, i + 1), airTime: safeText(drama.air_time), drama })); }
-function nextAir(drama) { const total = num(drama.total_episodes); const progress = Math.max(num(drama.my_progress || drama.my_propress), num(drama.friend_progress || drama.friend_propress)); if (total && progress >= total)
-    return null; return episodeDate(drama, Math.max(1, progress + 1)); }
-function normalStatus(v) { const s = safeText(v); if (s.includes('完'))
-    return '已完結'; if (s.includes('待'))
-    return '待播中'; if (s.includes('播') || s.includes('airing'))
-    return '正在跟播'; return s || '未分類'; }
-function statusClass(v) { return normalStatus(v) === '正在跟播' ? 'bg-emerald-100 text-emerald-700' : normalStatus(v) === '待播中' ? 'bg-blue-100 text-blue-700' : 'bg-stone-100 text-stone-600'; }
-function titleOf(d) { return safeText(d.title_zh) || safeText(d.title_th) || '未命名劇集'; }
-function colorOr(v, fallback) { const s = safeText(v); return s || fallback; }
-function getOSTs(d) { const out = []; for (let i = 1; i <= 5; i++) {
-    const name = safeText(d[`song_${i}_name`]);
-    const link = safeText(d[`song_${i}_link`]);
-    if (name || link)
-        out.push({ name: name || `OST ${i}`, link });
-} return out; }
-function driveCandidates(url) { const s = safeText(url); if (!s)
-    return []; const out = [s]; const m = s.match(/drive\.google\.com\/file\/d\/([^/]+)/); if (m) {
-    const id = m[1];
-    out.push(`https://drive.google.com/thumbnail?id=${id}&sz=w1200`);
-    out.push(`https://drive.usercontent.google.com/download?id=${id}&export=view`);
-} const m2 = s.match(/[?&]id=([^&]+)/); if (m2) {
-    const id = m2[1];
-    out.push(`https://drive.google.com/thumbnail?id=${id}&sz=w1200`);
-} return [...new Set(out)]; }
-async function getJSON(sheet) { const url = `${GAS_URL}?action=loadData&sheet=${encodeURIComponent(sheet)}&cb=${Date.now()}_${Math.random().toString(36).slice(2)}`; const res = await fetch(url, { cache: 'no-store' }); if (!res.ok)
-    throw new Error(`HTTP ${res.status}`); const json = await res.json(); if (!json.success)
-    throw new Error(json.message || 'API 讀取失敗'); return { data: Array.isArray(json.data) ? json.data : [], headers: Array.isArray(json.headers) ? json.headers : [] }; }
-async function postJSON(payload) { await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) }); return true; }
-function useEscape(onClose, enabled = true) { useEffect(() => { if (!enabled)
-    return; const fn = e => { if (e.key === 'Escape')
-    onClose(); }; window.addEventListener('keydown', fn); return () => window.removeEventListener('keydown', fn); }, [onClose, enabled]); }
-function useLockBody(locked) { useEffect(() => { if (locked) {
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = ''; };
-} }, [locked]); }
-function App() {
-    const [tab, setTab] = useState('home');
-    const [dramas, setDramas] = useState([]), [wishlist, setWishlist] = useState([]), [actors, setActors] = useState([]), [members, setMembers] = useState([]), [dolls, setDolls] = useState([]);
-    const [headers, setHeaders] = useState({ dramas: [], wishlist: [], actors: [], members: [], dolls: [] });
-    const [loading, setLoading] = useState(true), [refreshing, setRefreshing] = useState(false), [errors, setErrors] = useState([]), [toast, setToast] = useState('');
-    const [globalSearch, setGlobalSearch] = useState('');
-    const [selectedDrama, setSelectedDrama] = useState(null), [selectedCP, setSelectedCP] = useState(null), [selectedMember, setSelectedMember] = useState(null), [selectedDoll, setSelectedDoll] = useState(null);
-    const [calendarOpen, setCalendarOpen] = useState(false), [calendarDate, setCalendarDate] = useState(new Date());
-    const [editor, setEditor] = useState(null);
-    useLockBody(Boolean(selectedDrama || selectedCP || selectedMember || selectedDoll || calendarOpen || editor));
-    useEffect(() => { const h = e => { if (e.message && /ResizeObserver loop/.test(e.message))
-        return; console.error(e); }; window.addEventListener('error', h); return () => window.removeEventListener('error', h); }, []);
-    const loadAll = useCallback(async (show = true) => { if (show)
-        setLoading(true); setRefreshing(true); const errs = []; const jobs = SHEETS.map(async (k) => { try {
-        return [k, await getJSON(k)];
-    }
-    catch (e) {
-        console.error(`${k} load failed`, e);
-        errs.push(`${k} 資料讀取失敗：${e.message}`);
-        return [k, { data: [], headers: [] }];
-    } }); const rows = Object.fromEntries(await Promise.all(jobs)); setDramas(rows.dramas.data); setWishlist(rows.wishlist.data); setActors(rows.actors.data); setMembers(rows.members.data); setDolls(rows.dolls.data); setHeaders(Object.fromEntries(SHEETS.map(k => [k, rows[k].headers]))); setErrors(errs); setRefreshing(false); setLoading(false); }, []);
-    useEffect(() => { loadAll(true); }, [loadAll]);
-    const notify = useCallback(msg => { setToast(msg); window.clearTimeout(window.__tb_toast); window.__tb_toast = window.setTimeout(() => setToast(''), 2600); }, []);
-    const refresh = useCallback(async () => { await loadAll(false); notify('資料已重新整理'); }, [loadAll, notify]);
-    const save = useCallback(async (payload, message = '已儲存') => { try {
-        await postJSON(payload);
-        await loadAll(false);
-        notify(message);
-    }
-    catch (e) {
-        notify(`儲存失敗：${e.message || e}`);
-        throw e;
-    } }, [loadAll, notify]);
-    const years = useMemo(() => ['全部', ...Array.from(new Set(dramas.map(d => parseDate(d.premiere_date)?.getFullYear()).filter(Boolean))).sort((a, b) => b - a)], [dramas]);
-    const globalFiltered = useMemo(() => { const q = globalSearch.toLowerCase().trim(); if (!q)
-        return { dramas, wishlist, actors, members, dolls }; const has = o => Object.values(o || {}).some(v => safeText(v).toLowerCase().includes(q)); const d = dramas.filter(has), w = wishlist.filter(x => has(x) || d.some(dr => safeText(dr.id) === safeText(x.drama_id))), a = actors.filter(has), m = members.filter(has), doz = dolls.filter(has); return { dramas: d, wishlist: w, actors: a, members: m, dolls: doz }; }, [dramas, wishlist, actors, members, dolls, globalSearch]);
-    const openDrama = d => setSelectedDrama(d);
-    const openCP = a => setSelectedCP(a);
-    const goTab = t => { setTab(t); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-    const stats = { total: dramas.length, airing: dramas.filter(d => normalStatus(d.ststus_type) === '正在跟播').length, upcoming: dramas.filter(d => normalStatus(d.ststus_type) === '待播中').length, ended: dramas.filter(d => normalStatus(d.ststus_type) === '已完結').length, wishlist: wishlist.length, cps: actors.length, members: members.length, dolls: dolls.length };
-    if (loading)
-        return React.createElement("div", { className: "min-h-screen flex items-center justify-center p-6" },
-            React.createElement("div", { className: "glass shadow-soft rounded-3xl p-8 max-w-md text-center" },
-                React.createElement("div", { className: "text-4xl mb-3" }, "\uD83C\uDF37"),
-                React.createElement("h1", { className: "font-bold text-lg" }, "\u6CF0\u767E\u8FFD\u5287\u5B87\u5B99"),
-                React.createElement("p", { className: "text-sm text-stone-400 mt-2" }, "\u6B63\u5728\u8B80\u53D6 Google Sheets \u8CC7\u6599\u2026"),
-                React.createElement("div", { className: "mt-5 h-2 bg-stone-100 rounded-full overflow-hidden" },
-                    React.createElement("div", { className: "h-full w-2/3 bg-rose-300 rounded-full animate-pulse" }))));
-    return React.createElement("div", { className: "min-h-screen pb-10" },
-        React.createElement("header", { className: "sticky top-0 z-30 bg-[#FDFBF7]/90 backdrop-blur border-b border-rose-100/60" },
-            React.createElement("div", { className: "max-w-7xl mx-auto px-4 py-3 flex items-center gap-3" },
-                React.createElement("button", { onClick: () => goTab('home'), className: "shrink-0 text-left" },
-                    React.createElement("div", { className: "text-lg md:text-xl font-extrabold text-[#5C4033]" }, "\u2728 \u6CF0\u767E\u8FFD\u5287\u5B87\u5B99"),
-                    React.createElement("div", { className: "text-[10px] text-stone-400" }, "Thai GL Watch Universe \u00B7 v5")),
-                React.createElement("div", { className: "flex-1 max-w-xl mx-auto" },
-                    React.createElement("div", { className: "relative" },
-                        React.createElement("span", { className: "absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" }, "\u2315"),
-                        React.createElement("input", { value: globalSearch, onChange: e => setGlobalSearch(e.target.value), placeholder: "\u641C\u5C0B\u5287\u96C6\u3001CP\u3001\u6210\u54E1\u3001\u5A03\u5A03\u2026", className: "w-full rounded-2xl bg-white border border-rose-100 pl-9 pr-10 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-100" }),
-                        globalSearch && React.createElement("button", { onClick: () => setGlobalSearch(''), className: "absolute right-3 top-1/2 -translate-y-1/2 text-stone-400" }, "\u00D7"))),
-                React.createElement("button", { onClick: refresh, disabled: refreshing, className: "shrink-0 px-3 py-2 rounded-xl bg-white border border-rose-100 text-sm text-stone-600 hover:bg-rose-50 disabled:opacity-50" },
-                    refreshing ? '↻' : '⟳',
-                    " \u91CD\u65B0\u6574\u7406")),
-            React.createElement("nav", { className: "max-w-7xl mx-auto px-4 pb-3 hidden md:flex gap-2 overflow-x-auto" }, [['home', '總覽', '⌂'], ['dramas', '劇集', '🎬'], ['wishlist', 'Wishlist', '💗'], ['actors', 'CP', '👩‍❤️‍👩'], ['members', '成員', '👤'], ['dolls', '娃娃', '🧸'], ['schedule', '播出時間', '🗓️'], ['manage', '資料管理', '⚙️']].map(([id, label, icon]) => React.createElement("button", { key: id, onClick: () => goTab(id), className: `shrink-0 px-3.5 py-2 rounded-xl text-sm ${tab === id ? 'bg-[#5C4033] text-white' : 'bg-white/70 text-stone-500 border border-rose-100'}` },
-                icon,
-                " ",
-                label)))),
-        React.createElement("main", { className: "max-w-7xl mx-auto px-4 py-5" },
-            errors.length > 0 && React.createElement("div", { className: "glass shadow-soft rounded-2xl p-4 mb-5 border-rose-200 bg-rose-50/80" },
-                React.createElement("div", { className: "font-semibold text-rose-700 text-sm" }, "\u90E8\u5206\u8CC7\u6599\u8B80\u53D6\u5931\u6557"),
-                errors.map((e, i) => React.createElement("div", { key: i, className: "text-xs text-rose-600 mt-1" },
-                    "\u2022 ",
-                    e)),
-                React.createElement("div", { className: "text-[11px] text-rose-500 mt-2" }, "\u8ACB\u78BA\u8A8D Apps Script Web App \u5DF2\u91CD\u65B0\u90E8\u7F72\u3001\u5B58\u53D6\u6B0A\u9650\u70BA\u4EFB\u4F55\u4EBA\uFF0C\u4E14 setup() \u5DF2\u57F7\u884C\u3002")),
-            tab === 'home' && React.createElement(Home, { stats: stats, dramas: globalFiltered.dramas, actors: globalFiltered.actors, members: globalFiltered.members, wishlist: globalFiltered.wishlist, dolls: globalFiltered.dolls, openDrama: openDrama, openCP: openCP, openMember: setSelectedMember, openDoll: setSelectedDoll, openCalendar: () => setCalendarOpen(true), goTab: goTab }),
-            tab === 'dramas' && React.createElement(DramaSection, { dramas: globalFiltered.dramas, years: years, openDrama: openDrama, onEdit: d => setEditor({ sheet: 'dramas', mode: 'edit', row: d }), onAdd: () => setEditor({ sheet: 'dramas', mode: 'create', row: {} }) }),
-            tab === 'wishlist' && React.createElement(WishlistSection, { dramas: dramas, wishlist: globalFiltered.wishlist, openDrama: openDrama, onSave: save, onEdit: w => setEditor({ sheet: 'wishlist', mode: 'edit', row: w }), onAdd: () => setEditor({ sheet: 'wishlist', mode: 'create', row: {} }), onDelete: async (w) => { if (confirm('確定刪除此 Wishlist 紀錄？'))
-                    await save({ action: 'deleteRecord', sheet: 'wishlist', keyField: 'composite_drama_owner', keyValue: { drama_id: w.drama_id, owner: w.owner } }, 'Wishlist 已刪除'); } }),
-            tab === 'actors' && React.createElement(CPSection, { actors: globalFiltered.actors, members: members, dolls: dolls, openCP: openCP, onAdd: () => setEditor({ type: 'cp', mode: 'create' }), onEdit: a => setEditor({ type: 'cp', mode: 'edit', row: a }) }),
-            tab === 'members' && React.createElement(MembersSection, { members: globalFiltered.members, actors: actors, dolls: dolls, openMember: setSelectedMember, openDoll: setSelectedDoll, onEdit: m => setEditor({ type: 'member', mode: 'edit', row: m }) }),
-            tab === 'dolls' && React.createElement(DollsSection, { dolls: globalFiltered.dolls, members: members, openDoll: setSelectedDoll, onAdd: () => setEditor({ type: 'doll', mode: 'create', row: {} }), onEdit: d => setEditor({ type: 'doll', mode: 'edit', row: d }), onDelete: async (d) => { if (confirm(`確定刪除「${safeText(d.doll_name)}」？`))
-                    await save({ action: 'deleteRecord', sheet: 'dolls', keyField: 'doll_id', keyValue: d.doll_id }, '娃娃已刪除'); } }),
-            tab === 'schedule' && React.createElement(SchedulePage, { dramas: dramas, openDrama: openDrama, openCalendar: () => setCalendarOpen(true), calendarDate: calendarDate, setCalendarDate: setCalendarDate }),
-            tab === 'manage' && React.createElement(DataManager, { dramas: dramas, wishlist: wishlist, actors: actors, members: members, dolls: dolls, headers: headers, onEdit: (sheet, row) => sheet === 'actors' ? setEditor({ type: 'cp', mode: 'edit', row }) : sheet === 'members' ? setEditor({ type: 'member', mode: 'edit', row }) : sheet === 'dolls' ? setEditor({ type: 'doll', mode: 'edit', row }) : setEditor({ sheet, mode: 'edit', row }), onAdd: sheet => sheet === 'actors' ? setEditor({ type: 'cp', mode: 'create' }) : sheet === 'dolls' ? setEditor({ type: 'doll', mode: 'create', row: {} }) : sheet === 'dramas' ? setEditor({ sheet, mode: 'create', row: {} }) : sheet === 'wishlist' ? setEditor({ sheet, mode: 'create', row: {} }) : null, onDelete: async (sheet, row) => { const key = sheet === 'dramas' ? 'id' : sheet === 'actors' ? 'cp_name' : sheet === 'members' ? 'member_id' : sheet === 'dolls' ? 'doll_id' : 'composite_drama_owner'; const keyValue = sheet === 'wishlist' ? { drama_id: row.drama_id, owner: row.owner } : row[key]; if (!confirm('確定刪除這筆資料？'))
-                    return; await save({ action: 'deleteRecord', sheet, keyField: key, keyValue }, '資料已刪除'); } })),
-        React.createElement("div", { className: "mobile-bottom fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-rose-100 px-1 py-2 gap-0.5 justify-around md:hidden overflow-x-auto" }, [['home', '⌂', '總覽'], ['dramas', '🎬', '劇集'], ['wishlist', '💗', '清單'], ['actors', '👩‍❤️‍👩', 'CP'], ['members', '👤', '成員'], ['dolls', '🧸', '娃娃'], ['schedule', '🗓️', '播出'], ['manage', '⚙️', '管理']].map(([id, ic, lb]) => React.createElement("button", { key: id, onClick: () => goTab(id), className: `min-w-[58px] flex-none py-1 rounded-xl ${tab === id ? 'text-rose-500' : 'text-stone-400'}` },
-            React.createElement("div", null, ic),
-            React.createElement("div", { className: "text-[10px]" }, lb)))),
-        selectedDrama && React.createElement(DramaModal, { drama: selectedDrama, onClose: () => setSelectedDrama(null), openCPName: name => { const cp = actors.find(a => safeText(a.cp_name) === safeText(name)); if (cp) {
-                setSelectedDrama(null);
-                setSelectedCP(cp);
-            } }, onEdit: d => { setSelectedDrama(null); setEditor({ sheet: 'dramas', mode: 'edit', row: d }); }, onWishlist: async (owner) => { const w = { drama_id: selectedDrama.id, owner, my_want: owner === '我', friend_want: owner === '朋友', priority: '想看', wishlist_status: '待看', added_date: isoDate(new Date()), planned_watch_date: '', note: '' }; await save({ action: 'upsertWishlist', record: w }, '已加入 Wishlist'); } }),
-        selectedCP && React.createElement(CPModal, { cp: selectedCP, members: members, dolls: dolls, actors: actors, onClose: () => setSelectedCP(null), onEdit: () => { setSelectedCP(null); setEditor({ type: 'cp', mode: 'edit', row: selectedCP }); }, openMember: m => setSelectedMember(m), openDoll: d => setSelectedDoll(d) }),
-        selectedMember && React.createElement(MemberModal, { member: selectedMember, actors: actors, dolls: dolls, onClose: () => setSelectedMember(null), onEdit: () => { setSelectedMember(null); setEditor({ type: 'member', mode: 'edit', row: selectedMember }); }, openDoll: setSelectedDoll }),
-        selectedDoll && React.createElement(DollModal, { doll: selectedDoll, members: members, onClose: () => setSelectedDoll(null), onEdit: () => { setSelectedDoll(null); setEditor({ type: 'doll', mode: 'edit', row: selectedDoll }); } }),
-        calendarOpen && React.createElement(CalendarModal, { dramas: dramas, current: calendarDate, setCurrent: setCalendarDate, onClose: () => setCalendarOpen(false), onOpenDrama: openDrama }),
-        editor && React.createElement(EditorRouter, { editor: editor, dramas: dramas, members: members, actors: actors, dolls: dolls, headers: headers, onClose: () => setEditor(null), onSaved: async (msg) => { setEditor(null); await loadAll(false); notify(msg); } }),
-        toast && React.createElement("div", { className: "toast fixed right-4 bottom-20 md:bottom-5 z-[120] bg-[#5C4033] text-white text-sm px-4 py-3 rounded-2xl shadow-soft" }, toast));
-}
-function SectionHead({ title, sub, action }) { return React.createElement("div", { className: "flex items-end justify-between gap-3 mb-4" },
-    React.createElement("div", null,
-        React.createElement("h2", { className: "text-xl font-extrabold text-[#5C4033]" }, title),
-        React.createElement("p", { className: "text-xs text-stone-400 mt-1" }, sub)),
-    action); }
-function Empty({ text }) { return React.createElement("div", { className: "glass rounded-3xl p-12 text-center text-stone-400" },
-    "\uD83C\uDF38 ",
-    text); }
-function Tag({ children, className = '' }) { return React.createElement("span", { className: `inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium ${className}` }, children); }
-function RemoteImage({ src, alt, className }) { const urls = useMemo(() => driveCandidates(src), [src]); const [i, setI] = useState(0); useEffect(() => setI(0), [src]); if (!urls.length || i >= urls.length)
-    return null; return React.createElement("img", { src: urls[i], alt: alt || '', className: className, loading: "lazy", referrerPolicy: "no-referrer", onError: () => setI(x => x + 1) }); }
-function Home({ stats, dramas, actors, members, wishlist, dolls, openDrama, openCP, openMember, openDoll, openCalendar, goTab }) {
-    const latest = useMemo(() => [...dramas].sort((a, b) => (parseDate(b.premiere_date) || 0) - (parseDate(a.premiere_date) || 0)).slice(0, 6), [dramas]);
-    const upcoming = useMemo(() => dramas.filter(d => normalStatus(d.ststus_type) === '正在跟播' || normalStatus(d.ststus_type) === '待播中').map(d => ({ ...d, next: nextAir(d) })).filter(x => x.next).sort((a, b) => a.next - b.next).slice(0, 5), [dramas]);
-    return React.createElement(React.Fragment, null,
-        React.createElement("section", { className: "mb-6" },
-            React.createElement("div", { className: "rounded-[2rem] p-6 md:p-8 text-white shadow-soft bg-gradient-to-br from-[#5C4033] via-[#8f6b5b] to-[#c79595]" },
-                React.createElement("div", { className: "max-w-3xl" },
-                    React.createElement("div", { className: "text-xs uppercase tracking-[.2em] opacity-70" }, "PERSONAL THAI GL WATCH HUB"),
-                    React.createElement("h1", { className: "text-3xl md:text-5xl font-black mt-2" }, "\u628A\u559C\u6B61\u7684\u5287\u3001CP\u3001\u6210\u54E1\u8207\u5A03\u5A03\uFF0C\u653E\u9032\u540C\u4E00\u500B\u5B87\u5B99\u3002"),
-                    React.createElement("p", { className: "text-sm md:text-base opacity-80 mt-4 max-w-2xl" }, "\u8CC7\u6599\u7531 Google Sheets \u7BA1\u7406\uFF0C\u7DB2\u7AD9\u7531 GitHub Pages \u767C\u5E03\uFF0C\u900F\u904E Apps Script API \u540C\u6B65\u3002"),
-                    React.createElement("div", { className: "mt-6 flex flex-wrap gap-2" },
-                        React.createElement("button", { onClick: () => goTab('dramas'), className: "px-4 py-2.5 rounded-xl bg-white text-[#5C4033] text-sm font-semibold" }, "\uD83C\uDFAC \u958B\u59CB\u8FFD\u5287"),
-                        React.createElement("button", { onClick: openCalendar, className: "px-4 py-2.5 rounded-xl bg-white/15 border border-white/30 text-white text-sm" }, "\uD83D\uDDD3\uFE0F \u67E5\u770B\u64AD\u51FA\u6708\u66C6"))))),
-        React.createElement("section", { className: "grid grid-cols-2 md:grid-cols-4 gap-3 mb-6" }, [['劇集', stats.total, '🎬'], ['正在跟播', stats.airing, '📺'], ['待播', stats.upcoming, '⏳'], ['已完結', stats.ended, '✅'], ['Wishlist', stats.wishlist, '💗'], ['CP', stats.cps, '👩‍❤️‍👩'], ['成員', stats.members, '👤'], ['娃娃', stats.dolls, '🧸']].map(([l, n, ic]) => React.createElement("div", { key: l, className: "glass rounded-2xl p-4 shadow-soft" },
-            React.createElement("div", { className: "text-xl" }, ic),
-            React.createElement("div", { className: "text-2xl font-black text-[#5C4033] mt-1" }, n),
-            React.createElement("div", { className: "text-xs text-stone-400" }, l)))),
-        React.createElement("section", { className: "grid lg:grid-cols-3 gap-5 mb-6" },
-            React.createElement("div", { className: "lg:col-span-2 glass rounded-3xl p-5 shadow-soft" },
-                React.createElement(SectionHead, { title: "\uD83D\uDCFA \u64AD\u51FA\u6642\u9593\uFF0F\u66F4\u65B0\u6642\u9593", sub: "\u9810\u8A2D\u986F\u793A\u8FD1\u671F\u66F4\u65B0\uFF0C\u5B8C\u6574\u6708\u66C6\u53E6\u958B\u67E5\u770B", action: React.createElement("button", { onClick: openCalendar, className: "px-3.5 py-2 rounded-xl bg-[#5C4033] text-white text-xs" }, "\u67E5\u770B\u64AD\u51FA\u6708\u66C6") }),
-                upcoming.length ? upcoming.map(d => React.createElement("button", { key: d.id, onClick: () => openDrama(d), className: "w-full text-left flex items-center gap-3 p-3 rounded-2xl hover:bg-rose-50/70" },
-                    React.createElement("div", { className: "w-12 h-12 rounded-xl overflow-hidden bg-stone-100 shrink-0 flex items-center justify-center" }, d.poster_url ? React.createElement(RemoteImage, { src: d.poster_url, alt: titleOf(d), className: "w-full h-full object-cover" }) : React.createElement("span", { className: "text-lg" }, "\uD83C\uDFAC")),
-                    React.createElement("div", { className: "min-w-0 flex-1" },
-                        React.createElement("div", { className: "font-semibold truncate" }, titleOf(d)),
-                        React.createElement("div", { className: "text-xs text-stone-400" },
-                            d.cp_name || '未填 CP',
-                            " \u00B7 ",
-                            fmtDate(d.next),
-                            " ",
-                            fmtTime(d.air_time))),
-                    React.createElement(Tag, { className: statusClass(d.ststus_type) }, normalStatus(d.ststus_type)))) : React.createElement(Empty, { text: "\u76EE\u524D\u6C92\u6709\u53EF\u8A08\u7B97\u7684\u8FD1\u671F\u66F4\u65B0" })),
-            React.createElement("div", { className: "glass rounded-3xl p-5 shadow-soft" },
-                React.createElement(SectionHead, { title: "\uD83C\uDF37 \u6700\u8FD1\u9996\u64AD", sub: "\u4F9D premiere_date \u6392\u5E8F" }),
-                React.createElement("div", { className: "space-y-3" }, latest.length ? latest.map(d => React.createElement("button", { key: d.id, onClick: () => openDrama(d), className: "w-full text-left p-3 rounded-2xl bg-white/65 hover:bg-rose-50" },
-                    React.createElement("div", { className: "text-sm font-semibold truncate" }, titleOf(d)),
-                    React.createElement("div", { className: "text-[11px] text-stone-400 mt-1" },
-                        fmtDate(d.premiere_date),
-                        " \u00B7 ",
-                        d.cp_name || '未填 CP'))) : React.createElement(Empty, { text: "\u76EE\u524D\u6C92\u6709\u5287\u96C6" })))),
-        React.createElement("section", { className: "grid md:grid-cols-3 gap-5" },
-            React.createElement("div", { className: "glass rounded-3xl p-5" },
-                React.createElement(SectionHead, { title: "\uD83D\uDC69\u200D\u2764\uFE0F\u200D\uD83D\uDC69 CP", sub: "\u6700\u8FD1\u52A0\u5165", action: React.createElement("button", { onClick: () => goTab('actors'), className: "text-xs text-rose-500" }, "\u5168\u90E8 \u2192") }),
-                React.createElement("div", { className: "space-y-3" }, actors.slice(0, 4).map(a => React.createElement("button", { key: safeText(a.cp_name), onClick: () => openCP(a), className: "w-full text-left flex items-center gap-3 p-2 rounded-2xl hover:bg-rose-50" },
-                    React.createElement("div", { className: "w-10 h-10 rounded-xl overflow-hidden bg-stone-100 shrink-0" }, a.photo_url && React.createElement(RemoteImage, { src: a.photo_url, alt: a.cp_name, className: "w-full h-full object-cover" })),
-                    React.createElement("div", null,
-                        React.createElement("div", { className: "font-semibold text-sm" }, a.cp_name || '未命名 CP'),
-                        React.createElement("div", { className: "text-[11px] text-stone-400" },
-                            a.actor_1 || 'H',
-                            " \u00D7 ",
-                            a.actor_2 || 'Q')))))),
-            React.createElement("div", { className: "glass rounded-3xl p-5" },
-                React.createElement(SectionHead, { title: "\uD83D\uDC64 \u6536\u85CF\u6210\u54E1", sub: "\u6211\u7684\u6536\u85CF", action: React.createElement("button", { onClick: () => goTab('members'), className: "text-xs text-rose-500" }, "\u5168\u90E8 \u2192") }),
-                React.createElement("div", { className: "grid grid-cols-2 gap-3" }, members.filter(m => bool(m.my_favorite)).slice(0, 4).map(m => React.createElement("button", { key: m.member_id, onClick: () => openMember(m), className: "p-3 rounded-2xl bg-white/65 text-left hover:bg-rose-50" },
-                    React.createElement("div", { className: "w-14 h-14 rounded-2xl overflow-hidden bg-stone-100 mb-2" }, m.photo_url && React.createElement(RemoteImage, { src: m.photo_url, alt: m.display_name, className: "w-full h-full object-cover" })),
-                    React.createElement("div", { className: "text-xs font-semibold truncate" }, m.display_name || m.name_zh || m.name_en))))),
-            React.createElement("div", { className: "glass rounded-3xl p-5" },
-                React.createElement(SectionHead, { title: "\uD83E\uDDF8 \u5A03\u5A03", sub: "\u6700\u8FD1\u7BA1\u7406", action: React.createElement("button", { onClick: () => goTab('dolls'), className: "text-xs text-rose-500" }, "\u5168\u90E8 \u2192") }),
-                React.createElement("div", { className: "space-y-3" }, dolls.slice(0, 4).map(d => React.createElement("button", { key: d.doll_id, onClick: () => openDoll(d), className: "w-full text-left flex items-center gap-3 p-2 rounded-2xl hover:bg-rose-50" },
-                    React.createElement("div", { className: "w-12 h-12 rounded-xl overflow-hidden bg-stone-100" }, d.photo_url && React.createElement(RemoteImage, { src: d.photo_url, alt: d.doll_name, className: "w-full h-full object-cover" })),
-                    React.createElement("div", { className: "min-w-0" },
-                        React.createElement("div", { className: "font-semibold text-sm truncate" }, d.doll_name || '未命名娃娃'),
-                        React.createElement("div", { className: "text-[11px] text-stone-400 truncate" }, d.owner_member_id || '未指定成員'))))))));
-}
-function DramaSection({ dramas, years, openDrama, onEdit, onAdd }) { const [year, setYear] = useState('全部'), [status, setStatus] = useState('全部'), [view, setView] = useState('cards'); const filtered = useMemo(() => dramas.filter(d => { const y = parseDate(d.premiere_date)?.getFullYear(); return (year === '全部' || String(y) === String(year)) && (status === '全部' || normalStatus(d.ststus_type) === status); }), [dramas, year, status]); const groups = useMemo(() => { const map = {}; filtered.forEach(d => { const y = parseDate(d.premiere_date)?.getFullYear() || '未分類'; (map[y] ?? (map[y] = [])).push(d); }); return Object.entries(map).sort((a, b) => String(b[0]).localeCompare(String(a[0]))); }, [filtered]); return React.createElement("section", null,
-    React.createElement(SectionHead, { title: "\uD83C\uDFAC \u5287\u96C6\u8CC7\u6599\u5EAB", sub: `${filtered.length} 部 · 可依年份／狀態瀏覽`, action: React.createElement("button", { onClick: onAdd, className: "px-4 py-2.5 rounded-xl bg-[#5C4033] text-white text-sm" }, "\uFF0B \u65B0\u589E\u5287\u96C6") }),
-    React.createElement("div", { className: "glass rounded-2xl p-3 mb-4 flex flex-wrap gap-2" },
-        React.createElement("select", { value: year, onChange: e => setYear(e.target.value), className: "px-3 py-2 rounded-xl border border-rose-100 bg-white text-sm" }, years.map(y => React.createElement("option", { key: y }, y))),
-        React.createElement("select", { value: status, onChange: e => setStatus(e.target.value), className: "px-3 py-2 rounded-xl border border-rose-100 bg-white text-sm" },
-            React.createElement("option", null, "\u5168\u90E8"),
-            STATUS.map(s => React.createElement("option", { key: s }, s))),
-        React.createElement("button", { onClick: () => setView(view === 'cards' ? 'timeline' : 'cards'), className: "px-3 py-2 rounded-xl border border-rose-100 bg-white text-sm" }, view === 'cards' ? '時間軸' : '卡片')),
-    view === 'cards' ? React.createElement("div", { className: "space-y-6" },
-        groups.map(([y, rows]) => React.createElement("div", { key: y },
-            React.createElement("h3", { className: "font-black text-[#5C4033] mb-3" }, y),
-            React.createElement("div", { className: "grid sm:grid-cols-2 lg:grid-cols-3 gap-4" }, rows.map(d => React.createElement(DramaCard, { key: d.id, drama: d, onOpen: () => openDrama(d), onEdit: () => onEdit(d) }))))),
-        !filtered.length && React.createElement(Empty, { text: "\u6C92\u6709\u7B26\u5408\u689D\u4EF6\u7684\u5287\u96C6" })) : React.createElement(Timeline, { dramas: filtered, openDrama: openDrama })); }
-function DramaCard({ drama, onOpen, onEdit }) { const next = nextAir(drama); const prog = Math.max(num(drama.my_progress), num(drama.friend_progress)); return React.createElement("div", { className: "glass rounded-3xl overflow-hidden shadow-soft group" },
-    React.createElement("button", { onClick: onOpen, className: "w-full text-left" },
-        React.createElement("div", { className: "h-52 bg-stone-100 relative overflow-hidden" },
-            drama.poster_url ? React.createElement(RemoteImage, { src: drama.poster_url, alt: titleOf(drama), className: "w-full h-full object-cover group-hover:scale-[1.02] transition" }) : React.createElement("div", { className: "h-full flex items-center justify-center text-stone-300 text-4xl" }, "\uD83C\uDFAC"),
-            React.createElement("div", { className: "absolute left-3 top-3" },
-                React.createElement(Tag, { className: statusClass(drama.ststus_type) }, normalStatus(drama.ststus_type))),
-            React.createElement("div", { className: "absolute right-3 top-3" },
-                React.createElement(Tag, { className: "bg-white/85 text-stone-600" },
-                    prog || 0,
-                    "/",
-                    num(drama.total_episodes) || '—'))),
-        React.createElement("div", { className: "p-4" },
-            React.createElement("div", { className: "font-bold text-lg truncate" }, titleOf(drama)),
-            React.createElement("div", { className: "text-xs text-stone-400 mt-1 truncate" },
-                drama.title_th || '',
-                " \u00B7 ",
-                drama.cp_name || '未填 CP'),
-            React.createElement("div", { className: "text-xs text-stone-500 mt-3" },
-                "\u9996\u64AD ",
-                fmtDate(drama.premiere_date),
-                " \u00B7 ",
-                fmtTime(drama.air_time)),
-            next && React.createElement("div", { className: "text-xs text-rose-500 mt-1" },
-                "\u4E0B\u4E00\u96C6\uFF1A",
-                fmtDate(next),
-                " ",
-                fmtTime(drama.air_time)))),
-    React.createElement("div", { className: "px-4 pb-4" },
-        React.createElement("button", { onClick: onEdit, className: "w-full px-3 py-2 rounded-xl bg-stone-50 text-xs text-stone-600" }, "\u270F\uFE0F \u7DE8\u8F2F\u5287\u96C6"))); }
-function Timeline({ dramas, openDrama }) { const rows = [...dramas].sort((a, b) => (parseDate(a.premiere_date) || 0) - (parseDate(b.premiere_date) || 0)); return React.createElement("div", { className: "relative py-2" },
-    React.createElement("div", { className: "timeline-line" }),
-    rows.map((d, i) => React.createElement("div", { key: d.id, className: `timeline-item relative mb-5 ${i % 2 ? 'right' : ''}` },
-        React.createElement("span", { className: "timeline-dot" }),
-        React.createElement("button", { onClick: () => openDrama(d), className: "w-full text-left glass rounded-2xl p-4 shadow-soft hover:-translate-y-0.5 transition" },
-            React.createElement("div", { className: "text-xs text-stone-400" },
-                fmtDate(d.premiere_date),
-                " \u00B7 ",
-                d.air_day_of_week || '',
-                " ",
-                d.air_time || ''),
-            React.createElement("div", { className: "font-bold mt-1" }, titleOf(d)),
-            React.createElement("div", { className: "text-xs text-stone-500 mt-1" },
-                d.cp_name || '未填 CP',
-                " \u00B7 ",
-                normalStatus(d.ststus_type)))))); }
-function WishlistSection({ dramas, wishlist, openDrama, onSave, onEdit, onAdd, onDelete }) { const dramaMap = useMemo(() => Object.fromEntries(dramas.map(d => [safeText(d.id), d])), [dramas]); const rows = wishlist.map(w => ({ ...w, _drama: dramaMap[safeText(w.drama_id)] })); const [dicePick, setDicePick] = useState(null); function rollDice() { const pool = rows.filter(w => w._drama && !['已看完', '完成', '看完'].includes(safeText(w.wishlist_status)) && !['已看完', '棄坑'].includes(safeText(w.my_status))); if (!pool.length) {
-    alert('目前沒有可抽選的 Wishlist 劇集');
-    return;
-} const pick = pool[Math.floor(Math.random() * pool.length)]; setDicePick(pick); } return React.createElement("section", null,
-    React.createElement(SectionHead, { title: "\uD83D\uDC97 Wishlist", sub: "\u4EE5 drama_id \u95DC\u806F\u5287\u96C6\uFF0C\u4E0D\u91CD\u8907\u5132\u5B58\u5287\u540D\uFF0F\u6D77\u5831\uFF0FCP", action: React.createElement("div", { className: "flex flex-wrap gap-2" },
-            React.createElement("button", { onClick: rollDice, className: "px-4 py-2.5 rounded-xl bg-amber-100 text-amber-800 text-sm" }, "\uD83C\uDFB2 \u5E6B\u6211\u6C7A\u5B9A\u770B\u54EA\u90E8"),
-            React.createElement("button", { onClick: onAdd, className: "px-4 py-2.5 rounded-xl bg-[#5C4033] text-white text-sm" }, "\uFF0B \u65B0\u589E\u6E05\u55AE")) }),
-    dicePick && React.createElement("div", { className: "mb-4 rounded-3xl p-4 md:p-5 flex flex-col sm:flex-row sm:items-center gap-3 border border-amber-200 bg-amber-50" },
-        React.createElement("div", { className: "text-3xl" }, "\uD83C\uDFB2"),
-        React.createElement("div", { className: "flex-1" },
-            React.createElement("div", { className: "text-xs text-amber-700" }, "\u547D\u904B\u9078\u4E2D\u7684\u4E0B\u4E00\u90E8"),
-            React.createElement("div", { className: "font-bold text-lg" }, titleOf(dicePick._drama)),
-            React.createElement("div", { className: "text-xs text-stone-500" }, dicePick._drama.cp_name || '未填 CP')),
-        React.createElement("button", { onClick: () => openDrama(dicePick._drama), className: "px-4 py-2 rounded-xl bg-[#5C4033] text-white text-sm" }, "\u6253\u958B\u5287\u96C6"),
-        React.createElement("button", { onClick: rollDice, className: "px-3 py-2 rounded-xl bg-white border border-amber-200 text-sm" }, "\u518D\u62BD\u4E00\u6B21")),
-    React.createElement("div", { className: "grid md:grid-cols-2 lg:grid-cols-3 gap-4" },
-        rows.map((w, i) => React.createElement("div", { key: `${w.drama_id}_${w.owner}_${i}`, className: "glass rounded-3xl p-4 shadow-soft" },
-            React.createElement("div", { className: "flex gap-3" },
-                React.createElement("div", { className: "w-20 h-28 rounded-xl overflow-hidden bg-stone-100 shrink-0" }, w._drama?.poster_url && React.createElement(RemoteImage, { src: w._drama.poster_url, alt: titleOf(w._drama), className: "w-full h-full object-cover" })),
-                React.createElement("div", { className: "min-w-0 flex-1" },
-                    React.createElement("div", { className: "font-bold truncate" }, w._drama ? titleOf(w._drama) : `找不到劇集：${w.drama_id}`),
-                    React.createElement("div", { className: "text-xs text-stone-400 mt-1" },
-                        w._drama?.cp_name || '未填 CP',
-                        " \u00B7 ",
-                        w.owner || '未指定'),
-                    React.createElement("div", { className: "mt-3 flex flex-wrap gap-1" },
-                        React.createElement(Tag, { className: w.my_want ? 'bg-rose-100 text-rose-600' : 'bg-stone-100 text-stone-400' },
-                            "\u6211\uFF1A",
-                            bool(w.my_want) ? '想看' : '—'),
-                        React.createElement(Tag, { className: w.friend_want ? 'bg-indigo-100 text-indigo-600' : 'bg-stone-100 text-stone-400' },
-                            "\u670B\u53CB\uFF1A",
-                            bool(w.friend_want) ? '想看' : '—'),
-                        React.createElement(Tag, { className: "bg-amber-100 text-amber-600" }, w.priority || '想看')),
-                    React.createElement("div", { className: "text-[11px] text-stone-400 mt-3" },
-                        w.wishlist_status || '待看',
-                        " \u00B7 \u8A08\u756B\uFF1A",
-                        fmtDate(w.planned_watch_date) || '—'))),
-            w._drama && React.createElement("button", { onClick: () => openDrama(w._drama), className: "w-full mt-3 px-3 py-2 rounded-xl bg-white text-xs border border-rose-100" }, "\u67E5\u770B\u5287\u96C6"),
-            React.createElement("div", { className: "grid grid-cols-2 gap-2 mt-2" },
-                React.createElement("button", { onClick: () => onEdit(w), className: "px-3 py-2 rounded-xl bg-stone-50 text-xs" }, "\u270F\uFE0F \u7DE8\u8F2F"),
-                React.createElement("button", { onClick: () => onDelete(w), className: "px-3 py-2 rounded-xl bg-rose-50 text-rose-600 text-xs" }, "\uD83D\uDDD1\uFE0F \u522A\u9664")))),
-        !rows.length && React.createElement("div", { className: "lg:col-span-3" },
-            React.createElement(Empty, { text: "Wishlist \u76EE\u524D\u6C92\u6709\u8CC7\u6599" })))); }
-function CPSection({ actors, members, dolls, openCP, onAdd, onEdit }) { return React.createElement("section", null,
-    React.createElement(SectionHead, { title: "\uD83D\uDC69\u200D\u2764\uFE0F\u200D\uD83D\uDC69 CP \u5C08\u5340", sub: "CP \u5361\u7247\u4F9D H\uFF0FQ \u6210\u54E1\u300C\u61C9\u63F4\u8272\u300D\u81EA\u52D5\u7522\u751F\u96D9\u8272\u6F38\u5C64\uFF1B\u559C\u6B61\u7684\u984F\u8272\u7368\u7ACB\u4FDD\u5B58", action: React.createElement("button", { onClick: onAdd, className: "px-4 py-2.5 rounded-xl bg-[#5C4033] text-white text-sm" }, "\uFF0B \u65B0\u589E CP") }),
-    React.createElement("div", { className: "grid sm:grid-cols-2 lg:grid-cols-3 gap-4" }, actors.map(a => { const m1 = members.find(m => safeText(m.member_id) === safeText(a.member_1_id)), m2 = members.find(m => safeText(m.member_id) === safeText(a.member_2_id)); const c1 = colorOr(m1?.support_color, H_COLOR), c2 = colorOr(m2?.support_color, Q_COLOR); return React.createElement("div", { key: safeText(a.cp_name), className: "glass rounded-3xl overflow-hidden shadow-soft" },
-        React.createElement("button", { onClick: () => openCP(a), className: "w-full text-left" },
-            React.createElement("div", { className: "h-2", style: { background: `linear-gradient(135deg,${c1},${c2})` } }),
-            React.createElement("div", { className: "p-5" },
-                React.createElement("div", { className: "flex items-start gap-3" },
-                    React.createElement("div", { className: "w-20 h-20 rounded-2xl overflow-hidden bg-stone-100 shrink-0" }, a.photo_url && React.createElement(RemoteImage, { src: a.photo_url, alt: a.cp_name, className: "w-full h-full object-cover" })),
-                    React.createElement("div", { className: "min-w-0" },
-                        React.createElement("div", { className: "font-black text-lg truncate" }, a.cp_name || '未命名 CP'),
-                        React.createElement("div", { className: "text-xs text-stone-500 mt-1" },
-                            a.actor_1 || 'H',
-                            " \u00D7 ",
-                            a.actor_2 || 'Q'),
-                        React.createElement("div", { className: "mt-2" },
-                            React.createElement(Tag, { className: "bg-white text-stone-500 border border-stone-100" }, a.cp_status || '未填現況')))),
-                React.createElement("div", { className: "mt-4 h-2 rounded-full", style: { background: `linear-gradient(90deg,${c1},${c2})` } }),
-                React.createElement("div", { className: "mt-3 text-xs text-stone-500" }, a.representative_work || a.first_work || '尚未填代表作品'))),
-        React.createElement("div", { className: "px-5 pb-5" },
-            React.createElement("button", { onClick: () => onEdit(a), className: "w-full px-3 py-2 rounded-xl bg-stone-50 text-xs text-stone-600" }, "\u270F\uFE0F \u7DE8\u8F2F CP\uFF0FH\uFF0FQ"))); })),
-    !actors.length && React.createElement(Empty, { text: "CP \u76EE\u524D\u6C92\u6709\u8CC7\u6599" })); }
-function MembersSection({ members, actors, dolls, openMember, openDoll, onEdit }) { return React.createElement("section", null,
-    React.createElement(SectionHead, { title: "\uD83D\uDC64 \u6210\u54E1\u8CC7\u6599\u5EAB", sub: "\u6210\u54E1\u4E0D\u55AE\u7368\u65B0\u589E\uFF1B\u65B0\u589E\u6210\u54E1\u8ACB\u5F9E CP \u7DE8\u8F2F\u5EFA\u7ACB H\uFF0FQ" }),
-    React.createElement("div", { className: "grid sm:grid-cols-2 lg:grid-cols-4 gap-4" }, members.map(m => { const cp = actors.find(a => safeText(a.member_1_id) === safeText(m.member_id) || safeText(a.member_2_id) === safeText(m.member_id)); const count = dolls.filter(d => safeText(d.owner_member_id) === safeText(m.member_id)).length; return React.createElement("div", { key: m.member_id, className: "glass rounded-3xl p-4 shadow-soft" },
-        React.createElement("button", { onClick: () => openMember(m), className: "w-full text-left" },
-            React.createElement("div", { className: "w-full aspect-square rounded-2xl overflow-hidden bg-stone-100" }, m.photo_url && React.createElement(RemoteImage, { src: m.photo_url, alt: m.display_name || m.name_zh, className: "w-full h-full object-cover" })),
-            React.createElement("div", { className: "mt-3 flex items-center gap-2" },
-                React.createElement("span", { className: "w-3 h-3 rounded-full", style: { background: colorOr(m.support_color, Q_COLOR) } }),
-                React.createElement("div", { className: "font-bold truncate" }, m.display_name || m.name_zh || m.name_en || m.member_id)),
-            React.createElement("div", { className: "text-xs text-stone-400 mt-1 truncate" }, m.name_th || m.name_en || ''),
-            React.createElement("div", { className: "mt-3 flex flex-wrap gap-1" },
-                React.createElement(Tag, { className: "bg-stone-100 text-stone-500" },
-                    "CP\uFF1A",
-                    cp?.cp_name || '—'),
-                React.createElement(Tag, { className: "bg-amber-50 text-amber-700" },
-                    "\u5A03\u5A03\uFF1A",
-                    count))),
-        React.createElement("button", { onClick: () => onEdit(m), className: "w-full mt-3 px-3 py-2 rounded-xl bg-stone-50 text-xs" }, "\u270F\uFE0F \u7DE8\u8F2F\u6210\u54E1")); })),
-    !members.length && React.createElement(Empty, { text: "Members \u76EE\u524D\u6C92\u6709\u8CC7\u6599" })); }
-function DollsSection({ dolls, members, openDoll, onAdd, onEdit, onDelete }) { const names = Object.fromEntries(members.map(m => [safeText(m.member_id), m.display_name || m.name_zh || m.name_en || m.member_id])); return React.createElement("section", null,
-    React.createElement(SectionHead, { title: "\uD83E\uDDF8 \u5A03\u5A03", sub: "\u6BCF\u500B\u5A03\u5A03\u900F\u904E owner_member_id \u95DC\u806F\u6210\u54E1", action: React.createElement("button", { onClick: onAdd, className: "px-4 py-2.5 rounded-xl bg-[#5C4033] text-white text-sm" }, "\uFF0B \u65B0\u589E\u5A03\u5A03") }),
-    React.createElement("div", { className: "grid sm:grid-cols-2 lg:grid-cols-4 gap-4" }, dolls.map(d => React.createElement("div", { key: d.doll_id, className: "glass rounded-3xl p-4 shadow-soft" },
-        React.createElement("button", { onClick: () => openDoll(d), className: "w-full text-left" },
-            React.createElement("div", { className: "aspect-square rounded-2xl overflow-hidden bg-stone-100" }, d.photo_url && React.createElement(RemoteImage, { src: d.photo_url, alt: d.doll_name, className: "w-full h-full object-cover" })),
-            React.createElement("div", { className: "font-bold mt-3" }, d.doll_name || '未命名娃娃'),
-            React.createElement("div", { className: "text-xs text-stone-400 mt-1" }, names[d.owner_member_id] || d.owner_member_id || '未指定成員'),
-            React.createElement("div", { className: "mt-2 flex gap-1" },
-                React.createElement(Tag, { className: "bg-violet-100 text-violet-700" }, d.doll_type || '未分類'),
-                d.doll_color && React.createElement(Tag, { className: "bg-stone-100 text-stone-500" }, d.doll_color))),
-        React.createElement("div", { className: "grid grid-cols-2 gap-2 mt-3" },
-            React.createElement("button", { onClick: () => onEdit(d), className: "px-3 py-2 rounded-xl bg-stone-50 text-xs" }, "\u270F\uFE0F \u7DE8\u8F2F"),
-            React.createElement("button", { onClick: () => onDelete(d), className: "px-3 py-2 rounded-xl bg-rose-50 text-rose-600 text-xs" }, "\uD83D\uDDD1\uFE0F \u522A\u9664"))))),
-    !dolls.length && React.createElement(Empty, { text: "Dolls \u76EE\u524D\u6C92\u6709\u8CC7\u6599" })); }
-function SchedulePage({ dramas, openDrama, openCalendar }) { const rows = useMemo(() => dramas.map(d => ({ ...d, next: nextAir(d) })).filter(d => d.next).sort((a, b) => a.next - b.next).slice(0, 20), [dramas]); return React.createElement("section", null,
-    React.createElement(SectionHead, { title: "\uD83D\uDDD3\uFE0F \u64AD\u51FA\u6642\u9593\uFF0F\u66F4\u65B0\u6642\u9593", sub: "\u6839\u64DA premiere_date\u3001air_day_of_week\u3001air_time\u3001total_episodes \u8A08\u7B97", action: React.createElement("button", { onClick: openCalendar, className: "px-4 py-2.5 rounded-xl bg-[#5C4033] text-white text-sm" }, "\u67E5\u770B\u64AD\u51FA\u6708\u66C6") }),
-    React.createElement("div", { className: "grid md:grid-cols-2 gap-4" },
-        rows.map(d => React.createElement("button", { key: d.id, onClick: () => openDrama(d), className: "glass rounded-2xl p-4 text-left hover:-translate-y-0.5 transition shadow-soft" },
-            React.createElement("div", { className: "flex items-center justify-between gap-3" },
-                React.createElement("div", { className: "min-w-0" },
-                    React.createElement("div", { className: "font-bold truncate" }, titleOf(d)),
-                    React.createElement("div", { className: "text-xs text-stone-400 mt-1" },
-                        d.cp_name || '未填 CP',
-                        " \u00B7 ",
-                        d.air_day_of_week || '')),
-                React.createElement(Tag, { className: statusClass(d.ststus_type) }, normalStatus(d.ststus_type))),
-            React.createElement("div", { className: "mt-3 text-sm" },
-                React.createElement("span", { className: "text-stone-400" }, "\u4E0B\u4E00\u96C6"),
-                " ",
-                React.createElement("b", null, fmtDate(d.next)),
-                " \u00B7 ",
-                fmtTime(d.air_time)),
-            React.createElement("div", { className: "text-xs text-stone-400 mt-1" },
-                "\u7E3D\u96C6\u6578 ",
-                num(d.total_episodes) || '—',
-                " \u00B7 \u76EE\u524D\u6700\u9AD8\u9032\u5EA6 ",
-                Math.max(num(d.my_progress), num(d.friend_progress)) || 0))),
-        !rows.length && React.createElement("div", { className: "md:col-span-2" },
-            React.createElement(Empty, { text: "\u76EE\u524D\u6C92\u6709\u53EF\u4EE5\u8A08\u7B97\u4E0B\u4E00\u96C6\u7684\u5287\u96C6" })))); }
-function CalendarModal({ dramas, current, setCurrent, onClose, onOpenDrama }) {
-    useEscape(onClose);
-    const year = current.getFullYear(), month = current.getMonth();
-    const first = new Date(year, month, 1), days = new Date(year, month + 1, 0).getDate(), offset = first.getDay();
-    const daysArr = Array.from({ length: offset + days }, (_, i) => i < offset ? null : new Date(year, month, i - offset + 1));
-    const byDate = useMemo(() => { const map = {}; dramas.forEach(d => scheduleFor(d).forEach(x => { const k = isoDate(x.date); (map[k] ?? (map[k] = [])).push(x); })); Object.values(map).forEach(a => a.sort((x, y) => safeText(x.airTime).localeCompare(safeText(y.airTime)))); return map; }, [dramas]);
-    const [selected, setSelected] = useState(isoDate(new Date(year, month, 1)));
-    useEffect(() => { setSelected(isoDate(new Date(year, month, 1))); }, [year, month]);
-    const dayRows = byDate[selected] || [];
-    const years = Array.from(new Set([year, ...dramas.map(d => parseDate(d.premiere_date)?.getFullYear()).filter(Boolean)])).sort((a, b) => a - b);
-    function move(n) { setCurrent(new Date(year, month + n, 1)); }
-    function today() { const d = new Date(); setCurrent(new Date(d.getFullYear(), d.getMonth(), 1)); setSelected(isoDate(d)); }
-    return (React.createElement("div", { className: "fixed inset-0 z-[100] modal-backdrop p-0 md:p-5 flex items-center justify-center" },
-        React.createElement("div", { className: "modal-in mobile-full w-full md:max-w-6xl md:max-h-[92vh] bg-[#FDFBF7] md:rounded-3xl shadow-2xl overflow-hidden flex flex-col" },
-            React.createElement("div", { className: "p-4 border-b border-rose-100 bg-white/90 flex flex-wrap items-center gap-2" },
-                React.createElement("div", { className: "font-bold text-[#5C4033] mr-auto" }, "\uD83D\uDCC5 \u64AD\u51FA\u6708\u66C6"),
-                React.createElement("select", { value: year, onChange: e => setCurrent(new Date(Number(e.target.value), month, 1)), className: "px-2.5 py-2 rounded-xl border border-rose-100 bg-white text-sm" }, years.map(y => React.createElement("option", { key: y, value: y }, y))),
-                React.createElement("select", { value: month, onChange: e => setCurrent(new Date(year, Number(e.target.value), 1)), className: "px-2.5 py-2 rounded-xl border border-rose-100 bg-white text-sm" }, Array.from({ length: 12 }, (_, i) => React.createElement("option", { key: i, value: i },
-                    i + 1,
-                    " \u6708"))),
-                React.createElement("button", { onClick: today, className: "px-3 py-2 rounded-xl bg-stone-100 text-xs" }, "\u4ECA\u5929"),
-                React.createElement("button", { onClick: () => move(-1), className: "px-3 py-2 rounded-xl bg-white border border-rose-100" }, "\u2190"),
-                React.createElement("button", { onClick: () => move(1), className: "px-3 py-2 rounded-xl bg-white border border-rose-100" }, "\u2192"),
-                React.createElement("button", { onClick: onClose, className: "w-9 h-9 rounded-full bg-stone-100" }, "\u00D7")),
-            React.createElement("div", { className: "flex-1 overflow-y-auto p-4" },
-                React.createElement("div", { className: "text-lg font-black text-[#5C4033] mb-3" },
-                    year,
-                    " \u5E74 ",
-                    month + 1,
-                    " \u6708"),
-                React.createElement("div", { className: "grid lg:grid-cols-[1fr_320px] gap-5" },
-                    React.createElement("div", null,
-                        React.createElement("div", { className: "grid grid-cols-7 gap-1 mb-1" }, ['日', '一', '二', '三', '四', '五', '六'].map(x => React.createElement("div", { key: x, className: "text-[11px] text-stone-400 text-center py-2" }, x))),
-                        React.createElement("div", { className: "grid grid-cols-7 gap-1" }, daysArr.map((d, i) => {
-                            if (!d)
-                                return React.createElement("div", { key: `blank_${i}`, className: "min-h-20 md:min-h-24 rounded-xl" });
-                            const k = isoDate(d), items = byDate[k] || [], active = k === selected;
-                            return (React.createElement("button", { key: k, onClick: () => setSelected(k), className: `min-h-20 md:min-h-24 rounded-xl p-2 text-left border ${active ? 'border-[#D88A8A] bg-rose-50' : 'border-stone-100 bg-white'} hover:bg-rose-50/70` },
-                                React.createElement("div", { className: "flex items-center justify-between" },
-                                    React.createElement("span", { className: `text-xs font-bold ${d.getDay() === 0 || d.getDay() === 6 ? 'text-rose-400' : 'text-stone-500'}` }, d.getDate()),
-                                    items.length > 0 && React.createElement("span", { className: "text-[9px] px-1.5 py-0.5 rounded-full bg-[#5C4033] text-white" }, items.length)),
-                                React.createElement("div", { className: "mt-1 space-y-1" },
-                                    items.slice(0, 3).map(x => React.createElement("div", { key: `${x.drama.id}_${x.episode}`, className: "text-[9px] truncate text-stone-600" },
-                                        "EP",
-                                        x.episode,
-                                        " \u00B7 ",
-                                        titleOf(x.drama))),
-                                    items.length > 3 && React.createElement("div", { className: "text-[9px] text-rose-500" },
-                                        "\uFF0B",
-                                        items.length - 3))));
-                        }))),
-                    React.createElement("div", { className: "glass rounded-3xl p-4 h-fit" },
-                        React.createElement("div", { className: "text-sm font-bold text-[#5C4033]" },
-                            selected ? selected.replace(/-/g, '/') : '當日',
-                            " \u64AD\u51FA"),
-                        React.createElement("div", { className: "mt-3 space-y-2" }, dayRows.length ? dayRows.map(x => React.createElement("button", { key: `${x.drama.id}_${x.episode}`, onClick: () => onOpenDrama(x.drama), className: "w-full text-left p-3 rounded-2xl bg-white border border-rose-50 hover:bg-rose-50" },
-                            React.createElement("div", { className: "text-xs text-rose-500" },
-                                "EP.",
-                                x.episode,
-                                " \u00B7 ",
-                                x.airTime || '未設定時間'),
-                            React.createElement("div", { className: "font-semibold text-sm mt-1" }, titleOf(x.drama)),
-                            React.createElement("div", { className: "text-[11px] text-stone-400 mt-1" }, x.drama.cp_name || '未填 CP'))) : React.createElement("div", { className: "text-xs text-stone-400 py-8 text-center" }, "\u9019\u4E00\u5929\u6C92\u6709\u6392\u7A0B"))))))));
-}
-function DramaModal({ drama, onClose, onEdit, onWishlist, openCPName }) { useEscape(onClose); const [sourceVisible, setSourceVisible] = useState(false); const prog = Math.max(num(drama.my_progress), num(drama.friend_progress)); const total = num(drama.total_episodes); const next = nextAir(drama); const osts = getOSTs(drama); return React.createElement("div", { className: "fixed inset-0 z-[90] modal-backdrop p-0 md:p-5 flex items-center justify-center" },
-    React.createElement("div", { className: "modal-in mobile-full w-full md:max-w-5xl md:max-h-[92vh] bg-[#FDFBF7] md:rounded-3xl overflow-y-auto shadow-2xl" },
-        React.createElement("div", { className: "relative p-5 md:p-7" },
-            React.createElement("button", { onClick: onClose, className: "absolute right-4 top-4 w-9 h-9 rounded-full bg-white/90 border border-rose-100" }, "\u00D7"),
-            React.createElement("div", { className: "grid md:grid-cols-[220px_1fr] gap-5" },
-                React.createElement("div", null,
-                    React.createElement("div", { className: "rounded-3xl overflow-hidden bg-stone-100" }, drama.poster_url ? React.createElement(RemoteImage, { src: drama.poster_url, alt: titleOf(drama), className: "w-full aspect-[3/4] object-cover" }) : React.createElement("div", { className: "aspect-[3/4] flex items-center justify-center text-5xl text-stone-300" }, "\uD83C\uDFAC"))),
-                React.createElement("div", null,
-                    React.createElement("div", { className: "flex flex-wrap gap-2" },
-                        React.createElement(Tag, { className: statusClass(drama.ststus_type) }, normalStatus(drama.ststus_type)),
-                        drama.cp_name && React.createElement("button", { onClick: () => openCPName(drama.cp_name) },
-                            React.createElement(Tag, { className: "bg-white border border-rose-100 text-rose-500" },
-                                "\uD83D\uDC69\u200D\u2764\uFE0F\u200D\uD83D\uDC69 ",
-                                drama.cp_name))),
-                    React.createElement("h2", { className: "text-3xl font-black text-[#5C4033] mt-3" }, titleOf(drama)),
-                    React.createElement("div", { className: "text-sm text-stone-400 mt-1" }, drama.title_th || ''),
-                    React.createElement("div", { className: "mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2" },
-                        React.createElement(Info, { label: "\u9996\u64AD", value: fmtDate(drama.premiere_date) }),
-                        React.createElement(Info, { label: "\u661F\u671F", value: drama.air_day_of_week || '—' }),
-                        React.createElement(Info, { label: "\u6642\u9593", value: fmtTime(drama.air_time) }),
-                        React.createElement(Info, { label: "\u96C6\u6578", value: total || '—' })),
-                    React.createElement("div", { className: "mt-4 p-4 rounded-2xl bg-white border border-rose-50" },
-                        React.createElement("div", { className: "text-xs text-stone-400" }, "\u9032\u5EA6"),
-                        React.createElement("div", { className: "text-2xl font-black text-[#5C4033] mt-1" },
-                            prog || 0,
-                            " / ",
-                            total || '—'),
-                        next && React.createElement("div", { className: "text-xs text-rose-500 mt-1" },
-                            "\u4E0B\u4E00\u96C6\uFF1A",
-                            fmtDate(next),
-                            " ",
-                            fmtTime(drama.air_time))))),
-            React.createElement("div", { className: "mt-6 grid lg:grid-cols-2 gap-4" },
-                React.createElement("div", { className: "glass rounded-3xl p-4" },
-                    React.createElement("h3", { className: "font-bold" }, "\uD83D\uDCD6 \u5287\u60C5\u7C21\u4ECB"),
-                    React.createElement("p", { className: "text-sm leading-7 text-stone-600 whitespace-pre-wrap mt-2" }, drama.synopsis || '尚未填寫')),
-                React.createElement("div", { className: "glass rounded-3xl p-4" },
-                    React.createElement("h3", { className: "font-bold" }, "\uD83D\uDCF1 OTT"),
-                    drama.ott_platform || drama.ott_link ? React.createElement("div", { className: "mt-2 text-sm" },
-                        React.createElement("div", null, drama.ott_platform || '未填平台'),
-                        drama.ott_link && React.createElement("a", { href: drama.ott_link, target: "_blank", rel: "noopener noreferrer", className: "text-rose-500 break-all" }, "\u958B\u555F OTT \u9023\u7D50 \u2197")) : React.createElement("div", { className: "text-sm text-stone-400 mt-2" }, "\u5C1A\u672A\u586B\u5BEB"))),
-            React.createElement("div", { className: "grid lg:grid-cols-2 gap-4 mt-4" },
-                React.createElement(Review, { title: "\u6211\u7684\u7D00\u9304", status: drama.my_status, progress: drama.my_progress, rating: drama.my_rating, review: drama.my_review }),
-                React.createElement(Review, { title: "\u670B\u53CB\u7D00\u9304", status: drama.friend_status, progress: drama.friend_progress, rating: drama.friend_rating, review: drama.friend_review })),
-            React.createElement("div", { className: "glass rounded-3xl p-4 mt-4" },
-                React.createElement("h3", { className: "font-bold" }, "\uD83C\uDFB5 OST"),
-                osts.length ? React.createElement("div", { className: "mt-3 grid md:grid-cols-2 gap-2" }, osts.map((s, i) => React.createElement("div", { key: i, className: "p-3 rounded-2xl bg-white border border-rose-50" },
-                    React.createElement("div", { className: "text-sm font-semibold" }, s.name),
-                    s.link && React.createElement("a", { href: s.link, target: "_blank", rel: "noopener noreferrer", className: "text-xs text-rose-500 break-all" }, "\u958B\u555F\u6B4C\u66F2 \u2197")))) : React.createElement("div", { className: "text-sm text-stone-400 mt-2" }, "\u5C1A\u672A\u586B\u5BEB OST")),
-            React.createElement("div", { className: "flex flex-wrap gap-2 mt-5" },
-                React.createElement("button", { onClick: onEdit, className: "px-4 py-2.5 rounded-xl bg-[#5C4033] text-white text-sm" }, "\u270F\uFE0F \u7DE8\u8F2F"),
-                React.createElement("button", { onClick: () => onWishlist('我'), className: "px-4 py-2.5 rounded-xl bg-rose-50 text-rose-600 text-sm" }, "\uD83D\uDC97 \u52A0\u5165\u6211\u7684 Wishlist"),
-                React.createElement("button", { onClick: () => onWishlist('朋友'), className: "px-4 py-2.5 rounded-xl bg-indigo-50 text-indigo-600 text-sm" }, "\uD83D\uDC99 \u52A0\u5165\u670B\u53CB Wishlist"),
-                drama.source_link && React.createElement("button", { onClick: () => setSourceVisible(v => !v), className: "px-4 py-2.5 rounded-xl bg-stone-100 text-stone-600 text-sm" }, "\u4F86\u6E90"),
-                sourceVisible && React.createElement("a", { href: drama.source_link, target: "_blank", rel: "noopener noreferrer", className: "px-4 py-2.5 rounded-xl bg-white border border-stone-200 text-xs break-all" }, drama.source_link))))); }
-function Info({ label, value }) { return React.createElement("div", { className: "p-3 rounded-2xl bg-white border border-stone-100" },
-    React.createElement("div", { className: "text-[10px] text-stone-400" }, label),
-    React.createElement("div", { className: "text-sm font-semibold mt-1 truncate" }, value)); }
-function Review({ title, status, progress, rating, review }) { return React.createElement("div", { className: "glass rounded-3xl p-4" },
-    React.createElement("h3", { className: "font-bold" }, title),
-    React.createElement("div", { className: "grid grid-cols-3 gap-2 mt-3" },
-        React.createElement(Info, { label: "\u72C0\u614B", value: status || '—' }),
-        React.createElement(Info, { label: "\u9032\u5EA6", value: progress || 0 }),
-        React.createElement(Info, { label: "\u8A55\u5206", value: rating || '—' })),
-    React.createElement("p", { className: "text-sm text-stone-600 leading-6 mt-3 whitespace-pre-wrap" }, review || '尚未寫心得')); }
-function CPModal({ cp, members, dolls, onClose, onEdit, openMember, openDoll }) {
-    useEscape(onClose);
-    const m1 = members.find(m => safeText(m.member_id) === safeText(cp.member_1_id));
-    const m2 = members.find(m => safeText(m.member_id) === safeText(cp.member_2_id));
-    const c1 = colorOr(m1?.support_color, H_COLOR), c2 = colorOr(m2?.support_color, Q_COLOR);
-    const memberDolls = dolls.filter(d => [m1?.member_id, m2?.member_id].includes(d.owner_member_id));
-    return (React.createElement("div", { className: "fixed inset-0 z-[90] modal-backdrop p-0 md:p-5 flex items-center justify-center" },
-        React.createElement("div", { className: "modal-in mobile-full w-full md:max-w-5xl md:max-h-[92vh] bg-[#FDFBF7] md:rounded-3xl overflow-y-auto shadow-2xl" },
-            React.createElement("div", { className: "h-2", style: { background: `linear-gradient(90deg,${c1},${c2})` } }),
-            React.createElement("div", { className: "p-5 md:p-7 relative" },
-                React.createElement("button", { onClick: onClose, className: "absolute right-4 top-4 w-9 h-9 rounded-full bg-white border border-rose-100" }, "\u00D7"),
-                React.createElement("div", { className: "flex items-center gap-4" },
-                    React.createElement("div", { className: "w-24 h-24 rounded-3xl overflow-hidden bg-stone-100" }, cp.photo_url && React.createElement(RemoteImage, { src: cp.photo_url, alt: cp.cp_name, className: "w-full h-full object-cover" })),
-                    React.createElement("div", null,
-                        React.createElement("h2", { className: "text-3xl font-black text-[#5C4033]" }, cp.cp_name || '未命名 CP'),
-                        React.createElement("div", { className: "text-sm text-stone-500 mt-1" },
-                            cp.cp_name_th || '',
-                            " ",
-                            cp.cp_name_en ? `· ${cp.cp_name_en}` : ''),
-                        React.createElement("div", { className: "mt-2 flex flex-wrap gap-1" },
-                            React.createElement(Tag, { className: "bg-white border border-stone-100" }, cp.cp_status || '未填現況'),
-                            React.createElement(Tag, { className: "bg-white border border-stone-100" },
-                                "\u7D00\u5FF5\u65E5\uFF1A",
-                                fmtDate(cp.cp_anniversary))))),
-                React.createElement("div", { className: "mt-6 grid md:grid-cols-2 gap-4" },
-                    React.createElement(MemberMini, { role: "H", member: m1, color: c1, onClick: m1 ? () => openMember(m1) : null }),
-                    React.createElement(MemberMini, { role: "Q", member: m2, color: c2, onClick: m2 ? () => openMember(m2) : null })),
-                React.createElement("div", { className: "glass rounded-3xl p-4 mt-4" },
-                    React.createElement("h3", { className: "font-bold" }, "\uD83D\uDCDA CP \u8CC7\u8A0A"),
-                    React.createElement("div", { className: "grid md:grid-cols-2 gap-3 mt-3" },
-                        React.createElement(Info, { label: "\u958B\u59CB\u65E5\u671F", value: fmtDate(cp.cp_start_date) }),
-                        React.createElement(Info, { label: "\u9996\u6B21\u5408\u4F5C", value: cp.first_work || '—' }),
-                        React.createElement(Info, { label: "\u4EE3\u8868\u4F5C\u54C1", value: cp.representative_work || '—' }),
-                        React.createElement(Info, { label: "\u7D00\u5FF5\u65E5", value: fmtDate(cp.cp_anniversary) })),
-                    React.createElement("p", { className: "text-sm text-stone-600 leading-7 mt-3 whitespace-pre-wrap" }, cp.cp_description || '尚未填寫 CP 簡介'),
-                    cp.cp_note && React.createElement("p", { className: "text-xs text-stone-400 mt-3 whitespace-pre-wrap" },
-                        "\u5099\u8A3B\uFF1A",
-                        cp.cp_note)),
-                React.createElement("div", { className: "glass rounded-3xl p-4 mt-4" },
-                    React.createElement("h3", { className: "font-bold" }, "\uD83E\uDDF8 \u76F8\u95DC\u5A03\u5A03"),
-                    memberDolls.length ? React.createElement("div", { className: "grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3" }, memberDolls.map(d => React.createElement("button", { key: d.doll_id, onClick: () => openDoll(d), className: "p-3 rounded-2xl bg-white text-left border border-stone-100" },
-                        React.createElement("div", { className: "w-full h-24 rounded-xl overflow-hidden bg-stone-100" }, d.photo_url && React.createElement(RemoteImage, { src: d.photo_url, alt: d.doll_name, className: "w-full h-full object-cover" })),
-                        React.createElement("div", { className: "font-semibold text-sm mt-2" }, d.doll_name),
-                        React.createElement("div", { className: "text-[11px] text-stone-400" }, d.doll_type || '未分類')))) : React.createElement("div", { className: "text-sm text-stone-400 mt-2" }, "\u76EE\u524D\u6C92\u6709\u95DC\u806F\u5A03\u5A03")),
-                React.createElement("button", { onClick: onEdit, className: "mt-5 px-4 py-2.5 rounded-xl bg-[#5C4033] text-white text-sm" }, "\u270F\uFE0F \u7DE8\u8F2F CP\uFF0FH\uFF0FQ")))));
-}
-function MemberMini({ role, member, color, onClick }) { return React.createElement("button", { disabled: !member, onClick: onClick, className: "text-left glass rounded-3xl p-4 border-l-4", style: { borderLeftColor: color } },
-    React.createElement("div", { className: "text-[10px] font-black tracking-[.2em]", style: { color } },
-        " ",
-        role),
-    React.createElement("div", { className: "flex items-center gap-3 mt-2" },
-        React.createElement("div", { className: "w-16 h-16 rounded-2xl overflow-hidden bg-stone-100" }, member?.photo_url && React.createElement(RemoteImage, { src: member.photo_url, alt: member.display_name, className: "w-full h-full object-cover" })),
-        React.createElement("div", { className: "min-w-0" },
-            React.createElement("div", { className: "font-bold" }, member?.display_name || member?.name_zh || member?.name_en || '尚未建立成員'),
-            React.createElement("div", { className: "text-xs text-stone-400 truncate" }, member?.name_th || member?.name_en || ''),
-            React.createElement("div", { className: "flex flex-wrap gap-2 text-[11px] text-stone-500 mt-1" },
-                React.createElement("span", null, "\u61C9\u63F4\u8272"),
-                React.createElement("i", { className: "inline-block w-3 h-3 rounded-full", style: { background: member?.support_color || color } }),
-                React.createElement("span", null, "\u559C\u6B61\u8272"),
-                React.createElement("i", { className: "inline-block w-3 h-3 rounded-full", style: { background: member?.favorite_color || '#E8A5A5' } }))))); }
-function MemberModal({ member, actors, dolls, onClose, onEdit, openDoll }) {
-    useEscape(onClose);
-    const cp = actors.find(a => safeText(a.member_1_id) === safeText(member.member_id) || safeText(a.member_2_id) === safeText(member.member_id));
-    const md = dolls.filter(d => safeText(d.owner_member_id) === safeText(member.member_id));
-    const rows = ['support_color', 'favorite_color', 'name_zh', 'name_th', 'name_en', 'nickname', 'birth_date', 'birth_place', 'nationality', 'zodiac', 'height', 'weight', 'occupation', 'debut_year', 'company', 'agency', 'brand', 'representative_works', 'representative_roles', 'awards', 'hobby', 'skill', 'favorite_food', 'disliked_food', 'favorite_music', 'favorite_movie', 'pet', 'personality'];
-    return (React.createElement("div", { className: "fixed inset-0 z-[90] modal-backdrop p-0 md:p-5 flex items-center justify-center" },
-        React.createElement("div", { className: "modal-in mobile-full w-full md:max-w-5xl md:max-h-[92vh] bg-[#FDFBF7] md:rounded-3xl overflow-y-auto shadow-2xl" },
-            React.createElement("div", { className: "h-2", style: { background: colorOr(member.support_color, Q_COLOR) } }),
-            React.createElement("div", { className: "p-5 md:p-7 relative" },
-                React.createElement("button", { onClick: onClose, className: "absolute right-4 top-4 w-9 h-9 rounded-full bg-white border border-rose-100" }, "\u00D7"),
-                React.createElement("div", { className: "grid md:grid-cols-[200px_1fr] gap-5" },
-                    React.createElement("div", null,
-                        React.createElement("div", { className: "aspect-square rounded-3xl overflow-hidden bg-stone-100" }, member.photo_url && React.createElement(RemoteImage, { src: member.photo_url, alt: member.display_name, className: "w-full h-full object-cover" })),
-                        React.createElement("div", { className: "grid grid-cols-2 gap-2 mt-2" }, [member.photo_url_2, member.photo_url_3].map((u, i) => u ? React.createElement("div", { key: i, className: "aspect-square rounded-2xl overflow-hidden bg-stone-100" },
-                            React.createElement(RemoteImage, { src: u, alt: `${member.display_name} ${i + 2}`, className: "w-full h-full object-cover" })) : null))),
-                    React.createElement("div", null,
-                        React.createElement("div", { className: "flex items-center gap-2" },
-                            React.createElement("span", { className: "w-3 h-3 rounded-full", style: { background: colorOr(member.support_color, Q_COLOR) } }),
-                            React.createElement(Tag, { className: "bg-white border border-stone-100" }, bool(member.my_favorite) ? '💖 我的收藏' : '🤍 未收藏'),
-                            cp && React.createElement(Tag, { className: "bg-white border border-rose-100 text-rose-500" },
-                                "CP\uFF1A",
-                                cp.cp_name)),
-                        React.createElement("h2", { className: "text-3xl font-black text-[#5C4033] mt-2" }, member.display_name || member.name_zh || member.name_en),
-                        React.createElement("div", { className: "text-sm text-stone-400" },
-                            member.name_en || '',
-                            " ",
-                            member.name_th ? `· ${member.name_th}` : ''),
-                        React.createElement("div", { className: "mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2" }, rows.slice(0, 12).map(f => React.createElement(Info, { key: f, label: FIELD_LABELS[f] || f, value: member[f] || '—' }))))),
-                React.createElement("div", { className: "mt-5 grid lg:grid-cols-2 gap-4" },
-                    React.createElement("div", { className: "glass rounded-3xl p-4" },
-                        React.createElement("h3", { className: "font-bold" }, "\uD83D\uDCDD \u500B\u4EBA\u8CC7\u6599"),
-                        ['bio', 'personal_note', 'quote'].map(f => React.createElement("div", { key: f, className: "mt-3" },
-                            React.createElement("div", { className: "text-[10px] text-stone-400" }, FIELD_LABELS[f]),
-                            React.createElement("div", { className: "text-sm text-stone-600 leading-6 whitespace-pre-wrap" }, member[f] || '—')))),
-                    React.createElement("div", { className: "glass rounded-3xl p-4" },
-                        React.createElement("h3", { className: "font-bold" }, "\uD83D\uDD17 \u793E\u7FA4"),
-                        React.createElement("div", { className: "grid sm:grid-cols-2 gap-2 mt-3" }, ['instagram', 'x', 'tiktok', 'facebook', 'youtube', 'website'].map(f => member[f] ? React.createElement("a", { key: f, href: member[f], target: "_blank", rel: "noopener noreferrer", className: "p-3 rounded-2xl bg-white border border-stone-100 text-sm text-rose-500" },
-                            FIELD_LABELS[f],
-                            " \u2197") : null)),
-                        React.createElement("div", { className: "mt-4 grid grid-cols-2 gap-2" },
-                            React.createElement(Info, { label: "\u6536\u85CF\u65E5\u671F", value: fmtDate(member.favorite_date) })),
-                        React.createElement("p", { className: "text-sm text-stone-600 mt-3 whitespace-pre-wrap" }, member.my_note || '—'))),
-                React.createElement("div", { className: "glass rounded-3xl p-4 mt-4" },
-                    React.createElement("h3", { className: "font-bold" }, "\uD83E\uDDF8 \u5A03\u5A03"),
-                    md.length ? React.createElement("div", { className: "grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3" }, md.map(d => React.createElement("button", { key: d.doll_id, onClick: () => openDoll(d), className: "p-3 rounded-2xl bg-white text-left border border-stone-100" },
-                        React.createElement("div", { className: "h-24 rounded-xl overflow-hidden bg-stone-100" }, d.photo_url && React.createElement(RemoteImage, { src: d.photo_url, alt: d.doll_name, className: "w-full h-full object-cover" })),
-                        React.createElement("div", { className: "font-semibold mt-2" }, d.doll_name)))) : React.createElement("div", { className: "text-sm text-stone-400 mt-2" }, "\u76EE\u524D\u6C92\u6709\u5A03\u5A03")),
-                React.createElement("button", { onClick: onEdit, className: "mt-5 px-4 py-2.5 rounded-xl bg-[#5C4033] text-white text-sm" }, "\u270F\uFE0F \u7DE8\u8F2F\u6210\u54E1")))));
-}
-function DollModal({ doll, members, onClose, onEdit }) { useEscape(onClose); const owner = members.find(m => safeText(m.member_id) === safeText(doll.owner_member_id)); return React.createElement("div", { className: "fixed inset-0 z-[90] modal-backdrop p-0 md:p-5 flex items-center justify-center" },
-    React.createElement("div", { className: "modal-in mobile-full w-full md:max-w-2xl md:max-h-[92vh] bg-[#FDFBF7] md:rounded-3xl overflow-y-auto shadow-2xl" },
-        React.createElement("div", { className: "p-5 md:p-7 relative" },
-            React.createElement("button", { onClick: onClose, className: "absolute right-4 top-4 w-9 h-9 rounded-full bg-white border border-rose-100" }, "\u00D7"),
-            React.createElement("div", { className: "grid md:grid-cols-2 gap-5" },
-                React.createElement("div", { className: "aspect-square rounded-3xl overflow-hidden bg-stone-100" }, doll.photo_url && React.createElement(RemoteImage, { src: doll.photo_url, alt: doll.doll_name, className: "w-full h-full object-cover" })),
-                React.createElement("div", null,
-                    React.createElement("h2", { className: "text-2xl font-black text-[#5C4033]" }, doll.doll_name || '未命名娃娃'),
-                    React.createElement("div", { className: "mt-3 grid grid-cols-2 gap-2" },
-                        React.createElement(Info, { label: "\u6240\u5C6C\u6210\u54E1", value: owner?.display_name || owner?.name_zh || doll.owner_member_id || '—' }),
-                        React.createElement(Info, { label: "\u985E\u578B", value: doll.doll_type || '—' }),
-                        React.createElement(Info, { label: "\u984F\u8272", value: doll.doll_color || '—' }),
-                        React.createElement(Info, { label: "\u751F\u65E5", value: fmtDate(doll.birth_date) })),
-                    React.createElement("div", { className: "mt-4" },
-                        React.createElement("div", { className: "text-[10px] text-stone-400" }, "\u63CF\u8FF0"),
-                        React.createElement("p", { className: "text-sm text-stone-600 leading-6 whitespace-pre-wrap mt-1" }, doll.description || '—')),
-                    React.createElement("div", { className: "mt-4" },
-                        React.createElement("div", { className: "text-[10px] text-stone-400" }, "\u5099\u8A3B"),
-                        React.createElement("p", { className: "text-sm text-stone-600 leading-6 whitespace-pre-wrap mt-1" }, doll.note || '—')),
-                    React.createElement("button", { onClick: onEdit, className: "mt-5 px-4 py-2.5 rounded-xl bg-[#5C4033] text-white text-sm" }, "\u270F\uFE0F \u7DE8\u8F2F\u5A03\u5A03")))))); }
-function DataManager({ dramas, wishlist, actors, members, dolls, headers, onEdit, onAdd, onDelete }) { const [tab, setTab] = useState('dramas'); const configs = { dramas: { label: '劇集', rows: dramas, key: 'id', canAdd: true }, wishlist: { label: 'Wishlist', rows: wishlist, key: 'drama_id + owner', canAdd: true }, actors: { label: 'CP', rows: actors, key: 'cp_name', canAdd: true }, members: { label: 'Members', rows: members, key: 'member_id', canAdd: false }, dolls: { label: 'Dolls', rows: dolls, key: 'doll_id', canAdd: true } }; const c = configs[tab]; return React.createElement("section", null,
-    React.createElement(SectionHead, { title: "\u2699\uFE0F \u8CC7\u6599\u7BA1\u7406", sub: "\u76F4\u63A5\u67E5\u770B\u8207\u540C\u6B65 Google Sheets \u8CC7\u6599" }),
-    React.createElement("div", { className: "glass rounded-3xl p-4 shadow-soft" },
-        React.createElement("div", { className: "flex flex-wrap gap-2 mb-4" }, Object.entries(configs).map(([id, x]) => React.createElement("button", { key: id, onClick: () => setTab(id), className: `px-3.5 py-2 rounded-xl text-sm ${tab === id ? 'bg-[#5C4033] text-white' : 'bg-stone-50 text-stone-500'}` },
-            x.label,
-            " ",
-            React.createElement("span", { className: "opacity-70" },
-                "(",
-                x.rows.length,
-                ")")))),
-        React.createElement("div", { className: "overflow-x-auto" },
-            React.createElement("table", { className: "w-full text-sm" },
-                React.createElement("thead", null,
-                    React.createElement("tr", { className: "text-left text-stone-400 border-b border-stone-100" },
-                        React.createElement("th", { className: "py-3 pr-4" }, "\u8B58\u5225"),
-                        React.createElement("th", { className: "py-3 pr-4" }, "\u4E3B\u8981\u5167\u5BB9"),
-                        React.createElement("th", { className: "py-3 pr-4" }, "\u64CD\u4F5C"))),
-                React.createElement("tbody", null, c.rows.map((row, i) => React.createElement("tr", { key: i, className: "border-b border-stone-50" },
-                    React.createElement("td", { className: "py-3 pr-4 font-mono text-xs text-stone-400" }, tab === 'wishlist' ? `${row.drama_id} / ${row.owner || ''}` : row[c.key] || '—'),
-                    React.createElement("td", { className: "py-3 pr-4" }, managerSummary(tab, row)),
-                    React.createElement("td", { className: "py-3 pr-4" },
-                        React.createElement("div", { className: "flex gap-2" },
-                            React.createElement("button", { onClick: () => onEdit(tab, row), className: "px-3 py-1.5 rounded-lg bg-stone-50 text-xs" }, "\u7DE8\u8F2F"),
-                            React.createElement("button", { onClick: () => onDelete(tab, row), className: "px-3 py-1.5 rounded-lg bg-rose-50 text-rose-600 text-xs" }, "\u522A\u9664")))))))),
-        !c.rows.length && React.createElement("div", { className: "py-10 text-center text-sm text-stone-400" }, "\u6C92\u6709\u8CC7\u6599"),
-        c.canAdd && React.createElement("button", { onClick: () => onAdd(tab), className: "mt-4 px-4 py-2.5 rounded-xl bg-[#5C4033] text-white text-sm" },
-            "\uFF0B \u65B0\u589E",
-            c.label),
-        tab === 'members' && React.createElement("div", { className: "mt-4 text-xs text-stone-400" }, "Members \u4E0D\u63D0\u4F9B\u55AE\u7368\u65B0\u589E\uFF1B\u8ACB\u5F9E CP \u2192 \u7DE8\u8F2F CP\uFF0FH\uFF0FQ \u5EFA\u7ACB\u65B0\u6210\u54E1\u3002"))); }
-function managerSummary(tab, r) { if (tab === 'dramas')
-    return `${titleOf(r)} · ${r.cp_name || '未填 CP'} · ${normalStatus(r.ststus_type)}`; if (tab === 'wishlist')
-    return `${r.drama_id || ''} · ${r.owner || ''} · ${r.wishlist_status || '待看'}`; if (tab === 'actors')
-    return `${r.actor_1 || 'H'} × ${r.actor_2 || 'Q'} · ${r.cp_status || ''}`; if (tab === 'members')
-    return `${r.display_name || r.name_zh || r.name_en || ''} · ${r.company || r.agency || ''}`; return `${r.doll_name || ''} · ${r.owner_member_id || ''}`; }
-function EditorRouter({ editor, dramas, members, actors, dolls, headers, onClose, onSaved }) { if (editor.type === 'cp')
-    return React.createElement(CPEditor, { mode: editor.mode, row: editor.row, members: members, actors: actors, dolls: dolls, onClose: onClose, onSaved: onSaved }); if (editor.type === 'member')
-    return React.createElement(MemberEditor, { row: editor.row, actors: actors, dolls: dolls, onClose: onClose, onSaved: onSaved }); if (editor.type === 'doll')
-    return React.createElement(DollEditor, { mode: editor.mode, row: editor.row, members: members, onClose: onClose, onSaved: onSaved }); return React.createElement(GenericEditor, { sheet: editor.sheet, mode: editor.mode, row: editor.row || {}, headers: headers[editor.sheet] || [], dramas: dramas, members: members, onClose: onClose, onSaved: onSaved }); }
-function fieldInputType(f) { const s = f.toLowerCase(); if (s.includes('date'))
-    return 'date'; if (s.includes('progress') || s.includes('rating') || s === 'total_episodes' || s === 'debut_year' || s === 'height' || s === 'weight')
-    return 'number'; if (s.includes('url') || s.includes('link') || ['instagram', 'x', 'tiktok', 'facebook', 'youtube', 'website'].includes(s))
-    return 'url'; return 'text'; }
-function isLong(f) { return ['synopsis', 'description', 'note', 'my_review', 'friend_review', 'bio', 'personal_note', 'quote', 'cp_description', 'cp_note', 'representative_works', 'representative_roles', 'awards'].includes(f); }
-function BasicModal({ title, sub, children, onClose, wide = true }) { useEscape(onClose); return React.createElement("div", { className: "fixed inset-0 z-[100] modal-backdrop p-0 md:p-5 flex items-center justify-center" },
-    React.createElement("div", { className: `modal-in mobile-full w-full ${wide ? 'md:max-w-6xl' : 'md:max-w-2xl'} md:max-h-[92vh] bg-[#FDFBF7] md:rounded-3xl overflow-hidden shadow-2xl flex flex-col` },
-        React.createElement("div", { className: "p-4 border-b border-rose-100 bg-white/90 flex items-center gap-3" },
-            React.createElement("div", { className: "mr-auto" },
-                React.createElement("div", { className: "font-bold text-[#5C4033]" }, title),
-                sub && React.createElement("div", { className: "text-[11px] text-stone-400 mt-0.5" }, sub)),
-            React.createElement("button", { onClick: onClose, className: "w-9 h-9 rounded-full bg-stone-100" }, "\u00D7")),
-        children)); }
-function FormField({ field, value, onChange, locked = false, options }) { const type = fieldInputType(field), label = FIELD_LABELS[field] || field; const long = isLong(field); if (field === 'support_color' || field === 'favorite_color') {
-    const picked = COLOR_OPTIONS.some(c => c[1] === value) ? value : (field === 'support_color' ? H_COLOR : '#E8A5A5');
-    return React.createElement("div", null,
-        React.createElement("label", { className: "block text-xs text-stone-500 mb-1.5" }, label),
-        React.createElement("div", { className: "flex items-center gap-2" },
-            React.createElement("span", { className: "w-7 h-7 rounded-full border border-stone-200 shrink-0", style: { background: picked } }),
-            React.createElement("select", { disabled: locked, value: picked, onChange: e => onChange(e.target.value), className: "w-full px-3 py-2.5 rounded-xl bg-white border border-rose-100 outline-none" }, COLOR_OPTIONS.map(([name, hex]) => React.createElement("option", { key: hex, value: hex },
-                name,
-                " \u00B7 ",
-                hex)))));
-} if (options)
-    return React.createElement("div", null,
-        React.createElement("label", { className: "block text-xs text-stone-500 mb-1.5" }, label),
-        React.createElement("select", { disabled: locked, value: safeText(value), onChange: e => onChange(e.target.value), className: "w-full px-3 py-2.5 rounded-xl bg-white border border-rose-100 outline-none" },
-            React.createElement("option", { value: "" }, "\u8ACB\u9078\u64C7"),
-            options.map(o => React.createElement("option", { key: o }, o)))); return React.createElement("div", null,
-    React.createElement("label", { className: "block text-xs text-stone-500 mb-1.5" },
-        label,
-        locked && React.createElement("span", { className: "ml-1 text-stone-300" }, "\uD83D\uDD12")),
-    long ? React.createElement("textarea", { disabled: locked, value: value == null ? '' : String(value), onChange: e => onChange(e.target.value), rows: 4, className: "w-full px-3 py-2.5 rounded-xl bg-white border border-rose-100 outline-none resize-y" }) : React.createElement("input", { disabled: locked, type: type, value: type === 'date' ? isoDate(parseDate(value)) : (value == null ? '' : String(value)), onChange: e => onChange(e.target.value), className: "w-full px-3 py-2.5 rounded-xl bg-white border border-rose-100 outline-none" })); }
-function FormActions({ busy, mode, onClose }) { return React.createElement("div", { className: "mt-6 pt-4 border-t border-rose-100 flex flex-col-reverse sm:flex-row justify-end gap-2" },
-    React.createElement("button", { onClick: onClose, disabled: busy, className: "px-4 py-2.5 rounded-xl bg-stone-100 text-stone-600 text-sm" }, "\u53D6\u6D88"),
-    React.createElement("button", { type: "submit", disabled: busy, className: "px-5 py-2.5 rounded-xl bg-[#5C4033] text-white text-sm" }, busy ? '☁️ 同步中…' : mode === 'create' ? '＋ 新增並同步' : '💾 儲存並同步')); }
-function GenericEditor({ sheet, mode, row, headers, dramas, members, onClose, onSaved }) { const [data, setData] = useState({ ...row }); const [busy, setBusy] = useState(false); let fields = headers.filter(f => f && f !== 'trailer_link' && !/^song_\d+_type$/i.test(f)); if (sheet === 'dramas' && !fields.length)
-    fields = Object.keys(row); if (sheet === 'wishlist')
-    fields = WISHLIST_FIELDS.filter(f => headers.includes(f) || Object.prototype.hasOwnProperty.call(row, f)); function change(f, v) { setData(d => ({ ...d, [f]: v })); } async function submit(e) { e.preventDefault(); setBusy(true); try {
-    if (sheet === 'dramas' && mode === 'create' && !safeText(data.id))
-        data.id = `D${Date.now().toString(36).toUpperCase()}`;
-    if (sheet === 'wishlist') {
-        if (!safeText(data.drama_id))
-            throw new Error('Wishlist 必須填 drama_id');
-        if (!safeText(data.owner))
-            data.owner = '我';
-    }
-    await postJSON({ action: mode === 'create' ? 'createRecord' : 'updateRecord', sheet, keyField: sheet === 'wishlist' ? 'composite_drama_owner' : (sheet === 'actors' ? 'cp_name' : 'id'), keyValue: sheet === 'wishlist' ? { drama_id: data.drama_id, owner: data.owner } : data[sheet === 'actors' ? 'cp_name' : 'id'], record: data });
-    await onSaved(`${sheet === 'dramas' ? '劇集' : sheet === 'wishlist' ? 'Wishlist' : '資料'}已儲存`);
-}
-catch (err) {
-    alert(err.message || String(err));
-}
-finally {
-    setBusy(false);
-} } return React.createElement(BasicModal, { title: `${mode === 'create' ? '新增' : '編輯'} ${sheet === 'dramas' ? '劇集' : 'Wishlist'}`, sub: "\u4F7F\u7528 Google Apps Script API \u540C\u6B65 Google Sheets", onClose: onClose },
-    React.createElement("form", { onSubmit: submit, className: "overflow-y-auto p-4 md:p-6" },
-        React.createElement("div", { className: "grid md:grid-cols-2 gap-3" }, fields.map(f => f === 'drama_id' ? React.createElement("div", { key: f },
-            React.createElement("label", { className: "block text-xs text-stone-500 mb-1.5" }, "\u5287\u96C6"),
-            React.createElement("select", { value: safeText(data[f]), disabled: mode === 'edit', onChange: e => change(f, e.target.value), className: "w-full px-3 py-2.5 rounded-xl bg-white border border-rose-100" },
-                React.createElement("option", { value: "" }, "\u8ACB\u9078\u64C7\u5287\u96C6"),
-                dramas.map(d => React.createElement("option", { key: d.id, value: d.id },
-                    titleOf(d),
-                    " \u00B7 ",
-                    d.cp_name || '未填 CP')))) : React.createElement(FormField, { key: f, field: f, value: data[f], locked: f === 'id' || (mode === 'edit' && sheet === 'wishlist' && f === 'drama_id'), options: f === 'ststus_type' ? STATUS : f === 'my_status' || f === 'friend_status' ? ['未開始', '追劇中', '已看完', '暫停', '棄坑'] : null, onChange: v => change(f, v) }))),
-        React.createElement(FormActions, { busy: busy, mode: mode, onClose: onClose }))); }
-function CPEditor({ mode, row, members, actors, onClose, onSaved }) { const base = row || {}; const old1 = members.find(m => safeText(m.member_id) === safeText(base.member_1_id)) || {}; const old2 = members.find(m => safeText(m.member_id) === safeText(base.member_2_id)) || {}; const [cp, setCp] = useState({ ...base }); const [m1, setM1] = useState({ ...old1 }); const [m2, setM2] = useState({ ...old2 }); const [busy, setBusy] = useState(false); const memberDefaults = { support_color: H_COLOR, favorite_color: '#E8A5A5' }; useEffect(() => { if (!m1.member_id && mode === 'create')
-    setM1(x => ({ ...memberDefaults, ...x, display_name: x.display_name || 'H' })); if (!m2.member_id && mode === 'create')
-    setM2(x => ({ ...x, support_color: x.support_color || Q_COLOR, favorite_color: x.favorite_color || '#E8A5A5', display_name: x.display_name || 'Q' })); }, []); function upd(setter, f, v) { setter(x => ({ ...x, [f]: v })); } async function submit(e) { e.preventDefault(); if (!safeText(cp.cp_name))
-    return alert('請填 CP 名稱'); if (!safeText(m1.display_name) && !safeText(m1.name_zh))
-    return alert('請填 H 成員名稱'); if (!safeText(m2.display_name) && !safeText(m2.name_zh))
-    return alert('請填 Q 成員名稱'); if (safeText(m1.member_id) && safeText(m1.member_id) === safeText(m2.member_id))
-    return alert('H 與 Q 不能使用相同 member_id'); setBusy(true); try {
-    await postJSON({ action: 'saveCPBundle', original_cp_name: mode === 'edit' ? base.cp_name : '', actor: cp, member1: m1, member2: m2 });
-    await onSaved(mode === 'create' ? 'CP＋H＋Q 已建立' : 'CP＋H＋Q 已更新');
-}
-catch (err) {
-    alert(err.message || String(err));
-}
-finally {
-    setBusy(false);
-} } const c1 = colorOr(m1.support_color, H_COLOR), c2 = colorOr(m2.support_color, Q_COLOR); return React.createElement(BasicModal, { title: mode === 'create' ? '＋ 新增 CP' : '✏️ 編輯 CP', sub: "\u4E00\u6B21\u5132\u5B58 CP\uFF0BH\uFF0BQ\uFF0Cmember_id \u6703\u81EA\u52D5\u5EFA\u7ACB\u8207\u95DC\u806F", onClose: onClose },
-    React.createElement("form", { onSubmit: submit, className: "overflow-y-auto p-4 md:p-6" },
-        React.createElement("div", { className: "rounded-3xl p-4 md:p-5 mb-5", style: { background: `linear-gradient(135deg,${c1}16,${c2}16)`, border: `1px solid ${c1}33` } },
-            React.createElement("div", { className: "font-bold text-[#5C4033] mb-3" }, "CP \u57FA\u672C\u8CC7\u6599"),
-            React.createElement("div", { className: "grid md:grid-cols-2 gap-3" }, ACTOR_FIELDS.filter(f => !['actor_1', 'actor_2', 'member_1_id', 'member_2_id'].includes(f)).map(f => React.createElement(FormField, { key: f, field: f, value: cp[f], locked: f === 'cp_name' && mode === 'edit', options: f === 'cp_status' ? ['活躍', '暫停', '已結束', '其他'] : null, onChange: v => upd(setCp, f, v) })))),
-        React.createElement("div", { className: "grid md:grid-cols-2 gap-5" },
-            React.createElement(MemberEditorPanel, { title: "H\uFF0F\u6211", role: "H", data: m1, setData: setM1, color: c1 }),
-            React.createElement(MemberEditorPanel, { title: "Q\uFF0F\u670B\u53CB", role: "Q", data: m2, setData: setM2, color: c2 })),
-        React.createElement(FormActions, { busy: busy, mode: mode, onClose: onClose }))); }
-function MemberEditorPanel({ title, role, data, setData, color }) { const fields = MEMBER_FIELDS.filter(f => f !== 'member_id'); return React.createElement("div", { className: "glass rounded-3xl p-4 border-t-4", style: { borderTopColor: color } },
-    React.createElement("div", { className: "flex items-center gap-2 mb-4" },
-        React.createElement("span", { className: "w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black", style: { background: color } }, role),
-        React.createElement("div", { className: "font-bold" }, title),
-        data.member_id && React.createElement("div", { className: "ml-auto text-[10px] text-stone-400 font-mono" }, data.member_id)),
-    React.createElement("div", { className: "grid sm:grid-cols-2 gap-3" }, fields.map(f => React.createElement(FormField, { key: f, field: f, value: data[f], onChange: v => setData(x => ({ ...x, [f]: v })) })))); }
-function MemberEditor({ row, actors, dolls, onClose, onSaved }) { const cp = actors.find(a => safeText(a.member_1_id) === safeText(row.member_id) || safeText(a.member_2_id) === safeText(row.member_id)); const other = cp ? (safeText(cp.member_1_id) === safeText(row.member_id) ? cp.member_2_id : cp.member_1_id) : ''; const otherMember = ''; const [data, setData] = useState({ ...row }); const [busy, setBusy] = useState(false); async function submit(e) { e.preventDefault(); if (!safeText(data.member_id))
-    return alert('member_id 不可為空'); setBusy(true); try {
-    await postJSON({ action: 'upsertMember', record: data });
-    await onSaved('成員已更新');
-}
-catch (err) {
-    alert(err.message || String(err));
-}
-finally {
-    setBusy(false);
-} } return React.createElement(BasicModal, { title: "\u270F\uFE0F \u7DE8\u8F2F\u6210\u54E1", sub: cp ? `目前關聯 CP：${cp.cp_name}` : '未關聯 CP；此處只能編輯既有成員，不提供單獨新增', onClose: onClose },
-    React.createElement("form", { onSubmit: submit, className: "overflow-y-auto p-4 md:p-6" },
-        React.createElement("div", { className: "grid md:grid-cols-2 gap-3" }, MEMBER_FIELDS.map(f => React.createElement(FormField, { key: f, field: f, value: data[f], locked: f === 'member_id', onChange: v => setData(x => ({ ...x, [f]: v })) }))),
-        React.createElement(FormActions, { busy: busy, mode: "edit", onClose: onClose }))); }
-function DollEditor({ mode, row, members, onClose, onSaved }) { const [data, setData] = useState({ ...row }); const [busy, setBusy] = useState(false); async function submit(e) { e.preventDefault(); if (!safeText(data.doll_name))
-    return alert('請填娃娃名稱'); if (!safeText(data.owner_member_id))
-    return alert('請指定所屬成員'); if (mode === 'create' && !safeText(data.doll_id))
-    data.doll_id = `DL${Date.now().toString(36).toUpperCase()}`; setBusy(true); try {
-    await postJSON({ action: mode === 'create' ? 'createRecord' : 'updateRecord', sheet: 'dolls', keyField: 'doll_id', keyValue: data.doll_id, record: data });
-    await onSaved('娃娃已儲存');
-}
-catch (err) {
-    alert(err.message || String(err));
-}
-finally {
-    setBusy(false);
-} } return React.createElement(BasicModal, { title: `${mode === 'create' ? '＋ 新增' : '✏️ 編輯'} 娃娃`, sub: "\u4F7F\u7528 owner_member_id \u8207\u6210\u54E1\u5EFA\u7ACB\u95DC\u806F", onClose: onClose, wide: false },
-    React.createElement("form", { onSubmit: submit, className: "overflow-y-auto p-4 md:p-6" },
-        React.createElement("div", { className: "grid gap-3" },
-            React.createElement(FormField, { field: "doll_id", value: data.doll_id, locked: mode === 'edit', onChange: v => setData(x => ({ ...x, doll_id: v })) }),
-            React.createElement(FormField, { field: "doll_name", value: data.doll_name, onChange: v => setData(x => ({ ...x, doll_name: v })) }),
-            React.createElement("div", null,
-                React.createElement("label", { className: "block text-xs text-stone-500 mb-1.5" }, "\u6240\u5C6C\u6210\u54E1"),
-                React.createElement("select", { value: safeText(data.owner_member_id), onChange: e => setData(x => ({ ...x, owner_member_id: e.target.value })), className: "w-full px-3 py-2.5 rounded-xl bg-white border border-rose-100" },
-                    React.createElement("option", { value: "" }, "\u8ACB\u9078\u64C7"),
-                    members.map(m => React.createElement("option", { key: m.member_id, value: m.member_id }, m.display_name || m.name_zh || m.name_en || m.member_id)))),
-            DOLL_FIELDS.filter(f => !['doll_id', 'doll_name', 'owner_member_id'].includes(f)).map(f => React.createElement(FormField, { key: f, field: f, value: data[f], onChange: v => setData(x => ({ ...x, [f]: v })) }))),
-        React.createElement(FormActions, { busy: busy, mode: mode, onClose: onClose }))); }
-class SafeErrorBoundary extends React.Component {
-    constructor(p) { super(p); this.state = { error: null }; }
-    static getDerivedStateFromError(error) { return { error }; }
-    componentDidCatch(error, info) { console.error('React render error', error, info); }
-    render() { if (this.state.error)
-        return React.createElement("div", { className: "min-h-screen flex items-center justify-center p-6" },
-            React.createElement("div", { className: "glass rounded-3xl p-6 max-w-xl shadow-soft" },
-                React.createElement("h2", { className: "font-bold text-rose-600" }, "\u7DB2\u7AD9\u756B\u9762\u767C\u751F\u932F\u8AA4"),
-                React.createElement("p", { className: "text-sm text-stone-600 mt-2" }, String(this.state.error?.message || this.state.error)),
-                React.createElement("button", { onClick: () => location.reload(), className: "mt-4 px-4 py-2.5 rounded-xl bg-[#5C4033] text-white text-sm" }, "\u91CD\u65B0\u8F09\u5165"))); return this.props.children; }
-}
-ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(SafeErrorBoundary, null,
-    React.createElement(App, null)));
+const LABEL={
+ id:'ID',drama_id:'劇集 ID',owner:'建立者',title_zh:'中文劇名',title_th:'泰文／英文劇名',cp_name:'CP 英文名稱',ststus_type:'劇集狀態',premiere_date:'首播日期',air_day_of_week:'播出星期',air_time:'播出時間（泰國時間）',total_episodes:'總集數',synopsis:'劇情簡介',ott_platform:'OTT 平台',ott_link:'OTT 連結',poster_url:'海報圖片 URL',source_link:'來源連結',my_status:'我的觀看狀態',my_progress:'我的進度',my_rating:'我的評分',my_review:'我的心得',friend_status:'朋友觀看狀態',friend_progress:'朋友進度',friend_rating:'朋友評分',friend_review:'朋友心得',
+ song_1_name:'主題曲名稱',song_1_link:'主題曲連結',song_2_name:'插曲 2 名稱',song_2_link:'插曲 2 連結',song_3_name:'插曲 3 名稱',song_3_link:'插曲 3 連結',song_4_name:'插曲 4 名稱',song_4_link:'插曲 4 連結',song_5_name:'插曲 5 名稱',song_5_link:'插曲 5 連結',
+ my_want:'我想看',friend_want:'朋友想看',priority:'優先度',wishlist_status:'清單狀態',added_date:'加入日期',planned_watch_date:'預計觀看日期',note:'備註',
+ actor_1:'第一位成員英文名',actor_2:'第二位成員英文名',actor_1_th:'第一位成員泰文名',actor_2_th:'第二位成員泰文名',photo_url:'照片 URL',my_favorite:'我喜歡',friend_favorite:'朋友喜歡',cp_name_th:'CP 泰文名（Sheet）',cp_name_en:'CP 英文名',cp_status:'CP 現況',cp_start_date:'CP 開始日期',cp_anniversary:'CP 紀念日',first_work:'首次合作作品',representative_work:'代表作品',cp_description:'CP 描述',cp_color:'CP 顏色',cp_note:'CP 備註',member_1_id:'第一位成員 ID',member_2_id:'第二位成員 ID',status:'狀態（相容欄）',start_date:'開始日期（相容欄）',anniversary:'紀念日（相容欄）',description:'描述（相容欄）',
+ member_id:'成員 ID',display_name:'顯示名稱（Sheet）',name_zh:'中文名（Sheet）',name_th:'泰文名（Sheet）',name_en:'英文名',nickname:'暱稱',birth_date:'出生日期',birth_place:'出生地',nationality:'國籍',zodiac:'星座',height:'身高',weight:'體重',occupation:'職業',debut_year:'出道年份',company:'公司',agency:'經紀公司',brand:'品牌',bio:'個人介紹',representative_works:'代表作品',representative_roles:'代表角色',awards:'得獎',hobby:'興趣',skill:'專長',favorite_food:'喜歡的食物',disliked_food:'不喜歡的食物',favorite_color:'喜歡的顏色',favorite_music:'喜歡的音樂',favorite_movie:'喜歡的電影',pet:'寵物',personality:'個性',quote:'名言／語錄',personal_note:'個人備註',photo_url_2:'照片 2',photo_url_3:'照片 3',instagram:'Instagram',x:'X',facebook:'Facebook',youtube:'YouTube',tiktok:'TikTok',website:'Website',my_favorite:'我的收藏',favorite_date:'收藏日期',my_rating:'我的評分',my_note:'我的備註',support_color:'應援色',works_roles:'作品／角色（相容欄）',hobbies_skills:'興趣／專長（相容欄）',pets:'寵物（相容欄）',photo_1:'照片 1（相容欄）',photo_2:'照片 2（相容欄）',photo_3:'照片 3（相容欄）',
+ doll_id:'娃娃 ID',doll_name:'娃娃名稱',owner_member_id:'所屬成員 ID',doll_type:'娃娃類型',doll_color:'娃娃顏色',favorite:'收藏'
+};
+const LONG_FIELDS=new Set(['synopsis','source_link','my_review','friend_review','description','note','bio','representative_works','representative_roles','awards','hobby','skill','favorite_music','favorite_movie','pets','personality','quote','personal_note','my_note']);
+const state={data:{dramas:[],wishlist:[],actors:[],members:[],dolls:[]},loading:true,active:'home',search:'',year:'全部',status:'全部',modal:null,calendar:new Date(),calendarSelected:null,randomDrama:null,adminSheet:'dramas',errors:[],lastSync:null};
 
+function esc(v){return String(v??'').replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);});}
+function text(v){return v===null||v===undefined?'':String(v);}
+function clean(v){return text(v).trim();}
+function has(v){return clean(v)!=='';}
+function num(v){const n=Number(text(v).replace(/[^\d.-]/g,''));return Number.isFinite(n)?n:0;}
+function bool(v){const s=clean(v).toLowerCase();return v===true||['true','1','yes','y','是','有','想看','喜歡'].includes(s);}
+function uid(prefix){return prefix+Date.now().toString(36).toUpperCase()+Math.floor(Math.random()*900+100);}
+function dateObj(v){if(!has(v))return null;if(v instanceof Date)return Number.isNaN(v.getTime())?null:new Date(v);let s=clean(v);let m=s.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);if(!m)m=s.match(/^(\d{4})年(\d{1,2})月(\d{1,2})/);if(!m)return null;const d=new Date(Number(m[1]),Number(m[2])-1,Number(m[3]));return Number.isNaN(d.getTime())?null:d;}
+function iso(d){return d?d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'):'';}
+function fmt(d){return d?d.getFullYear()+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0'):'—';}
+function fmtMD(d){return d?String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0'):'—';}
+function status(v){const s=clean(v);if(s.includes('完')||s.toLowerCase().includes('completed'))return'已完結';if(s.includes('待')||s.toLowerCase().includes('upcoming'))return'待播中';if(s.includes('播')||s.toLowerCase().includes('airing'))return'正在跟播';return s||'未分類';}
+function statusBadge(v){const s=status(v);return '<span class="badge '+(s==='正在跟播'?'b-airing':s==='待播中'?'b-upcoming':s==='已完結'?'b-ended':'b-pink')+'">'+esc(s)+'</span>';}
+function weekdayNum(v){const s=clean(v);for(let i=0;i<7;i++){if(s.includes(WEEK[i])||s.includes('星期'+['日','一','二','三','四','五','六'][i])||s.includes('週'+['日','一','二','三','四','五','六'][i])||s.includes('周'+['日','一','二','三','四','五','六'][i]))return i;}return null;}
+function episodeDate(drama,ep){const p=dateObj(drama.premiere_date);if(!p)return null;const d=new Date(p);d.setDate(d.getDate()+(Math.max(1,ep)-1)*7);return d;}
+function schedule(drama){const total=num(drama.total_episodes);if(!total||!dateObj(drama.premiere_date))return[];return Array.from({length:total},function(_,i){return{episode:i+1,date:episodeDate(drama,i+1),time:clean(drama.air_time)};});}
+function nextAir(drama){const s=status(drama.ststus_type);if(s==='已完結')return null;const total=num(drama.total_episodes);if(!total)return null;const progress=Math.max(num(drama.my_progress),num(drama.my_propress),num(drama.friend_progress),num(drama.friend_propress));if(progress>=total)return null;let ep=Math.max(1,progress+1),d=episodeDate(drama,ep),today=new Date();today.setHours(0,0,0,0);if(d&&progress===0&&d<today){const all=schedule(drama);const found=all.find(x=>x.date>=today);if(found){ep=found.episode;d=found.date;}}return d?{episode:ep,date:d,time:clean(drama.air_time)}:null;}
+function titleOf(d){return clean(d.title_zh)||clean(d.title_th)||'未命名劇集';}
+function findMember(id){const key=clean(id);if(!key)return null;return state.data.members.find(function(m){return clean(m.member_id||m.id)===key;})||null;}
+function findDrama(id){return state.data.dramas.find(function(d){return clean(d.id)===clean(id);});}
+function cpByName(name){return state.data.actors.find(function(a){return clean(a.cp_name)===clean(name);});}
+function recordKey(sheet,r){if(sheet==='wishlist')return clean(r.drama_id)+'::'+clean(r.owner||'H');if(sheet==='dolls')return clean(r.doll_id);if(sheet==='members')return clean(r.member_id||r.id);return clean(r.id)||clean(r.cp_name_en)||clean(r.cp_name)||clean(r.title_zh);}
+function findRow(sheet,key){return state.data[sheet].find(function(r){return recordKey(sheet,r)===clean(key);});}
+function normalizeRow(sheet,row){
+  const r=Object.assign({},row||{});
+  if(sheet==='dramas'){
+    if(!has(r.my_progress)&&has(r.my_propress))r.my_progress=r.my_propress;
+    if(!has(r.friend_progress)&&has(r.friend_propress))r.friend_progress=r.friend_propress;
+    if(!has(r.source_link)&&has(r.ource_link))r.source_link=r.ource_link;
+  }
+  if(sheet==='actors'){
+    if(!has(r.id)&&has(r.cp_id))r.id=r.cp_id;
+    if(!has(r.cp_status)&&has(r.status))r.cp_status=r.status;
+    if(!has(r.cp_start_date)&&has(r.start_date))r.cp_start_date=r.start_date;
+    if(!has(r.cp_anniversary)&&has(r.anniversary))r.cp_anniversary=r.anniversary;
+    if(!has(r.cp_description)&&has(r.description))r.cp_description=r.description;
+    if(!has(r.cp_note)&&has(r.note))r.cp_note=r.note;
+    if(!has(r.actor_1)&&has(r.actor_1_name))r.actor_1=r.actor_1_name;
+    if(!has(r.actor_2)&&has(r.actor_2_name))r.actor_2=r.actor_2_name;
+  }
+  if(sheet==='members'){
+    if(!has(r.member_id)&&has(r.id))r.member_id=r.id;
+    if(!has(r.id)&&has(r.member_id))r.id=r.member_id;
+    if(!has(r.photo_url)&&has(r.photo_1))r.photo_url=r.photo_1;
+    if(!has(r.photo_url_2)&&has(r.photo_2))r.photo_url_2=r.photo_2;
+    if(!has(r.photo_url_3)&&has(r.photo_3))r.photo_url_3=r.photo_3;
+    if(!has(r.photo_1)&&has(r.photo_url))r.photo_1=r.photo_url;
+    if(!has(r.photo_2)&&has(r.photo_url_2))r.photo_2=r.photo_url_2;
+    if(!has(r.photo_3)&&has(r.photo_url_3))r.photo_3=r.photo_url_3;
+    if(!has(r.representative_works)&&has(r.works_roles))r.representative_works=r.works_roles;
+    if(!has(r.hobby)&&has(r.hobbies_skills))r.hobby=r.hobbies_skills;
+    if(!has(r.pets)&&has(r.pet))r.pets=r.pet;
+    if(!has(r.pet)&&has(r.pets))r.pet=r.pets;
+  }
+  if(sheet==='dolls'&&!has(r.favorite)&&has(r.my_favorite))r.favorite=r.my_favorite;
+  return r;
+}
+function color(v,fallback){return /^#[0-9A-Fa-f]{6}$/.test(clean(v))?clean(v):fallback;}
+function cpColor(member,fallback){return color(member?.support_color,color(member?.favorite_color,fallback));}
+function cands(url){const s=clean(url);if(!s)return[];const out=[s];let m=s.match(/drive\.google\.com\/file\/d\/([^/]+)/);if(m){const id=m[1];out.push('https://drive.google.com/thumbnail?id='+encodeURIComponent(id)+'&sz=w1200');out.push('https://drive.usercontent.google.com/download?id='+encodeURIComponent(id)+'&export=view');}m=s.match(/[?&]id=([^&]+)/);if(m)out.push('https://drive.google.com/thumbnail?id='+encodeURIComponent(m[1])+'&sz=w1200');return Array.from(new Set(out));}
+function img(url,cls,alt){const list=cands(url);if(!list.length)return'';return '<div class="'+esc(cls||'')+'" data-image-box="1"><img loading="lazy" src="'+esc(list[0])+'" data-image-list="'+esc(JSON.stringify(list))+'" data-image-index="0" alt="'+esc(alt||'')+'"></div>';}
+function handleImageError(im){try{const list=JSON.parse(im.getAttribute('data-image-list')||'[]');let i=Number(im.getAttribute('data-image-index')||0)+1;if(i<list.length){im.setAttribute('data-image-index',String(i));im.src=list[i];}else{const box=im.parentElement;if(box)box.classList.add('no-image');}}catch(e){const box=im.parentElement;if(box)box.classList.add('no-image');}}
+window.handleImageError=handleImageError;
 
+document.addEventListener('error',function(e){if(e.target&&e.target.matches&&e.target.matches('img[data-image-list]'))handleImageError(e.target);},true);
+function toast(msg,error){const wrap=document.getElementById('toastWrap'),el=document.createElement('div');el.textContent=msg;el.style.cssText='position:fixed;right:16px;bottom:20px;z-index:1200;max-width:min(420px,calc(100vw - 32px));padding:12px 15px;border-radius:15px;background:'+(error?'#9B555C':'#51453F')+';color:#fff;box-shadow:0 12px 32px rgba(0,0,0,.18);font-size:13px';wrap.appendChild(el);setTimeout(function(){el.remove();},3200);}
+function openModal(html){closeModal(false);const root=document.createElement('div');root.className='modal-root';root.innerHTML=html;document.body.appendChild(root);document.body.style.overflow='hidden';root.addEventListener('mousedown',function(e){if(e.target===root)closeModal();});root.querySelectorAll('[data-close]').forEach(function(b){b.onclick=closeModal;});bindRoot(root);}
+function closeModal(renderAgain){document.querySelectorAll('.modal-root').forEach(function(x){x.remove();});document.body.style.overflow='';state.modal=null;if(renderAgain!==false)render();}
+function bindRoot(root){root.querySelectorAll('[data-drama]').forEach(function(b){b.onclick=function(){const d=findDrama(b.dataset.drama);if(d)dramaDetail(d);};});root.querySelectorAll('[data-cp]').forEach(function(b){b.onclick=function(){const a=findRow('actors',b.dataset.cp);if(a)cpDetail(a);};});root.querySelectorAll('[data-doll]').forEach(function(b){b.onclick=function(){const d=findRow('dolls',b.dataset.doll);if(d)dollDetail(d);};});root.querySelectorAll('[data-edit-drama]').forEach(function(b){b.onclick=function(){const d=findDrama(b.dataset.editDrama);if(d){closeModal(false);modalForm('dramas',d);}};});root.querySelectorAll('[data-edit-wish]').forEach(function(b){b.onclick=function(){const w=state.data.wishlist.find(function(x){return recordKey('wishlist',x)===b.dataset.editWish;});if(w){closeModal(false);modalForm('wishlist',w);}};});root.querySelectorAll('[data-edit-cp]').forEach(function(b){b.onclick=function(){const a=findRow('actors',b.dataset.editCp);if(a){closeModal(false);cpForm(a);}};});root.querySelectorAll('[data-edit-doll]').forEach(function(b){b.onclick=function(){const d=findRow('dolls',b.dataset.editDoll);if(d){closeModal(false);modalForm('dolls',d);}};});root.querySelectorAll('[data-open-cp-name]').forEach(function(b){b.onclick=function(){const cp=cpByName(b.dataset.openCpName);if(cp){closeModal(false);cpDetail(cp);}};});root.querySelectorAll('[data-new-doll-owner]').forEach(function(b){b.onclick=function(){const m=findMember(b.dataset.newDollOwner);if(m){closeModal(false);modalForm('dolls',{owner_member_id:m.id});}};});root.querySelectorAll('[data-remove-wish]').forEach(function(b){b.onclick=function(){deleteWishlist(b.dataset.removeWish);};});}
+function escapeKey(){document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.querySelector('.modal-root'))closeModal();});}
+escapeKey();
+
+function jsonp(action,params){return new Promise(function(resolve,reject){const cb='GLU_'+Date.now()+'_'+Math.random().toString(36).slice(2);const script=document.createElement('script');const q=new URLSearchParams(Object.assign({action:action},params||{}, {callback:cb,t:Date.now()}));let timer;window[cb]=function(data){clearTimeout(timer);delete window[cb];script.remove();if(data&&data.success===false)reject(new Error(data.message||'API 失敗'));else resolve(data||{});};script.onerror=function(){clearTimeout(timer);delete window[cb];script.remove();reject(new Error('無法載入 Google Apps Script'));};script.src=GAS_URL+'?'+q.toString();document.head.appendChild(script);timer=setTimeout(function(){delete window[cb];script.remove();reject(new Error('Google Apps Script 回應逾時'));},18000);});}
+async function apiGet(action,params){
+  return jsonp(action,Object.assign({},params||{},{cbust:Date.now().toString(36)+'_'+Math.random().toString(36).slice(2)}));
+}
+async function apiPost(payload){
+  const body=JSON.stringify(Object.assign({},payload,{_client_ts:Date.now(),_nocache:uid('W')}));
+  try{
+    await fetch(GAS_URL,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:body,keepalive:true});
+    return {success:true,uncertain:true};
+  }catch(e){
+    try{
+      if(navigator.sendBeacon && navigator.sendBeacon(GAS_URL,new Blob([body],{type:'text/plain;charset=utf-8'}))) return {success:true,uncertain:true,beacon:true};
+    }catch(_e){}
+    throw e;
+  }
+}
+async function refreshData(initial){
+  if(refreshPromise)return refreshPromise;
+  refreshPromise=(async function(){
+    if(initial){state.loading=true;state.errors=[];render();}
+    const stamp=Date.now().toString(36)+'_'+Math.random().toString(36).slice(2);
+    try{
+      const j=await apiGet('getAll',{cb:'fresh_'+stamp});
+      if(!j||j.success===false||!j.data)throw new Error((j&&j.message)||'getAll 讀取失敗');
+      const errors=[];
+      SHEETS.forEach(function(sheet){
+        if(Array.isArray(j.data[sheet])) state.data[sheet]=j.data[sheet].map(function(r){return normalizeRow(sheet,r);});
+        else errors.push((LABELS[sheet]||sheet)+'：沒有收到資料');
+      });
+      state.loading=false;state.errors=errors;state.lastSync=new Date();render();
+      return errors.length===0;
+    }catch(allErr){
+      const results=await Promise.all(SHEETS.map(async function(sheet){
+        try{
+          const j=await apiGet('getSheet',{sheet:sheet,cb:stamp+'_'+sheet});
+          if(!j||j.success===false)throw new Error((j&&j.message)||'讀取失敗');
+          return {sheet:sheet,rows:(Array.isArray(j.data)?j.data:[]).map(function(r){return normalizeRow(sheet,r);})};
+        }catch(e){return {sheet:sheet,error:e};}
+      }));
+      const errors=[];
+      results.forEach(function(x){if(x.error)errors.push((LABELS[x.sheet]||x.sheet)+'：'+(x.error.message||String(x.error)));else state.data[x.sheet]=x.rows;});
+      state.loading=false;state.errors=errors;state.lastSync=new Date();render();
+      return errors.length===0;
+    }
+  })();
+  try{return await refreshPromise;}finally{refreshPromise=null;}
+}
+async function mutate(payload,message){
+  try{
+    await apiPost(payload);
+    await new Promise(function(r){setTimeout(r,350);});
+    const ok=await refreshData(false);
+    if(ok)toast(message||'已同步');
+    else toast('已送出變更，但重新讀取資料失敗；請按「同步最新資料」確認。',true);
+  }catch(e){toast(e.message||String(e),true);throw e;}
+}
+
+function years(){const ys=Array.from(new Set(state.data.dramas.map(function(d){const x=dateObj(d.premiere_date);return x?x.getFullYear():null;}).filter(Boolean))).sort(function(a,b){return b-a;});return ['全部'].concat(ys.map(String));}
+function filteredDramas(){let a=state.data.dramas.slice();const q=clean(state.search).toLowerCase();if(q)a=a.filter(function(d){return [d.title_zh,d.title_th,d.cp_name].some(function(v){return text(v).toLowerCase().includes(q);});});if(state.year!=='全部')a=a.filter(function(d){const x=dateObj(d.premiere_date);return x&&String(x.getFullYear())===String(state.year);});if(state.status!=='全部')a=a.filter(function(d){return status(d.ststus_type)===state.status;});return a;}
+function groupYears(a){const map={};a.forEach(function(d){const dt=dateObj(d.premiere_date),y=dt?String(dt.getFullYear()):'未分類';(map[y]||(map[y]=[])).push(d);});return Object.entries(map).sort(function(a,b){if(a[0]==='未分類')return 1;if(b[0]==='未分類')return-1;return Number(b[0])-Number(a[0]);});}
+function linkedCPs(memberId){const id=clean(memberId);if(!id)return[];return state.data.actors.filter(function(a){return clean(a.member_1_id)===id||clean(a.member_2_id)===id;});}
+function isMemberLinked(member){return !!member&&linkedCPs(member.id).length>0;}
+function imageCount(member){return [member.photo_1,member.photo_2,member.photo_3].filter(has).length;}
+function osts(d){const out=[];for(let i=1;i<=5;i++){const name=clean(d['song_'+i+'_name']),link=clean(d['song_'+i+'_link']);if(name||link)out.push({index:i,name:name||('第 '+i+' 首'),link:link,type:i===1?'主題曲':'插曲'});}return out;}
+function viewHeader(title,desc,actions){return '<section class="hero panel"><div class="hero-row"><div><h2>'+title+'</h2><p>'+desc+'</p></div><div class="actions">'+(actions||'')+'</div></div></section>';}
+function navHtml(){const items=[['home','⌂ 總覽'],['dramas','🎬 劇集'],['wishlist','🎲 Wishlist'],['actors','👭 CP'],['dolls','🧸 娃娃'],['timeline','🕰 時間軸'],['manage','⚙️ 管理']];return '<nav class="nav">'+items.map(function(x){return '<button class="nav-btn '+(state.active===x[0]?'active':'')+'" data-nav="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</nav>';}
+function mobileNavHtml(){const items=[['home','⌂','總覽'],['dramas','🎬','劇集'],['wishlist','🎲','清單'],['actors','👭','CP'],['dolls','🧸','娃娃']];return '<nav class="bottom-nav">'+items.map(function(x){return '<button class="'+(state.active===x[0]?'active':'')+'" data-nav="'+x[0]+'">'+x[1]+'<br>'+x[2]+'</button>';}).join('')+'</nav>';}
+function stats(){return{dramas:state.data.dramas.length,airing:state.data.dramas.filter(function(d){return status(d.ststus_type)==='正在跟播';}).length,upcoming:state.data.dramas.filter(function(d){return status(d.ststus_type)==='待播中';}).length,ended:state.data.dramas.filter(function(d){return status(d.ststus_type)==='已完結';}).length,wishlist:state.data.wishlist.length,actors:state.data.actors.length,dolls:state.data.dolls.length};}
+function pageHome(){const st=stats();const latest=state.data.dramas.slice().sort(function(a,b){return (dateObj(b.premiere_date)||0)-(dateObj(a.premiere_date)||0);}).slice(0,6);const upcoming=state.data.dramas.map(function(d){return{d:d,next:nextAir(d)};}).filter(function(x){return x.next;}).sort(function(a,b){return a.next.date-b.next.date;}).slice(0,6);return viewHeader('✨ 泰百追劇宇宙','你的 Thai GL 劇集、CP、娃娃與「我／朋友」追劇紀錄，集中在同一個地方。','<button class="btn btn-primary" data-go="dramas">🎬 開始追劇</button><button class="btn btn-soft" data-open-calendar>📅 播出月曆</button>')+'<section class="stats-grid">'+[['劇集',st.dramas,'🎬'],['跟播',st.airing,'📺'],['待播',st.upcoming,'⏳'],['完結',st.ended,'✅'],['Wishlist',st.wishlist,'🎲'],['CP',st.actors,'👭'],['娃娃',st.dolls,'🧸']].map(function(x){return '<div class="stat"><div>'+x[2]+'</div><b>'+x[1]+'</b><span>'+x[0]+'</span></div>';}).join('')+'</section><div class="grid grid-2" style="margin-top:16px"><section class="panel" style="padding:16px"><div class="section-title"><div><h3>📺 近期播出</h3><div class="muted" style="font-size:11px">依我／朋友進度推算下一集</div></div></div>'+ (upcoming.length?upcoming.map(function(x){return '<button class="show-mini" data-drama="'+esc(recordKey('dramas',x.d))+'"><b>'+esc(titleOf(x.d))+'</b><span>EP'+x.next.episode+' · '+fmt(x.next.date)+(x.next.time?' · '+esc(x.next.time):'')+' 泰國時間</span></button>';}).join(''):'<div class="empty">目前沒有可計算的下一集。</div>')+'</section><section class="panel" style="padding:16px"><div class="section-title"><div><h3>🌸 最近首播</h3><div class="muted" style="font-size:11px">依 premiere_date</div></div></div>'+ (latest.length?latest.map(function(d){return '<button class="show-mini" data-drama="'+esc(recordKey('dramas',d))+'"><b>'+esc(titleOf(d))+'</b><span>'+fmt(dateObj(d.premiere_date))+' · '+esc(d.cp_name||'未填 CP')+'</span></button>';}).join(''):'<div class="empty">目前沒有劇集。</div>')+'</section></div>' ;}
+function pageDramas(){const a=filteredDramas();return viewHeader('🎬 劇集資料庫','年份由 premiere_date 自動分類；EP1 使用首播日，之後每 7 天推算。','<button class="btn btn-soft" data-open-calendar>📅 查看播出月曆</button><button class="btn btn-primary" id="randomBtn">🎲 隨機一部</button><button class="btn btn-light" id="newDrama">＋ 新增劇集</button>')+'<div class="toolbar"><input id="search" class="input" value="'+esc(state.search)+'" placeholder="🔍 搜尋劇名、泰文名或 CP…"><select id="year" class="select">'+years().map(function(y){return '<option value="'+esc(y)+'" '+(state.year===y?'selected':'')+'>'+ (y==='全部'?'📅 全部年份':'📅 '+esc(y))+'</option>';}).join('')+'</select><select id="status" class="select"><option value="全部" '+(state.status==='全部'?'selected':'')+'>🎬 全部狀態</option>'+STATUS.map(function(s){return '<option '+(state.status===s?'selected':'')+'>'+s+'</option>';}).join('')+'</select><button class="btn btn-light" id="clearFilters">清除</button></div><section class="panel schedule"><div class="section-title"><div><h3>📅 本週跟播</h3><div class="muted" style="font-size:11px">時間以 Google Sheet 的 air_time（泰國當地時間）呈現</div></div></div>'+weeklySchedule()+'</section>'+groupYears(a).map(function(pair){return '<section><div class="year-title"><h3>'+esc(pair[0])+(pair[0]==='未分類'?'':' 年')+'</h3><div class="line"></div><span>'+pair[1].length+' 部</span></div><div class="drama-grid">'+pair[1].map(dramaCard).join('')+'</div></section>';}).join('')+(a.length?'':'<div class="panel empty">找不到符合條件的劇集。</div>');}
+function weeklySchedule(){const now=new Date();now.setHours(0,0,0,0);const dow=now.getDay(),monday=new Date(now);monday.setDate(now.getDate()+(dow===0?-6:1-dow));const days=Array.from({length:7},function(_,i){const d=new Date(monday);d.setDate(monday.getDate()+i);return d;});return '<div class="week-grid">'+days.map(function(day,i){const ds=iso(day);const shows=state.data.dramas.filter(function(d){return status(d.ststus_type)==='正在跟播';}).flatMap(function(d){return schedule(d).filter(function(e){return iso(e.date)===ds;}).map(function(e){return{d:d,e:e};});});return '<div class="day '+(iso(now)===ds?'today':'')+'"><div class="day-head"><span>'+H_WEEK[i]+'</span><span>'+fmtMD(day)+'</span></div>'+(shows.length?shows.map(function(x){return '<button class="show-mini" data-drama="'+esc(recordKey('dramas',x.d))+'"><b>'+esc(titleOf(x.d))+'</b><span>EP'+x.e.episode+(x.d.air_time?' · '+esc(text(x.d.air_time).slice(0,5)):'')+'</span></button>';}).join(''):'<div class="muted" style="font-size:11px;margin-top:10px">—</div>')+'</div>';}).join('')+'</div>';}
+function dramaCard(d){const total=num(d.total_episodes),h=num(d.my_progress||d.my_propress),q=num(d.friend_progress||d.friend_propress),next=nextAir(d),poster=img(d.poster_url,'poster','海報');return '<button class="drama-card '+(!poster?'no-poster':'')+'" data-drama="'+esc(recordKey('dramas',d))+'">'+poster+'<div style="min-width:0"><div class="badges"><span class="badge b-pink">'+esc(d.cp_name||'未設定 CP')+'</span>'+statusBadge(d.ststus_type)+'</div><div style="font-size:17px;font-weight:900;margin-top:6px">'+esc(titleOf(d))+'</div><div class="meta-line">'+esc(d.title_th||'')+'</div><div class="meta-line" style="margin-top:10px">📅 '+fmt(dateObj(d.premiere_date))+' · 🎬 '+(total||'-')+' 集</div>'+ (d.air_day_of_week||d.air_time?'<div class="meta-line">⏰ '+esc(d.air_day_of_week||'未設定星期')+(d.air_time?' · '+esc(text(d.air_time).slice(0,5))+' 泰國時間':'')+'</div>':'')+(next?'<div class="meta-line" style="color:#A45F66;font-weight:850">下一集 EP'+next.episode+'：'+fmt(next.date)+(next.time?' · '+esc(next.time):'')+'</div>':'')+'<div class="progress-grid"><div class="progress-box h-box"><div class="progress-label">H 我</div><div class="progress-number">'+h+'/'+(total||'?')+'</div></div><div class="progress-box q-box"><div class="progress-label">Q 朋友</div><div class="progress-number">'+q+'/'+(total||'?')+'</div></div></div></div></button>';}
+function pageWishlist(){const rows=state.data.wishlist.map(function(w){return Object.assign({},w,{drama:findDrama(w.drama_id)});}).filter(function(w){return w.drama;});return viewHeader('🎲 Wishlist','Wishlist 以 drama_id 關聯 Dramas；owner 的 H＝我、Q＝朋友只用來辨識建立者；保留隨機抽劇與再抽一次。','<button class="btn btn-primary" id="randomBtn">🎲 隨機抽一部</button><button class="btn btn-light" id="newWish">＋ 新增</button>')+(state.randomDrama?'<div class="random-box panel" style="margin-bottom:14px"><div><div class="random-title">🎉 抽到了：'+esc(titleOf(state.randomDrama))+'</div><div class="muted" style="font-size:11px;margin-top:2px">再抽一次會換一部；也可以直接開啟劇集詳情。</div></div><div class="actions"><button class="btn btn-soft" data-drama="'+esc(recordKey('dramas',state.randomDrama))+'">開啟</button><button class="btn btn-primary" id="randomAgain">再抽一次</button></div></div>':'')+'<div class="grid grid-3">'+(rows.length?rows.map(wishRow).join(''):'<div class="panel empty" style="grid-column:1/-1">Wishlist 目前沒有資料。</div>')+'</div>';}
+function wishRow(w){const d=w.drama;return '<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;gap:10px"><div><div style="font-weight:900">'+esc(titleOf(d))+'</div><div class="muted" style="font-size:11px">'+esc(d.cp_name||'')+'</div></div><div class="tag-row"><span class="pill">'+esc(w.owner==='Q'?'Q':'H')+'</span><span class="pill">優先度：'+esc(w.priority||'未設定')+'</span></div></div><div class="two-status"><div class="favorite h-fav">'+(bool(w.my_want)?'💗 H 想看':'🤍 H 不想看')+'</div><div class="favorite q-fav">'+(bool(w.friend_want)?'💜 Q 想看':'🤍 Q 不想看')+'</div></div><div class="muted" style="font-size:11px;margin-top:10px">'+esc(w.wishlist_status||'待看')+(w.planned_watch_date?' · 預計 '+esc(w.planned_watch_date):'')+(w.note?' · '+esc(w.note):'')+'</div><div class="actions" style="margin-top:11px"><button class="btn btn-light btn-small" data-drama="'+esc(recordKey('dramas',d))+'">查看劇集</button><button class="btn btn-soft btn-small" data-edit-wish="'+esc(recordKey('wishlist',w))+'">編輯</button><button class="btn btn-danger btn-small" data-remove-wish="'+esc(recordKey('wishlist',w))+'">刪除</button></div></div>';}
+function pageCP(){return viewHeader('👭 CP 專區','CP 是網站的主體；兩位成員資料直接從 Members 互通，網站不另外建立成員頁。','<button class="btn btn-primary" id="newCP">＋ 新增 CP</button>')+'<div class="cp-grid">'+(state.data.actors.length?state.data.actors.map(cpCard).join(''):'<div class="panel empty" style="grid-column:1/-1">目前沒有 CP 資料。</div>')+'</div>';}
+function cpCard(a){
+  const m1=findMember(a.member_1_id),m2=findMember(a.member_2_id),name=clean(a.cp_name_en)||clean(a.cp_name)||'Unnamed CP';
+  const av=img(a.photo_url,'cp-avatar',name);
+  const n1=clean(m1?.name_en)||clean(a.actor_1),n2=clean(m2?.name_en)||clean(a.actor_2);
+  const names=(n1&&n2)?esc(n1)+' × '+esc(n2):'';
+  return '<button class="cp-card" data-cp="'+esc(recordKey('actors',a))+'"><div class="cp-top">'+(av?'<div class="cp-avatar-wrap">'+av+'</div>':'')+'</div><div class="cp-body"><div class="cp-name">'+esc(name)+'</div>'+(names?'<div class="sub">'+names+'</div>':'')+(a.cp_color?'<div class="sub">CP 顏色：'+esc(a.cp_color)+'</div>':'')+'<div class="two-status"><div class="favorite h-fav">'+(bool(a.my_favorite)?'💗 H 喜歡':'🤍 H 未加入')+'</div><div class="favorite q-fav">'+(bool(a.friend_favorite)?'💜 Q 喜歡':'🤍 Q 未加入')+'</div></div><div class="tag-row" style="margin-top:10px"><span class="pill">'+esc(a.cp_status||a.status||'未填現況')+'</span></div></div></button>';
+}
+function pageMembers(){return ''; }
+function memberCard(){return ''; }
+function pageDolls(){return viewHeader('🧸 娃娃收藏','每隻娃娃使用 owner_member_id 關聯成員；成員與 CP 詳情都會顯示相關娃娃。','<button class="btn btn-primary" id="newDoll">＋ 新增娃娃</button>')+'<div class="doll-grid">'+(state.data.dolls.length?state.data.dolls.map(dollCard).join(''):'<div class="panel empty" style="grid-column:1/-1">目前沒有娃娃。</div>')+'</div>';}
+function dollCard(d){const m=findMember(d.owner_member_id),photo=img(d.photo_url,'doll-photo',d.doll_name);return '<button class="doll-card" data-doll="'+esc(recordKey('dolls',d))+'">'+photo+'<div class="doll-body"><div class="doll-name">'+esc(d.doll_name||'未命名娃娃')+'</div><div class="sub">主人：'+esc(m?.name_zh||d.owner_member_id||'未綁定')+'</div><div class="tag-row" style="margin-top:8px">'+(d.doll_type?'<span class="pill">'+esc(d.doll_type)+'</span>':'')+(d.doll_color?'<span class="pill">'+esc(d.doll_color)+'</span>':'')+'</div>'+(d.description?'<div class="muted" style="font-size:11px;margin-top:8px">'+esc(d.description)+'</div>':'')+'</div></button>';}
+function pageTimeline(){const a=state.data.dramas.map(function(d){return{d:d,date:dateObj(d.premiere_date)};}).filter(function(x){return x.date;}).sort(function(a,b){return a.date-b.date;});return viewHeader('🕰 時間軸','以 premiere_date 排列所有劇集歷程，點擊節點可以打開完整詳情。','<button class="btn btn-soft" data-open-calendar>📅 月曆</button>')+'<section class="panel" style="padding:18px"><div class="timeline">'+(a.length?a.map(function(x){return '<div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">'+fmt(x.date)+' · '+esc(x.d.air_day_of_week||WEEK[x.date.getDay()])+'</div><button class="timeline-card" data-drama="'+esc(recordKey('dramas',x.d))+'"><div class="timeline-title">'+esc(titleOf(x.d))+'</div><div class="muted" style="font-size:11px">'+esc(x.d.cp_name||'')+' · '+esc(status(x.d.ststus_type))+'</div></button></div>';}).join(''):'<div class="empty">目前沒有可用的時間軸資料。</div>')+'</div></section>';}
+function pageManage(){const sh=state.adminSheet,rows=state.data[sh]||[],tabs=['dramas','wishlist','actors','dolls'];return viewHeader('⚙️ 資料管理','網站可新增／編輯／刪除劇集、Wishlist、CP、娃娃；Members 只在 CP 編輯視窗裡互通管理。','<button class="btn btn-light" id="refreshBtn2">↻ 重新載入</button>')+'<div class="switchbar" style="margin-bottom:12px">'+tabs.map(function(s){return '<button class="switch '+(sh===s?'active':'')+'" data-admin-sheet="'+s+'">'+LABELS[s]+' ('+((state.data[s]||[]).length)+')</button>';}).join('')+'</div><section class="panel" style="padding:15px"><div class="section-title"><div><h3>'+LABELS[sh]+' 資料</h3><div class="muted" style="font-size:11px">'+rows.length+' 筆</div></div><button class="btn btn-primary btn-small" id="genericNew">＋ 新增</button></div>'+(rows.length?rows.map(function(r){return manageRow(sh,r);}).join(''):'<div class="empty">沒有資料。</div>')+'</section>';}
+function manageRow(sh,r){let title=sh==='actors'?(r.cp_name_en||r.cp_name||'CP'):sh==='dolls'?(r.doll_name||'娃娃'):r.title_zh||r.drama_id||r.id||'資料';let sub=sh==='actors'?((r.actor_1||'')+' × '+(r.actor_2||'')+' · '+(r.cp_status||r.status||'')):sh==='wishlist'?r.drama_id+' · '+(r.owner||'H')+' · '+(r.wishlist_status||''):sh==='dolls'?((findMember(r.owner_member_id)?.name_en)||r.owner_member_id||'')+' · '+(r.doll_type||''):((r.title_th||'')+' · '+(r.cp_name||''));return '<div class="manage-row"><div style="min-width:0"><div class="manage-key">'+esc(title)+'</div><div class="manage-val">'+esc(sub)+'</div></div><div class="actions"><button class="btn btn-light btn-small" data-manage-edit="'+esc(recordKey(sh,r))+'">編輯</button><button class="btn btn-danger btn-small" data-manage-delete="'+esc(recordKey(sh,r))+'">刪除</button></div></div>';}
+function page(){switch(state.active){case'home':return pageHome();case'dramas':return pageDramas();case'wishlist':return pageWishlist();case'actors':return pageCP();case'dolls':return pageDolls();case'timeline':return pageTimeline();case'manage':return pageManage();default:return pageHome();}}
+function render(){const app=document.getElementById('app');app.innerHTML='<div class="shell"><header class="topbar"><button style="border:0;background:transparent;padding:0" data-nav="home"><div class="brand"><div class="brand-mark">✨</div><div><h1>泰百追劇宇宙</h1><p>GL Universe · H＝我／Q＝朋友（只用來辨識我／朋友）</p></div></div></button><div class="actions"><div class="muted" style="font-size:10px;align-self:center">'+(state.lastSync?'最後同步 '+state.lastSync.getFullYear()+'/'+String(state.lastSync.getMonth()+1).padStart(2,'0')+'/'+String(state.lastSync.getDate()).padStart(2,'0')+' '+String(state.lastSync.getHours()).padStart(2,'0')+':'+String(state.lastSync.getMinutes()).padStart(2,'0')+':'+String(state.lastSync.getSeconds()).padStart(2,'0'):'尚未同步')+'</div><button class="btn btn-light" id="refreshBtn">↻ <span class="refresh-text">同步最新資料</span></button></div></header>'+navHtml()+(state.errors.length?'<div class="error-panel">資料同步有問題：\n'+esc(state.errors.join('\n'))+'\n\n仍可瀏覽已成功載入的資料。請確認 Apps Script 已重新部署、Web App 存取權為任何人，並已執行 setup()。</div>':'')+'<main>'+ (state.loading?'<div class="panel loading"><div class="spinner"></div><div class="muted">🌸 正在從 Google Sheets 同步資料…</div></div>':page())+'</main>'+mobileNavHtml()+'</div>';bind();}
+function bind(){document.querySelectorAll('[data-nav]').forEach(function(b){b.onclick=function(){state.active=b.dataset.nav;render();window.scrollTo({top:0,behavior:'smooth'});};});document.querySelectorAll('[data-go]').forEach(function(b){b.onclick=function(){state.active=b.dataset.go;render();};});document.querySelectorAll('[data-open-calendar]').forEach(function(b){b.onclick=calendarModal;});document.getElementById('refreshBtn')?.addEventListener('click',function(){refreshData(true);});document.getElementById('refreshBtn2')?.addEventListener('click',function(){refreshData(true);});document.getElementById('search')?.addEventListener('input',function(e){state.search=e.target.value;render();});document.getElementById('year')?.addEventListener('change',function(e){state.year=e.target.value;render();});document.getElementById('status')?.addEventListener('change',function(e){state.status=e.target.value;render();});document.getElementById('clearFilters')?.addEventListener('click',function(){state.search='';state.year='全部';state.status='全部';render();});document.getElementById('randomBtn')?.addEventListener('click',randomDrama);document.getElementById('randomAgain')?.addEventListener('click',randomDrama);document.getElementById('newDrama')?.addEventListener('click',function(){modalForm('dramas',null);});document.getElementById('newWish')?.addEventListener('click',function(){modalForm('wishlist',null);});document.getElementById('newCP')?.addEventListener('click',function(){cpForm(null);});document.getElementById('newDoll')?.addEventListener('click',function(){modalForm('dolls',null);});document.querySelectorAll('[data-admin-sheet]').forEach(function(b){b.onclick=function(){state.adminSheet=b.dataset.adminSheet;render();};});document.querySelectorAll('[data-drama]').forEach(function(b){b.onclick=function(){const d=findDrama(b.dataset.drama);if(d)dramaDetail(d);};});document.querySelectorAll('[data-cp]').forEach(function(b){b.onclick=function(){const a=findRow('actors',b.dataset.cp);if(a)cpDetail(a);};});document.querySelectorAll('[data-doll]').forEach(function(b){b.onclick=function(){const d=findRow('dolls',b.dataset.doll);if(d)dollDetail(d);};});document.querySelectorAll('[data-manage-edit]').forEach(function(b){b.onclick=function(){const r=findRow(state.adminSheet,b.dataset.manageEdit);if(r)state.adminSheet==='actors'?cpForm(r):modalForm(state.adminSheet,r);};});document.querySelectorAll('[data-manage-delete]').forEach(function(b){b.onclick=function(){deleteManaged(state.adminSheet,b.dataset.manageDelete);};});}
+async function deleteManaged(sheet,key){const r=findRow(sheet,key);if(!r)return;if(!confirm('確定刪除這筆 '+LABELS[sheet]+' 資料嗎？'))return;let payload;if(sheet==='wishlist')payload={action:'deleteRecord',sheet:sheet,keyField:'composite_drama_owner',keyValue:{drama_id:r.drama_id,owner:r.owner||'H'}};else{const keyField=sheet==='dolls'?'doll_id':(sheet==='actors'?(r.id?'id':(r.cp_name?'cp_name':'cp_name_en')):'id');const keyValue=r[keyField];payload={action:'deleteRecord',sheet:sheet,keyField:keyField,keyValue:keyValue};}try{await mutate(payload,'已刪除');}catch(e){}}
+async function deleteWishlist(key){const w=state.data.wishlist.find(function(x){return recordKey('wishlist',x)===key;});if(!w)return;if(!confirm('確定刪除這筆 Wishlist 嗎？'))return;try{await mutate({action:'deleteRecord',sheet:'wishlist',keyField:'composite_drama_owner',keyValue:{drama_id:w.drama_id,owner:w.owner||'H'}},'Wishlist 已刪除');}catch(e){}}
+function randomDrama(){const a=state.data.dramas;if(!a.length){toast('目前沒有劇集可抽',true);return;}let choices=a;if(state.randomDrama&&a.length>1)choices=a.filter(function(d){return clean(d.id)!==clean(state.randomDrama.id);});state.randomDrama=choices[Math.floor(Math.random()*choices.length)];state.active='wishlist';render();}
+
+function commonModalHead(title){return '<div class="modal-head"><h3>'+title+'</h3><button class="close" data-close>×</button></div>';}
+function info(k,v){return '<div class="info"><b>'+esc(k)+'</b><span>'+esc(has(v)?v:'—')+'</span></div>';}
+function dramaDetail(d){const next=nextAir(d),total=num(d.total_episodes),sched=schedule(d),o=osts(d),photo=img(d.poster_url,'detail-photo','海報'),statusWarn=(()=>{const target=weekdayNum(d.air_day_of_week),p=dateObj(d.premiere_date);return target!==null&&p&&p.getDay()!==target?'目前 air_day_of_week 與 premiere_date 的星期不一致；排程仍以首播日期為 EP1，每 7 天推算。':'';})();openModal('<div class="modal wide"><div class="modal-head"><h3>'+esc(titleOf(d))+'</h3><button class="close" data-close>×</button></div><div class="modal-body"><div class="detail-hero '+(!photo?'detail-no-photo':'')+'">'+photo+'<div><div class="badges">'+statusBadge(d.ststus_type)+(d.cp_name?'<button class="badge b-pink" data-open-cp-name="'+esc(d.cp_name)+'">👭 '+esc(d.cp_name)+'</button>':'')+'</div><div style="font-size:28px;font-weight:950;margin-top:7px">'+esc(titleOf(d))+'</div><div class="muted" style="margin-top:2px">'+esc(d.title_th||'')+'</div><div class="info-grid">'+info('首播',fmt(dateObj(d.premiere_date)))+info('星期',d.air_day_of_week)+info('時間',d.air_time?text(d.air_time).slice(0,5)+' 泰國時間':'—')+info('總集數',total?total+' 集':'—')+'</div>'+(statusWarn?'<div class="notice" style="margin-top:10px">⚠️ '+esc(statusWarn)+'</div>':'')+(next?'<div class="notice" style="margin-top:10px">⏰ 下一集：EP'+next.episode+' · '+fmt(next.date)+(next.time?' · '+esc(next.time)+' 泰國時間':'')+'</div>':'')+'</div></div><div class="separator"></div><section><div class="section-title"><h3>📖 劇情簡介</h3></div><div class="card" style="padding:14px;line-height:1.85">'+esc(d.synopsis||'目前尚未填寫劇情簡介。')+'</div></section><section style="margin-top:18px"><div class="section-title"><h3>👥 H／Q 追劇紀錄</h3></div><div class="grid-2 grid">'+reviewBox('H｜我',d.my_status,d.my_progress,d.my_rating,d.my_review,'h-box')+reviewBox('Q｜朋友',d.friend_status,d.friend_progress,d.friend_rating,d.friend_review,'q-box')+'</div></section><section style="margin-top:18px"><div class="section-title"><h3>📅 完整播出日期</h3></div><div class="grid grid-3">'+(sched.length?sched.map(function(x){return '<div class="card" style="padding:10px"><b style="font-size:11px;color:#A96970">EP'+x.episode+'</b><div style="font-weight:850;margin-top:2px">'+fmt(x.date)+'</div>'+(x.time?'<div class="muted" style="font-size:10px">'+esc(x.time)+' 泰國時間</div>':'')+'</div>';}).join(''):'<div class="muted">沒有足夠資料產生排程。</div>')+'</div></section><section style="margin-top:18px"><div class="section-title"><h3>🎵 OST</h3><span class="muted" style="font-size:11px">第 1 首＝主題曲，其餘＝插曲</span></div>'+(o.length?o.map(function(x){return '<div class="manage-row"><div><div class="manage-key">'+esc(x.type)+' · '+esc(x.name)+'</div></div>'+(x.link?'<a class="btn btn-dark btn-small" href="'+esc(x.link)+'" target="_blank" rel="noopener noreferrer">▶ 開啟歌曲</a>':'')+'</div>';}).join(''):'<div class="muted">尚未新增 OST。</div>')+'</section><section style="margin-top:18px"><div class="section-title"><h3>🔗 相關連結</h3></div><div class="actions">'+(d.ott_link?'<a class="btn btn-dark" href="'+esc(d.ott_link)+'" target="_blank" rel="noopener noreferrer">▶ '+esc(d.ott_platform||'OTT 平台')+'</a>':'')+(d.source_link?'<a class="btn btn-light" href="'+esc(d.source_link)+'" target="_blank" rel="noopener noreferrer">來源 ↗</a>':'')+'</div></section></div><div class="modal-footer"><button class="btn btn-light" data-close>關閉</button><button class="btn btn-primary" data-edit-drama="'+esc(recordKey('dramas',d))+'">✏️ 編輯劇集</button></div></div>');}
+function reviewBox(title,s,p,r,review,cls){return'<div class="progress-box '+cls+'"><div class="progress-label">'+esc(title)+'</div><div class="progress-number">EP '+num(p)+'</div><div class="muted" style="font-size:11px">'+esc(s||'未填狀態')+(r?' · 評分 '+esc(r):'')+'</div><div style="font-size:12px;line-height:1.6;margin-top:7px;white-space:pre-wrap">'+esc(review||'尚未寫心得')+'</div></div>';}
+function rv(){return false;}
+function cpDetail(a){const m1=findMember(a.member_1_id),m2=findMember(a.member_2_id),name=clean(a.cp_name_en)||clean(a.cp_name)||'Unnamed CP',dolls=state.data.dolls.filter(function(d){return clean(d.owner_member_id)===clean(m1?.member_id||m1?.id)||clean(d.owner_member_id)===clean(m2?.member_id||m2?.id);}),photo=img(a.photo_url,'cp-detail-photo',name);const memberBlock=function(m,label){if(!m)return '<div class="card" style="padding:14px"><div class="muted">'+label+'：尚未綁定 Members</div></div>';const p=img(m.photo_url||m.photo_1,'cp-member-photo',m.name_en||label);return '<div class="card cp-member-card"><div class="cp-member-photo-wrap">'+(p?p:'')+'</div><div style="font-size:16px;font-weight:900;margin-top:9px">'+esc(m.name_en||'未填英文名')+'</div><div class="sub">'+(m.favorite_color?'喜歡的顏色：'+esc(m.favorite_color):'')+(m.support_color?' · 應援色：'+esc(m.support_color):'')+'</div></div>';};openModal('<div class="modal wide"><div class="modal-head"><h3>'+esc(name)+'</h3><button class="close" data-close>×</button></div><div class="modal-body">'+(photo?photo:'')+'<div style="text-align:center;margin-top:14px"><div class="badges" style="justify-content:center">'+(a.cp_status||a.status?'<span class="badge b-pink">'+esc(a.cp_status||a.status)+'</span>':'')+(bool(a.my_favorite)?'<span class="pill" style="background:#FFF0E2;color:#9A531B">💗 H 喜歡</span>':'')+(bool(a.friend_favorite)?'<span class="pill" style="background:#F0F0F0;color:#5F5F5F">💜 Q 喜歡</span>':'')+'</div></div><div class="grid grid-2" style="margin-top:16px">'+memberBlock(m1,'第 1 位成員')+memberBlock(m2,'第 2 位成員')+'</div><section style="margin-top:18px"><div class="section-title"><h3>💞 CP 資料</h3></div><div class="grid grid-2">'+info('開始日期',fmt(dateObj(a.cp_start_date||a.start_date)))+info('首次合作',a.first_work)+info('代表作品',a.representative_work)+info('紀念日',fmt(dateObj(a.cp_anniversary||a.anniversary)))+info('CP 顏色',a.cp_color)+'</div>'+(a.cp_description||a.description?'<div class="card" style="padding:14px;margin-top:8px;white-space:pre-wrap">'+esc(a.cp_description||a.description)+'</div>':'')+(a.cp_note||a.note?'<div class="notice" style="margin-top:8px;white-space:pre-wrap">備註：'+esc(a.cp_note||a.note)+'</div>':'')+'</section><section style="margin-top:18px"><div class="section-title"><h3>🧸 相關娃娃</h3></div>'+(dolls.length?'<div class="doll-grid">'+dolls.map(dollCard).join('')+'</div>':'<div class="muted">目前沒有綁定娃娃。</div>')+'</section></div><div class="modal-footer"><button class="btn btn-light" data-close>關閉</button><button class="btn btn-primary" data-edit-cp="'+esc(recordKey('actors',a))+'">✏️ 編輯 CP＋成員</button></div></div>');}
+function memberMini(){return ''; }
+function memberDetail(){return; }
+function dollDetail(d){const m=findMember(d.owner_member_id),photo=img(d.photo_url,'detail-photo',d.doll_name);openModal('<div class="modal"><div class="modal-head"><h3>'+esc(d.doll_name||'娃娃詳情')+'</h3><button class="close" data-close>×</button></div><div class="modal-body">'+photo+'<div style="font-size:24px;font-weight:950;margin-top:12px">'+esc(d.doll_name||'')+'</div><div class="info-grid">'+info('主人',m?.name_en||d.owner_member_id)+info('類型',d.doll_type)+info('顏色',d.doll_color)+info('生日',d.birth_date)+'</div>'+(d.description?'<div class="card" style="padding:14px;margin-top:12px;white-space:pre-wrap">'+esc(d.description)+'</div>':'')+(d.note?'<div class="notice" style="margin-top:8px;white-space:pre-wrap">'+esc(d.note)+'</div>':'')+'</div><div class="modal-footer"><button class="btn btn-light" data-close>關閉</button><button class="btn btn-primary" data-edit-doll="'+esc(d.doll_id)+'">✏️ 編輯</button></div></div>');}
+
+function calendarModal(){const base=new Date(state.calendar);base.setDate(1);const y=base.getFullYear(),m=base.getMonth();const first=new Date(y,m,1),start=(first.getDay()+6)%7,last=new Date(y,m+1,0).getDate();const all=state.data.dramas.flatMap(function(d){return schedule(d).map(function(e){return{drama:d,e:e};});});if(!state.calendarSelected||state.calendarSelected.slice(0,7)!==y+'-'+String(m+1).padStart(2,'0'))state.calendarSelected=iso(new Date(y,m,1));const dayRows=all.filter(function(x){return iso(x.e.date)===state.calendarSelected;}).sort(function(a,b){return clean(a.e.time).localeCompare(clean(b.e.time));});let cells='';for(let i=0;i<start;i++)cells+='<div class="cal-cell muted"></div>';for(let day=1;day<=last;day++){const d=new Date(y,m,day),ds=iso(d),items=all.filter(function(x){return iso(x.e.date)===ds;});cells+='<button class="cal-cell '+(iso(new Date())===ds?'today ':'')+(state.calendarSelected===ds?'" style="border-color:#D88A8A;background:#FFF4F4':'"')+' data-cal-day="'+ds+'"><div class="cal-date">'+day+'</div>'+items.slice(0,4).map(function(x){const s=status(x.drama.ststus_type);return '<div class="cal-chip '+(s==='待播中'?'upcoming':s==='已完結'?'ended':'')+'">EP'+x.e.episode+' · '+esc(titleOf(x.drama))+'</div>';}).join('')+(items.length>4?'<div class="muted" style="font-size:8px;margin-top:3px">+'+(items.length-4)+'</div>':'')+'</button>';}const ys=years().filter(function(x){return x!=='全部';});openModal('<div class="modal wide"><div class="modal-head"><h3>📅 播出月曆</h3><button class="close" data-close>×</button></div><div class="modal-body"><div class="calendar-top" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn btn-light btn-small" id="calPrev">‹ 上月</button><select class="select" style="width:auto;min-width:100px" id="calYear">'+(ys.includes(String(y))?ys.map(function(v){return '<option value="'+v+'" '+(String(y)===v?'selected':'')+'>'+v+'</option>';}).join(''):'<option>'+y+'</option>')+'</select><select class="select" style="width:auto;min-width:90px" id="calMonth">'+Array.from({length:12},function(_,i){return '<option value="'+i+'" '+(m===i?'selected':'')+'>'+(i+1)+' 月</option>';}).join('')+'</select><button class="btn btn-light btn-small" id="calToday">今天</button><button class="btn btn-primary btn-small" id="calNext">下月 ›</button></div><div class="legend" style="margin:10px 0"><span>🟢 正在跟播</span><span>🔵 待播中</span><span>⚪ 已完結</span><span>⏰ 時間＝泰國當地時間</span></div><div class="calendar-layout"><div><div class="calendar-grid">'+H_WEEK.map(function(x){return '<div class="calendar-week">'+x+'</div>';}).join('')+cells+'</div></div><aside class="calendar-side"><div style="font-weight:900">'+esc(state.calendarSelected.replace(/-/g,'/'))+' 播出</div><div style="margin-top:10px">'+(dayRows.length?dayRows.map(function(x){return '<button class="show-mini" data-drama="'+esc(recordKey('dramas',x.drama))+'"><b>'+esc(titleOf(x.drama))+'</b><span>EP'+x.e.episode+(x.e.time?' · '+esc(x.e.time)+' 泰國時間':'')+'</span></button>';}).join(''):'<div class="muted" style="padding:28px 0;text-align:center">這一天沒有播出。</div>')+'</div></aside></div></div><div class="modal-footer"><button class="btn btn-light" data-close>關閉</button></div></div>');document.querySelectorAll('[data-cal-day]').forEach(function(b){b.onclick=function(){state.calendarSelected=b.dataset.calDay;calendarModal();};});document.getElementById('calPrev').onclick=function(){state.calendar=new Date(y,m-1,1);state.calendarSelected=iso(state.calendar);calendarModal();};document.getElementById('calNext').onclick=function(){state.calendar=new Date(y,m+1,1);state.calendarSelected=iso(state.calendar);calendarModal();};document.getElementById('calToday').onclick=function(){state.calendar=new Date();state.calendarSelected=iso(new Date());calendarModal();};document.getElementById('calYear').onchange=function(e){state.calendar=new Date(Number(e.target.value),m,1);state.calendarSelected=iso(state.calendar);calendarModal();};document.getElementById('calMonth').onchange=function(e){state.calendar=new Date(y,Number(e.target.value),1);state.calendarSelected=iso(state.calendar);calendarModal();};}
+
+function fieldInput(k,v,sheet,lock){
+  const value=text(v),val=esc(value);
+  if(k==='ststus_type')return '<select class="select" data-field="'+k+'" '+(lock?'disabled':'')+'><option value="">未設定</option>'+STATUS.map(function(s){return '<option '+(clean(value)===s?'selected':'')+'>'+s+'</option>';}).join('')+'</select>';
+  if(sheet==='actors'&&(k==='cp_status'||k==='status'))return '<select class="select" data-field="'+k+'"><option value="">未設定</option>'+CP_STATUS.map(function(s){return '<option '+(clean(value)===s?'selected':'')+'>'+s+'</option>';}).join('')+'</select>';
+  if(k==='air_day_of_week')return '<select class="select" data-field="'+k+'"><option value="">未設定</option>'+H_WEEK.map(function(s){return '<option '+(clean(value)===s?'selected':'')+'>'+s+'</option>';}).join('')+'</select>';
+  if(k==='owner')return '<select class="select" data-field="owner"><option value="H" '+(clean(value)!=='Q'?'selected':'')+'>H／我</option><option value="Q" '+(clean(value)==='Q'?'selected':'')+'>Q／朋友</option></select>';
+  if(['my_want','friend_want','my_favorite','friend_favorite','favorite'].includes(k))return '<select class="select" data-field="'+k+'"><option value="">未設定</option><option value="true" '+(bool(value)?'selected':'')+'>是</option><option value="false" '+(!bool(value)&&has(value)?'selected':'')+'>否</option></select>';
+  if(k==='air_time')return '<div><input class="input" type="time" data-field="air_time" value="'+esc(value.slice(0,5))+'"><small>請填劇集在泰國當地播出的時鐘時間，例如 22:30。</small></div>';
+  if(sheet==='dolls'&&k==='owner_member_id')return '<select class="select" data-field="owner_member_id"><option value="">請選擇成員</option>'+state.data.members.map(function(m){return '<option value="'+esc(m.member_id||m.id)+'" '+(clean(value)===clean(m.member_id||m.id)?'selected':'')+'>'+esc(clean(m.name_en)||clean(m.member_id||m.id))+'</option>';}).join('')+'</select>';
+  if(['birth_date','premiere_date','added_date','planned_watch_date','start_date','anniversary','favorite_date','cp_start_date','cp_anniversary'].includes(k)||k.endsWith('_date'))return '<input class="input" type="date" data-field="'+k+'" value="'+esc(dateObj(value)?iso(dateObj(value)):value.slice(0,10))+'">';
+  if(k==='total_episodes'||k.includes('progress')||k.includes('rating')||k==='debut_year'||k==='height'||k==='weight')return '<input class="input" type="number" min="0" step="1" data-field="'+k+'" value="'+val+'">';
+  if(LONG_FIELDS.has(k))return '<textarea class="textarea" data-field="'+k+'">'+val+'</textarea>';
+  return '<input class="input" type="text" data-field="'+k+'" value="'+val+'" '+(lock?'disabled':'')+'>';
+}
+function fieldHtml(k,v,sheet,lock){return'<div class="field"><label>'+esc(LABEL[k]||k)+(lock?' 🔒':'')+'</label>'+fieldInput(k,v,sheet,lock)+'</div>';}
+function modalForm(sheet,record){if(sheet==='actors'){cpForm(record);return;}if(sheet==='members'){toast('Members 只能從 CP 編輯。',true);return;}const fs=SCHEMA[sheet];openModal('<div class="modal wide">'+commonModalHead((record?'編輯 ':'新增 ')+LABELS[sheet])+'<div class="modal-body"><div class="notice">這裡的欄位直接對應目前 Google Sheet；從 Sheet 手動新增的資料也會在同步後直接出現在網站。打字時保留空格，只在儲存時處理主鍵。</div><div class="form-grid" style="margin-top:12px">'+fs.map(function(k){const lock=((k==='id'||k==='doll_id'||k==='member_id')&&!!record)||(sheet==='wishlist'&&k==='drama_id'&&!!record);return fieldHtml(k,record?.[k]??'',sheet,lock);}).join('')+'</div>'+(sheet==='wishlist'?'<div class="notice" style="margin-top:12px">drama_id 使用既有劇集 ID；owner 僅代表建立者 H／Q，不是 CP 成員角色。</div>':'')+'</div><div class="modal-footer"><button class="btn btn-light" data-close>取消</button><button class="btn btn-primary" id="saveGeneric">儲存並同步</button></div></div>');if(sheet==='wishlist'){const el=document.querySelector('.modal [data-field="drama_id"]');if(el&&el.tagName==='INPUT'){const parent=el.closest('.field');parent.innerHTML='<label>劇集</label><select class="select" data-field="drama_id" '+(record?'disabled':'')+'><option value="">請選擇劇集</option>'+state.data.dramas.map(function(d){return '<option value="'+esc(d.id)+'" '+(clean(record?.drama_id)===clean(d.id)?'selected':'')+'>'+esc(titleOf(d))+' · '+esc(d.cp_name||'')+'</option>';}).join('')+'</select>';}}document.getElementById('saveGeneric').onclick=function(){saveGeneric(sheet,record);};}
+function collectFields(){const out={};document.querySelectorAll('.modal [data-field]').forEach(function(el){let v=el.value;if(['my_want','friend_want','my_favorite','friend_favorite'].includes(el.dataset.field)&&v!=='')v=v==='true';out[el.dataset.field]=v;});return out;}
+async function saveGeneric(sheet,record){
+  const rec=collectFields();
+  if(sheet==='dramas'&&!record&&!has(rec.id))rec.id=uid('DRAMA');
+  if(sheet==='wishlist'){if(!has(rec.drama_id)){toast('Wishlist 必須指定劇集',true);return;}if(!has(rec.owner))rec.owner='H';}
+  if(sheet==='dolls'){if(!has(rec.doll_name)){toast('娃娃名稱不能空白',true);return;}if(!has(rec.owner_member_id)){toast('請指定所屬成員',true);return;}if(!record&&!has(rec.doll_id))rec.doll_id=uid('DOLL');}
+  if(sheet==='actors'){await cpSaveFromForm(record);return;}
+  let payload,keyField,keyValue;
+  if(sheet==='wishlist'){keyField='composite_drama_owner';keyValue={drama_id:record?.drama_id,owner:record?.owner||'H'};payload=record?{action:'updateRecord',sheet:sheet,keyField:keyField,keyValue:keyValue,record:Object.assign({},record,rec)}:{action:'createRecord',sheet:sheet,keyField:keyField,record:rec};}
+  else {keyField=sheet==='dolls'?'doll_id':'id';keyValue=record?record[keyField]:null;payload=record?{action:'updateRecord',sheet:sheet,keyField:keyField,keyValue:keyValue,record:Object.assign({},record,rec)}:{action:'createRecord',sheet:sheet,keyField:keyField,record:rec};}
+  try{await mutate(payload,record?'已更新並同步':'已新增並同步');closeModal();}catch(e){}
+}
+function memberEditFields(prefix,m){const x=m||{};const all=['name_en','nickname','birth_date','birth_place','nationality','zodiac','height','weight','occupation','debut_year','company','agency','brand','bio','representative_works','representative_roles','awards','hobby','skill','favorite_food','disliked_food','favorite_color','favorite_music','favorite_movie','pet','personality','quote','personal_note','photo_url','photo_url_2','photo_url_3','instagram','x','tiktok','facebook','youtube','website','my_favorite','favorite_date','my_rating','my_note','support_color'];return '<div class="form-grid">'+all.map(function(k){if(k==='my_favorite')return '<div class="field"><label>我的收藏</label><select class="select" data-'+prefix+'="my_favorite"><option value="false" '+(!bool(x[k])?'selected':'')+'>否</option><option value="true" '+(bool(x[k])?'selected':'')+'>是</option></select></div>';return '<div class="field '+(LONG_FIELDS.has(k)?'full':'')+'"><label>'+esc(LABEL[k]||k)+'</label>'+fieldInputForPrefix(k,x[k],prefix)+'</div>';}).join('')+'</div>';}
+
+function fieldInputForPrefix(k,v,p){const value=text(v),val=esc(value);if(k==='birth_date'||k==='favorite_date')return '<input class="input" type="date" data-'+p+'="'+k+'" value="'+esc(dateObj(value)?iso(dateObj(value)):value.slice(0,10))+'">';if(['height','weight','debut_year','my_rating'].includes(k))return '<input class="input" type="number" min="0" step="1" data-'+p+'="'+k+'" value="'+val+'">';if(LONG_FIELDS.has(k))return '<textarea class="textarea" data-'+p+'="'+k+'">'+val+'</textarea>';return '<input class="input" type="text" data-'+p+'="'+k+'" value="'+val+'">';}
+function readPrefix(p){const o={};document.querySelectorAll('.modal [data-'+p+']').forEach(function(el){let v=el.value;if(el.dataset[p]==='my_favorite')v=v==='true';o[el.dataset[p]]=v;});return o;}
+function memberSelectHtml(prefix,selectedId){return '<div class="field full"><label>'+(prefix==='m1'?'第 1 位成員':'第 2 位成員')+'（從 Members 既有資料選擇）</label><select class="select" data-'+prefix+'="member_id"><option value="">＋ 新建成員</option>'+state.data.members.map(function(m){const id=m.member_id||m.id,n=clean(m.name_en)||id;return '<option value="'+esc(id)+'" '+(clean(selectedId)===clean(id)?'selected':'')+'>'+esc(n)+'</option>';}).join('')+'</select><small>選到既有成員後，下面資料會直接載入；CP 與 Members 共用同一個 member_id。</small></div>';}
+
+function populateMemberFields(prefix,m){const x=m||{};document.querySelectorAll('.modal [data-'+prefix+']').forEach(function(el){const k=el.dataset[prefix];if(k==='member_id')return;if(k==='my_favorite')el.value=bool(x[k])?'true':'false';else if(el.type==='date')el.value=dateObj(x[k])?iso(dateObj(x[k])):text(x[k]).slice(0,10);else el.value=text(x[k]);});}
+function bindMemberSelector(prefix){const el=document.querySelector('.modal [data-'+prefix+'="member_id"]');if(!el)return;el.addEventListener('change',function(){populateMemberFields(prefix,findMember(el.value)||{});});}
+function cpForm(actor){
+  const base=actor||{},m1=actor?findMember(actor.member_1_id):null,m2=actor?findMember(actor.member_2_id):null;
+  const cpName=clean(base.cp_name_en)||clean(base.cp_name);
+  openModal('<div class="modal wide">'+commonModalHead((actor?'✏️ 編輯':'＋ 新增')+' CP ＋兩位成員')+'<div class="modal-body"><div class="notice">CP 只在網站顯示英文名稱。兩位成員不會獨立出現在網站，而是在 CP 裡直接管理；Members 資料用 member_id 與 CP 互通。你也可以從 Google Sheet 手動新增資料，下一次同步會直接讀進來。</div><section><div class="section-title" style="margin-top:14px"><h3>👭 CP 資料</h3></div><div class="form-grid"><div class="field"><label>CP 英文名稱</label><input class="input" data-cpfield="cp_name_en" value="'+esc(cpName)+'"><small>儲存時也會同步到 Actors.cp_name，方便現有資料使用。</small></div><div class="field"><label>CP 照片 URL</label><input class="input" data-cpfield="photo_url" value="'+esc(base.photo_url||'')+'"></div><div class="field"><label>我喜歡</label><select class="select" data-cpfield="my_favorite"><option value="false" '+(!bool(base.my_favorite)?'selected':'')+'>否</option><option value="true" '+(bool(base.my_favorite)?'selected':'')+'>是</option></select></div><div class="field"><label>朋友喜歡</label><select class="select" data-cpfield="friend_favorite"><option value="false" '+(!bool(base.friend_favorite)?'selected':'')+'>否</option><option value="true" '+(bool(base.friend_favorite)?'selected':'')+'>是</option></select></div><div class="field"><label>CP 現況</label><select class="select" data-cpfield="cp_status"><option value="">未設定</option>'+CP_STATUS.map(function(x){return '<option '+(clean(base.cp_status||base.status)===x?'selected':'')+'>'+x+'</option>';}).join('')+'</select></div><div class="field"><label>CP 開始日期</label><input class="input" type="date" data-cpfield="cp_start_date" value="'+esc(dateObj(base.cp_start_date||base.start_date)?iso(dateObj(base.cp_start_date||base.start_date)):text(base.cp_start_date||base.start_date).slice(0,10))+'"></div><div class="field"><label>CP 紀念日</label><input class="input" type="date" data-cpfield="cp_anniversary" value="'+esc(dateObj(base.cp_anniversary||base.anniversary)?iso(dateObj(base.cp_anniversary||base.anniversary)):text(base.cp_anniversary||base.anniversary).slice(0,10))+'"></div><div class="field"><label>首次合作作品</label><input class="input" data-cpfield="first_work" value="'+esc(base.first_work||'')+'"></div><div class="field"><label>代表作品</label><input class="input" data-cpfield="representative_work" value="'+esc(base.representative_work||'')+'"></div><div class="field"><label>CP 顏色</label><input class="input" type="text" data-cpfield="cp_color" value="'+esc(base.cp_color||'')+'"><small>顏色以文字保存，例如 Pink、Orange。</small></div><div class="field full"><label>CP 描述</label><textarea class="textarea" data-cpfield="cp_description">'+esc(base.cp_description||base.description||'')+'</textarea></div><div class="field full"><label>CP 備註</label><textarea class="textarea" data-cpfield="cp_note">'+esc(base.cp_note||base.note||'')+'</textarea></div></div></section><div class="separator"></div><section><div class="section-title"><h3>第 1 位成員</h3></div>'+memberSelectHtml('m1',m1?.member_id||m1?.id)+memberEditFields('m1',m1||{})+'</section><div class="separator"></div><section><div class="section-title"><h3>第 2 位成員</h3></div>'+memberSelectHtml('m2',m2?.member_id||m2?.id)+memberEditFields('m2',m2||{})+'</section></div><div class="modal-footer"><button class="btn btn-light" data-close>取消</button><button class="btn btn-primary" id="saveCP">儲存 CP＋兩位成員</button></div></div>');bindMemberSelector('m1');bindMemberSelector('m2');document.getElementById('saveCP').onclick=function(){saveCPBundle(actor,m1,m2);};
+}
+async function cpSaveFromForm(actor){
+  const cp={};
+  document.querySelectorAll('.modal [data-cpfield]').forEach(function(el){let v=el.value;if(['my_favorite','friend_favorite'].includes(el.dataset.cpfield))v=v==='true';cp[el.dataset.cpfield]=v;});
+  const raw1=readPrefix('m1'),raw2=readPrefix('m2');
+  if(!has(cp.cp_name_en)){toast('CP 英文名稱不能空白',true);return;}
+  if(!has(raw1.name_en)){toast('第 1 位成員必須填英文名',true);return;}
+  if(!has(raw2.name_en)){toast('第 2 位成員必須填英文名',true);return;}
+  if(has(raw1.member_id)&&has(raw2.member_id)&&clean(raw1.member_id)===clean(raw2.member_id)){toast('第 1、2 位成員不能使用相同 member_id',true);return;}
+  const duplicate=state.data.actors.find(function(a){const same=clean(a.cp_name_en||a.cp_name).toLowerCase()===clean(cp.cp_name_en).toLowerCase();return same&&(!actor||recordKey('actors',a)!==recordKey('actors',actor));});
+  if(duplicate){toast('已經有相同 CP 英文名稱，請不要重複建立。',true);return;}
+  const oldMember1=actor?findMember(actor.member_1_id):null;
+  const oldMember2=actor?findMember(actor.member_2_id):null;
+  const m1Id=clean(raw1.member_id)||uid('MEM'),m2Id=clean(raw2.member_id)||uid('MEM');
+  const m1=buildMemberPayload(raw1,m1Id,oldMember1),m2=buildMemberPayload(raw2,m2Id,oldMember2);
+  const actorPayload=buildActorPayload(cp,actor,m1,m2);
+  const actorKeyField=actor?.id?'id':(has(actor?.cp_name)?'cp_name':'cp_name_en');
+  const actorKeyValue=actor?.id||actor?.cp_name||actor?.cp_name_en;
+  try{
+    if(oldMember1)await apiPost({action:'updateRecord',sheet:'members',keyField:'member_id',keyValue:oldMember1.member_id||oldMember1.id,record:m1});
+    else await apiPost({action:'createRecord',sheet:'members',keyField:'member_id',record:m1});
+    if(oldMember2)await apiPost({action:'updateRecord',sheet:'members',keyField:'member_id',keyValue:oldMember2.member_id||oldMember2.id,record:m2});
+    else await apiPost({action:'createRecord',sheet:'members',keyField:'member_id',record:m2});
+    if(actor)await apiPost({action:'updateRecord',sheet:'actors',keyField:actorKeyField,keyValue:actorKeyValue,record:actorPayload});
+    else await apiPost({action:'createRecord',sheet:'actors',keyField:'id',record:actorPayload});
+    const ok=await refreshData(false);
+    if(ok){toast(actor?'CP 與成員已更新並同步':'CP 與成員已建立並同步');closeModal();}
+    else toast('資料已送出，但重新讀取 Google Sheet 失敗，請按「同步最新資料」確認。',true);
+  }catch(e){toast(e.message||String(e),true);}
+}
+function buildMemberPayload(form,id,old){const x=Object.assign({},old||{});Object.keys(form||{}).forEach(function(k){if(k!=='member_id')x[k]=form[k];});x.member_id=id;x.id=x.id||id;x.display_name=x.display_name||x.name_en||'';x.favorite_color=text(x.favorite_color);x.support_color=text(x.support_color);x.photo_url=x.photo_url||x.photo_1||'';x.photo_url_2=x.photo_url_2||x.photo_2||'';x.photo_url_3=x.photo_url_3||x.photo_3||'';x.photo_1=x.photo_url;x.photo_2=x.photo_url_2;x.photo_3=x.photo_url_3;x.pet=x.pet||x.pets||'';x.pets=x.pets||x.pet||'';return x;}
+function buildActorPayload(cp,old,m1,m2){const x=Object.assign({},old||{});Object.keys(cp||{}).forEach(function(k){x[k]=cp[k];});x.id=x.id||uid('CP');x.cp_name=clean(cp.cp_name_en||cp.cp_name);x.cp_name_en=clean(cp.cp_name_en||cp.cp_name);x.member_1_id=m1.member_id;x.member_2_id=m2.member_id;x.actor_1=m1.name_en||'';x.actor_2=m2.name_en||'';x.actor_1_th=old?.actor_1_th||'';x.actor_2_th=old?.actor_2_th||'';x.cp_status=cp.cp_status||old?.cp_status||old?.status||'';x.status=x.cp_status;x.cp_start_date=cp.cp_start_date||old?.cp_start_date||old?.start_date||'';x.start_date=x.cp_start_date;x.cp_anniversary=cp.cp_anniversary||old?.cp_anniversary||old?.anniversary||'';x.anniversary=x.cp_anniversary;x.cp_description=cp.cp_description||old?.cp_description||old?.description||'';x.description=x.cp_description;x.cp_note=cp.cp_note||old?.cp_note||old?.note||'';x.note=x.cp_note;return x;}
+
+async function saveCPBundle(actor,old1,old2){await cpSaveFromForm(actor);} 
+
+window.addEventListener('error',function(e){console.error(e.error||e.message);if(!state.loading){toast('頁面執行時發生錯誤：'+(e.message||'未知錯誤'),true);}});
+window.addEventListener('unhandledrejection',function(e){console.error(e.reason);if(!state.loading){toast('資料處理失敗：'+(e.reason?.message||e.reason||'未知錯誤'),true);}});
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&(!state.lastSync||Date.now()-state.lastSync.getTime()>30000))refreshData(false);});
+window.addEventListener('focus',function(){if(!state.lastSync||Date.now()-state.lastSync.getTime()>30000)refreshData(false);});
+
+render();refreshData(true);
+})();
+</script>
 </body>
 </html>
