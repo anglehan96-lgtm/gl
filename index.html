@@ -77,6 +77,30 @@
 .empty{border:1px dashed #e5d5d1;border-radius:18px;background:rgba(255,255,255,.55);padding:36px 20px}
 @media(max-width:700px){.shell{padding:18px 13px 70px}.brand h1{font-size:19px}.brand p{font-size:11px}.section-head h2{font-size:21px}.modal-card{border-radius:20px;margin:10px}.modal-body{padding:16px}.detail-hero{padding:15px}.cp-detail-photo{width:230px;height:230px}.grid,.cp-grid{gap:12px}}
 
+/* ===== Binding + alignment + opaque modal ===== */
+.modal{background:#fff !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
+.modal-head{background:#fff !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
+.modal-body,.modal-footer{background:#fff;}
+.modal-body{box-sizing:border-box;}
+.modal-body section{width:100%;box-sizing:border-box;}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;}
+.section-title h3{margin:0;text-align:left;}
+.form-grid{align-items:start;}
+.field{min-width:0;text-align:left;}
+.field label{display:block;text-align:left;}
+.field input,.field select,.field textarea{width:100%;box-sizing:border-box;}
+.notice,.info,.info-item,.cp-card-work,.sub,.legend{text-align:left;box-sizing:border-box;}
+.cp-body,.member-body,.doll-body{text-align:left;}
+.cp-name,.member-name,.doll-name{text-align:left;}
+.cp-card-members,.cp-card-member,.cp-card-member-head,.cp-card-member-name,.cp-card-member-meta{text-align:left;}
+.cp-card-member-head{align-items:center;}
+.cp-detail-photo{margin-left:auto;margin-right:auto;}
+.member-link{justify-content:flex-start;text-align:left;}
+.member-mini,.member-mini-head{text-align:left;}
+.modal-footer{align-items:center;justify-content:flex-end;}
+.check-grid{align-items:stretch;}
+.check-item{display:flex;align-items:center;text-align:left;}
+
 </style>
 </head>
 <body>
@@ -267,10 +291,10 @@ function pageCP(){return viewHeader('👭 CP 專區','CP 是網站的主體；�
 function cpCard(a){
   const m1=findMember(a.member_1_id),m2=findMember(a.member_2_id),name=clean(a.cp_name_en)||clean(a.cp_name)||'Unnamed CP';
   const av=img(a.photo_url,'cp-avatar',name);
-  const n1=clean(m1?.name_en)||clean(a.actor_1),n2=clean(m2?.name_en)||clean(a.actor_2);
+  const n1=memberLabel(m1,a.actor_1),n2=memberLabel(m2,a.actor_2);
   const names=(n1&&n2)?esc(n1)+' × '+esc(n2):'';
   const memberMini=function(m,label,fallback){
-    const n=clean(m?.name_en)||clean(fallback)||label;
+    const n=memberLabel(m,fallback)||label;
     if(!m && !fallback)return '<div class="cp-card-member cp-card-member-empty">'+esc(label)+'<br>尚未綁定</div>';
     const p=img(m?.photo_url||m?.photo_1,'cp-card-member-photo',n);
     const meta=[];
@@ -354,7 +378,8 @@ function memberEditFields(prefix,m){const x=m||{};const all=['name_en','nickname
 
 function fieldInputForPrefix(k,v,p){const value=text(v),val=esc(value);if(k==='support_color')return '<div class="color-input-row"><input class="color-picker" type="color" data-'+p+'="support_color" value="'+esc(pickerColor(value,'#D88A8A'))+'"><span class="muted">'+esc(value||'選擇應援色')+'</span></div>';if(k==='birth_date'||k==='favorite_date')return '<input class="input" type="date" data-'+p+'="'+k+'" value="'+esc(dateObj(value)?iso(dateObj(value)):value.slice(0,10))+'">';if(['height','weight','debut_year','my_rating'].includes(k))return '<input class="input" type="number" min="0" step="1" data-'+p+'="'+k+'" value="'+val+'">';if(LONG_FIELDS.has(k))return '<textarea class="textarea" data-'+p+'="'+k+'">'+val+'</textarea>';return '<input class="input" type="text" data-'+p+'="'+k+'" value="'+val+'">';}
 function readPrefix(p){const o={};document.querySelectorAll('.modal [data-'+p+']').forEach(function(el){let v=el.value;if(el.dataset[p]==='my_favorite')v=v==='true';o[el.dataset[p]]=v;});return o;}
-function memberSelectHtml(prefix,selectedId){return '<div class="field full"><label>'+(prefix==='m1'?'第 1 位成員':'第 2 位成員')+'（從 Members 既有資料選擇）</label><select class="select" data-'+prefix+'="member_id"><option value="">＋ 新建成員</option>'+state.data.members.map(function(m){const id=m.member_id||m.id,n=clean(m.name_en)||id;return '<option value="'+esc(id)+'" '+(clean(selectedId)===clean(id)?'selected':'')+'>'+esc(n)+'</option>';}).join('')+'</select><small>選到既有成員後，下面資料會直接載入；CP 與 Members 共用同一個 member_id。</small></div>';}
+function memberLabel(m,fallback){const nick=clean(m&&m.nickname),en=clean(m&&m.name_en);if(nick&&en)return nick+' ('+en+')';return nick||en||clean(fallback)||'未命名成員';}
+function memberSelectHtml(prefix,selectedId){return '<div class="field full"><label>'+(prefix==='m1'?'第 1 位成員':'第 2 位成員')+'（從 Members 既有資料選擇）</label><select class="select" data-'+prefix+'="member_id"><option value="">＋ 新建成員</option>'+state.data.members.map(function(m){const id=m.member_id||m.id,n=memberLabel(m,id);return '<option value="'+esc(id)+'" '+(clean(selectedId)===clean(id)?'selected':'')+'>'+esc(n)+'</option>';}).join('')+'</select><small>綁定顯示格式：小名（英文全名）；沒有小名時才顯示英文全名。實際儲存仍使用 member_id，因此不會因名稱變更而失去綁定。</small></div>';}
 
 function populateMemberFields(prefix,m){const x=m||{};document.querySelectorAll('.modal [data-'+prefix+']').forEach(function(el){const k=el.dataset[prefix];if(k==='member_id')return;if(k==='support_color'){el.value=pickerColor(x[k],'#D88A8A');return;}if(k==='my_favorite')el.value=bool(x[k])?'true':'false';else if(el.type==='date')el.value=dateObj(x[k])?iso(dateObj(x[k])):text(x[k]).slice(0,10);else el.value=text(x[k]);});}
 function bindMemberSelector(prefix){const el=document.querySelector('.modal [data-'+prefix+'="member_id"]');if(!el)return;el.addEventListener('change',function(){populateMemberFields(prefix,findMember(el.value)||{});});}
