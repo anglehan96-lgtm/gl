@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#D88A8A">
-<title>✨ 泰百追劇宇宙｜GL Universe v15</title>
+<title>✨ 泰百追劇宇宙｜GL Universe v16</title>
 <style>
 :root{--bg:#FDFBF7;--card:#FFF;--text:#4A403A;--muted:#8C7B72;--pink:#D88A8A;--pink-soft:#F9E4E4;--line:#F0D4D4;--h:#F37021;--h-soft:#FFF0E2;--q:#777;--q-soft:#F0F0F0;--purple:#8B70A8;--purple-soft:#EEE7F4;--green:#4E946C;--green-soft:#E7F4EC;--blue:#5684B6;--blue-soft:#EAF1F9;--shadow:0 12px 34px rgba(92,64,51,.07);--radius:22px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--text);background:radial-gradient(circle at 8% 4%,rgba(249,228,228,.76),transparent 26%),radial-gradient(circle at 94% 11%,rgba(238,231,244,.68),transparent 23%),var(--bg);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC",sans-serif;line-height:1.55}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
@@ -30,7 +30,7 @@
 </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="app"><div class="shell"><section class="panel loading"><div class="spinner"></div><div class="muted">🌸 泰百追劇宇宙正在啟動…</div></section></div></div>
 <div id="toastWrap" aria-live="polite" aria-atomic="true"></div>
 <script>
 (function(){
@@ -64,6 +64,7 @@ const LABEL={
 };
 const LONG_FIELDS=new Set(['synopsis','source_link','my_review','friend_review','description','note','bio','representative_works','representative_roles','awards','hobby','skill','favorite_music','favorite_movie','pets','personality','quote','personal_note','my_note']);
 const state={data:{dramas:[],wishlist:[],actors:[],members:[],dolls:[]},loading:true,active:'home',search:'',year:'全部',status:'全部',modal:null,calendar:new Date(),calendarSelected:null,randomDrama:null,adminSheet:'dramas',errors:[],lastSync:null};
+let refreshPromise=null;
 
 function esc(v){return String(v??'').replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);});}
 function text(v){return v===null||v===undefined?'':String(v);}
@@ -321,11 +322,12 @@ function buildActorPayload(cp,old,m1,m2){const x=Object.assign({},old||{});Objec
 async function saveCPBundle(actor,old1,old2){await cpSaveFromForm(actor);} 
 
 window.addEventListener('error',function(e){console.error(e.error||e.message);if(!state.loading){toast('頁面執行時發生錯誤：'+(e.message||'未知錯誤'),true);}});
-window.addEventListener('unhandledrejection',function(e){console.error(e.reason);if(!state.loading){toast('資料處理失敗：'+(e.reason?.message||e.reason||'未知錯誤'),true);}});
+window.addEventListener('unhandledrejection',function(e){console.error(e.reason);state.loading=false;const msg='資料處理失敗：'+(e.reason?.message||e.reason||'未知錯誤');state.errors=[msg];try{render();}catch(_e){toast(msg,true);}});
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&(!state.lastSync||Date.now()-state.lastSync.getTime()>30000))refreshData(false);});
 window.addEventListener('focus',function(){if(!state.lastSync||Date.now()-state.lastSync.getTime()>30000)refreshData(false);});
 
-render();refreshData(true);
+try{render();}catch(e){state.loading=false;state.errors=['頁面啟動失敗：'+(e&&e.message?e.message:String(e))];try{render();}catch(_e){const app=document.getElementById('app');if(app)app.innerHTML='<div class="shell"><div class="error-panel">頁面啟動失敗：'+esc(e&&e.message?e.message:String(e))+'</div></div>';}}
+refreshData(true).catch(function(e){state.loading=false;state.errors=['Google Sheet 同步失敗：'+(e&&e.message?e.message:String(e))];state.lastSync=null;try{render();}catch(_e){const app=document.getElementById('app');if(app)app.innerHTML='<div class="shell"><div class="error-panel">Google Sheet 同步失敗：'+esc(e&&e.message?e.message:String(e))+'</div></div>';}});
 })();
 </script>
 </body>
