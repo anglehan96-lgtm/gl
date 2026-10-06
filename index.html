@@ -256,7 +256,7 @@ function bindRoot(root){root.querySelectorAll('[data-drama]').forEach(function(b
 function escapeKey(){document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.querySelector('.modal-root'))closeModal();});}
 escapeKey();
 
-function jsonp(action,params){return new Promise(function(resolve,reject){const cb='GLU_'+Date.now()+'_'+Math.random().toString(36).slice(2);const script=document.createElement('script');const q=new URLSearchParams(Object.assign({action:action},params||{}, {callback:cb,t:Date.now()}));let timer;window[cb]=function(data){clearTimeout(timer);delete window[cb];script.remove();if(data&&data.success===false)reject(new Error(data.message||'API 失敗'));else resolve(data||{});};script.onerror=function(){clearTimeout(timer);delete window[cb];script.remove();reject(new Error('無法載入 Google Apps Script'));};script.src=GAS_URL+'?'+q.toString();document.head.appendChild(script);timer=setTimeout(function(){delete window[cb];script.remove();reject(new Error('Google Apps Script 回應逾時'));},18000);});}
+function jsonp(action,params){return new Promise(function(resolve,reject){const cb='GLU_'+Date.now()+'_'+Math.random().toString(36).slice(2);const script=document.createElement('script');const q=new URLSearchParams(Object.assign({action:action},params||{},{callback:cb,t:Date.now()}));let timer=null,gcTimer=null,finished=false;function cleanup(){if(timer)clearTimeout(timer);if(script&&script.parentNode)script.parentNode.removeChild(script);if(gcTimer)clearTimeout(gcTimer);}window[cb]=function(data){const late=finished;finished=true;cleanup();try{delete window[cb];}catch(_e){}if(late)return;if(data&&data.success===false){const e=new Error(data.message||'API 失敗');e.code='API_ERROR';reject(e);}else resolve(data||{});};script.onerror=function(){if(finished)return;finished=true;cleanup();try{delete window[cb];}catch(_e){}const e=new Error('無法載入 Google Apps Script');e.code='SCRIPT_ERROR';reject(e);};script.src=GAS_URL+'?'+q.toString();document.head.appendChild(script);timer=setTimeout(function(){if(finished)return;finished=true;if(script&&script.parentNode)script.parentNode.removeChild(script);const e=new Error('Google Apps Script 回應逾時（90 秒）');e.code='TIMEOUT';reject(e);gcTimer=setTimeout(function(){try{delete window[cb];}catch(_e){}},120000);},90000);});}
 async function apiGet(action,params){
   return jsonp(action,Object.assign({},params||{},{cbust:Date.now().toString(36)+'_'+Math.random().toString(36).slice(2)}));
 }
@@ -288,13 +288,19 @@ async function refreshData(initial){
       state.loading=false;state.errors=errors;state.lastSync=new Date();render();
       return errors.length===0;
     }catch(allErr){
-      const results=await Promise.all(SHEETS.map(async function(sheet){
+      if(allErr&&allErr.code==='TIMEOUT'){
+        state.loading=false;state.errors=['Google Apps Script 回應超過 90 秒，這次不再同時重試 5 張表，避免產生大量逾時請求。請稍後按「同步最新資料」再次讀取。'];state.lastSync=new Date();render();
+        return false;
+      }
+      const results=[];
+      for(let i=0;i<SHEETS.length;i++){
+        const sheet=SHEETS[i];
         try{
           const j=await apiGet('getSheet',{sheet:sheet,cb:stamp+'_'+sheet});
           if(!j||j.success===false)throw new Error((j&&j.message)||'讀取失敗');
-          return {sheet:sheet,rows:(Array.isArray(j.data)?j.data:[]).map(function(r){return normalizeRow(sheet,r);})};
-        }catch(e){return {sheet:sheet,error:e};}
-      }));
+          results.push({sheet:sheet,rows:(Array.isArray(j.data)?j.data:[]).map(function(r){return normalizeRow(sheet,r);})});
+        }catch(e){results.push({sheet:sheet,error:e});}
+      }
       const errors=[];
       results.forEach(function(x){if(x.error)errors.push((LABELS[x.sheet]||x.sheet)+'：'+(x.error.message||String(x.error)));else state.data[x.sheet]=x.rows;});
       state.loading=false;state.errors=errors;state.lastSync=new Date();render();
